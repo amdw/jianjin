@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from django.core import serializers
+
+from words.models import Word
 
 def index(request):
     return HttpResponse("This should show all the words!")
