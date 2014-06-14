@@ -1,7 +1,10 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 from words import views
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'words', views.WordsViewSet)
 
 urlpatterns = patterns('',
-    url(r'^$', views.index, name='index'),
-    url(r'^word/(?P<word_id>\d+)', views.word, name='word'),
+    url(r'^', include(router.urls)),
 )

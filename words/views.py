@@ -1,14 +1,9 @@
-from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.core import serializers
 
+from rest_framework import viewsets
 from words.models import Word
 
-def index(request):
-    return HttpResponse("This should show all the words!")
-
-def word(request, word_id):
-    word = get_object_or_404(Word, pk=word_id)
-    output = serializers.serialize("json", [word])
-    response = HttpResponse(output, content_type='application/json')
-    return response
+class WordsViewSet(viewsets.ModelViewSet):
+    queryset = Word.objects.all()
+    model = Word
