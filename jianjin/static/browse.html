@@ -1,5 +1,11 @@
-<div class="page-header"><h1>Browse</h1></div>
-
-<ul>
-  <li ng-repeat="word in words"><a href="#/browse/{{word.id}}">{{word.word}}</a></li>
-</ul>
+<div ng-if="error">
+  <h1>Error loading word list</h1>
+  <p>{{error}} ({{errorStatus}})</p>
+</div>
+<div ng-if="!error">
+  <div class="page-header"><h1>Browse</h1></div>
+  
+  <ul>
+    <li ng-repeat="word in words"><a href="#/browse/{{word.id}}">{{word.word}}</a></li>
+  </ul>
+</div>

@@ -9,11 +9,18 @@ jianjinControllers.controller('HeaderCtrl', function ($scope, $location) {
 jianjinControllers.controller('BrowseListCtrl', function ($scope, $http) {
   $http.get('/words/words/').success(function(data) {
     $scope.words = data;
+  }).error(function(data, status) {
+    $scope.error = data;
+    $scope.errorStatus = status;
   });
 });
 
 jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeParams) {
+  $scope.wordId = $routeParams.wordId;
   $http.get('/words/words/' + $routeParams.wordId).success(function(data) {
     $scope.word = data;
+  }).error(function(data, status) {
+    $scope.error = data;
+    $scope.errorStatus = status;
   });
 });

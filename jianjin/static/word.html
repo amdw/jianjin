@@ -1,5 +1,9 @@
 <div class="container-fluid page-header">
-  <div class="row">
+  <div ng-if="error">
+    <h1>Could not load word {{wordId}}</h1>
+    <p>{{error}} ({{errorStatus}})</p>
+  </div>
+  <div class="row" ng-if="!error">
     <div class="col-xs-8">
       <h1 style="margin-top:0">
         {{word.word}} ({{word.pinyin}})
