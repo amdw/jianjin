@@ -22,6 +22,9 @@ class Word(models.Model):
     def __unicode__(self):
         return self.word
 
+    def username(self):
+        return self.user.username
+
 PART_CHOICES = (
     (' ', 'none'),
     ('N', 'noun'),
