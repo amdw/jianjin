@@ -41,7 +41,7 @@ For development or personal local use, you can run Jianjin on your own computer;
 * Create a virtualenv: ```virtualenv venv```
 * Activate the virtualenv: ```source venv/bin/activate```
 * Install the Django toolbelt into your virtualenv: ```pip install django-toolbelt```
-* Create a ```.env``` file with local settings: ```ln -s env.sample .env```
+* Create a ```.env``` file with local settings: ```ln -s env.sample .env```. Edit the ```DATABASE_URL``` in the new ```.env``` file to point to a suitable path for your SQLite database.
 * Set up the database and an admin user: ```foreman run python manage.py syncdb```
 * Start the local development server: ```foreman start```
 
