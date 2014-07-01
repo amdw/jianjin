@@ -7,6 +7,7 @@
 
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.min.js"></script>
+  <script src="{% static "js/controllers.js" %}"></script>
   <script src="{% static "js/app.js" %}"></script>
 
   <link rel="stylesheet" href="{% static "css/style.css" %}"/>
@@ -18,7 +19,7 @@
 </head>
 
 <body>
-  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="HeaderController">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -31,10 +32,10 @@
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-          <li><a href="#browse">Browse</a></li>
-          <li><a href="#new">New Word</a></li>
-          <li><a href="#flashcard">Flashcard</a></li>
-          <li><a href="#about">About</a></li>
+          <li ng-class="{active:isActive('/browse')}"><a href="#browse">Browse</a></li>
+          <li ng-class="{active:isActive('/new')}"><a href="#new">New Word</a></li>
+          <li ng-class="{active:isActive('/flashcard')}"><a href="#flashcard">Flashcard</a></li>
+          <li ng-class="{active:isActive('/about')}"><a href="#about">About</a></li>
         </ul>
         <div class="navbar-form navbar-right">
           <div class="form-group">
