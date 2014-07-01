@@ -6,6 +6,8 @@ jianjinApp.config(function ($routeProvider) {
       redirectTo: '/browse',
     }).
     when('/browse', {
+      templateUrl: '/static/browse.html',
+      controller: 'BrowseCtrl',
     }).
     when('/new', {
     }).
