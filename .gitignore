@@ -3,3 +3,5 @@ venv
 staticfiles
 .env
 *.sqlite3
+*~
+.#*
