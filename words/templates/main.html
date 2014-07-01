@@ -1,10 +1,74 @@
+{% load staticfiles %}
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html>
 <head>
-<title>Main page</title>
+  <meta charset="utf-8"/>
+  <title>Jianjin</title>
+
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.min.js"></script>
+
+  <link rel="stylesheet" href="{% static "css/style.css" %}"/>
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-<h1>Main page</h1>
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">循序渐进</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="#browse">Browse</a></li>
+          <li><a href="#new">New Word</a></li>
+          <li><a href="#flashcard">Flashcard</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+        <div class="navbar-form navbar-right">
+          <div class="form-group">
+            <input type="text" placeholder="Search" id="search" class="form-control"/>
+          </div>
+          <div class="form-group">
+            <label class="checkbox navbar-text">Show Pinyin? <input type="checkbox" id="showPinyin"/></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="jianjin-main">
+    <div class="page-header"><h1>About</h1></div>
+  
+    <p>Jianjin is an application designed to help you manage and
+    review your Chinese vocabulary.</p>
+  
+    <p>It is designed to allow you to:</p>
+  
+    <ul>
+      <li>Record new words you learn</li>
+      <li>Categorise them (e.g. by subject, difficulty or exam)</li>
+      <li>Record notes about each word (e.g. example sentences,
+      comparison with other similar words)</li>
+      <li>Revise and test yourself</li>
+      <li>Keep track of which words you find most difficult so you can
+      focus on those</li>
+    </ul>
+  
+    <p>The name &quot;Jianjin&quot; comes from a Chinese idiom:
+  <a
+  href="http://www.mdbg.net/chindict/chindict.php?page=worddict&wdrst=0&wdqb=%E5%BE%AA%E5%BA%8F%E6%B8%90%E8%BF%9B">循序渐进</a> (x&#250;n x&#249; ji&#224;n j&#236;n) means to make steady progress step-by-step.</p>
+    <p>Jianjin is Copyright (C) 2014 Andrew Medworth. This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. For more information, see the LICENSE file in the <a href="https://github.com/amdw/jianjin/">Github project</a>.</p>
+  </div>
 </body>
 </html>
