@@ -35,7 +35,7 @@ PART_CHOICES = (
 )
     
 class Definition(models.Model):
-    word = models.ForeignKey(Word)
+    word = models.ForeignKey(Word, related_name='definitions')
     definition = models.CharField(max_length=100)
     part_of_speech = models.CharField(max_length=10, choices=PART_CHOICES)
 
@@ -51,7 +51,7 @@ class Definition(models.Model):
     changeform_link.short_description = ""
 
 class ExampleSentence(models.Model):
-    definition = models.ForeignKey(Definition)
+    definition = models.ForeignKey(Definition, related_name='example_sentences')
     sentence = models.TextField()
     pinyin = models.TextField()
     translation = models.TextField()

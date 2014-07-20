@@ -15,4 +15,12 @@
       <button type="button" class="btn btn-danger">-1</button>
     </div>
   </div>
+  <div class="panel panel-primary" ng-repeat="def in word.definitions">
+    <div class="panel-heading">
+      {{def.definition}}<span ng-if="def.part_of_speech.trim() != ''"> ({{def.part_of_speech}})</span>
+    </div>
+    <div class="panel-body">
+	<p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="showPinyin"> ({{s.pinyin}})</span> - {{s.translation}}</p>
+    </div>
+  </div>
 </div>
