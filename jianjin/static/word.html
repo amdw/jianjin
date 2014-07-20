@@ -23,4 +23,5 @@
 	<p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin}})</span> - {{s.translation}}</p>
     </div>
   </div>
+  <p><small>Added: <i>{{word.date_added | date:'medium'}}</i><br/>Last modified: <i>{{word.last_modified | date:'medium'}}</i></small></p>
 </div>
