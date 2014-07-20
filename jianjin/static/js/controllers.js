@@ -11,7 +11,7 @@ jianjinControllers.controller('BrowseListCtrl', function ($scope, $http) {
     $scope.words = data;
   }).error(function(data, status) {
     $scope.error = data;
-    $scope.errorStatus = status;
+    $scope.error_status = status;
   });
 });
 
@@ -21,6 +21,6 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
     $scope.word = data;
   }).error(function(data, status) {
     $scope.error = data;
-    $scope.errorStatus = status;
+    $scope.error_status = status;
   });
 });
