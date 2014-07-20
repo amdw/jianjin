@@ -23,5 +23,17 @@
 	<p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin}})</span> - {{s.translation}}</p>
     </div>
   </div>
+  <div ng-if="word.notes.trim() != ''">
+    <h4>Notes</h4>
+    <p>{{word.notes}}</p>
+  </div>
+  <div ng-if="word.related_words.length > 0">
+    <h4>Related words</h4>
+    <ul><li ng-repeat="w in word.related_words"> {{w.word}}</li></ul>
+  </div>
+  <div ng-if="word.tags.length > 0">
+    <h4>Tags:</h4>
+    <ul><li ng-repeat="tag in word.tags"> {{tag}}</li></ul>
+  </div>
   <p><small>Added: <i>{{word.date_added | date:'medium'}}</i><br/>Last modified: <i>{{word.last_modified | date:'medium'}}</i></small></p>
 </div>

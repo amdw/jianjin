@@ -23,7 +23,7 @@ class DefinitionSerializer(serializers.ModelSerializer):
 
 class WordSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='username')
-    tags = TagSerializer(many=True)
+    tags = serializers.SlugRelatedField(many=True, slug_field='tag')
     related_words = RelatedWordSerializer(many=True)
     definitions = DefinitionSerializer(many=True)
     
