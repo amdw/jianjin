@@ -29,7 +29,7 @@
   </div>
   <div ng-if="word.related_words.length > 0">
     <h4>Related words</h4>
-    <ul><li ng-repeat="w in word.related_words"><a href="#/browse/{{w.id}}">{{w.word}}</a></li></ul>
+    <ul><li ng-repeat="w in word.related_words"><a href="#/browse/{{w.id}}">{{w.word}}</a><span ng-if="show_pinyin"> ({{w.pinyin}})</span></li></ul>
   </div>
   <div ng-if="word.tags.length > 0">
     <h4>Tags:</h4>

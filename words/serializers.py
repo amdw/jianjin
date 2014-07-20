@@ -9,7 +9,7 @@ class TagSerializer(serializers.ModelSerializer):
 class RelatedWordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Word
-        fields = ('id', 'word')
+        fields = ('id', 'word', 'pinyin')
 
 class ExampleSentenceSerializer(serializers.ModelSerializer):
     class Meta:
