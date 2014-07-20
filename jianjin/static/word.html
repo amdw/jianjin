@@ -3,37 +3,39 @@
     <h1>Could not load word {{word_id}}</h1>
     <p>{{error}} ({{error_status}})</p>
   </div>
-  <div class="row" ng-if="!error">
-    <div class="col-xs-8">
-      <h1 style="margin-top:0">
-        {{word.word}}<span ng-if="show_pinyin"> ({{word.pinyin}})</span>
-      </h1>
+  <span ng-if="!error">
+    <div class="row">
+      <div class="col-sm-8">
+        <h1 style="margin-top:0">
+          {{word.word}}<span ng-if="show_pinyin"> ({{word.pinyin}})</span>
+        </h1>
+      </div>
+      <div class="col-sm-4 confidence">
+        <span style="padding-right: 5px">Confidence: {{word.confidence}}</span>
+        <button type="button" class="btn btn-success">+1</button>
+        <button type="button" class="btn btn-danger">-1</button>
+      </div>
     </div>
-    <div class="col-xs-4 confidence">
-      <span style="padding-right: 5px">Confidence: {{word.confidence}}</span>
-      <button type="button" class="btn btn-success">+1</button>
-      <button type="button" class="btn btn-danger">-1</button>
+    <div class="panel panel-primary" ng-repeat="def in word.definitions">
+      <div class="panel-heading">
+        {{def.definition}}<span ng-if="def.part_of_speech.trim() != ''"> ({{def.part_of_speech}})</span>
+      </div>
+      <div class="panel-body">
+  	<p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin}})</span> - {{s.translation}}</p>
+      </div>
     </div>
-  </div>
-  <div class="panel panel-primary" ng-repeat="def in word.definitions">
-    <div class="panel-heading">
-      {{def.definition}}<span ng-if="def.part_of_speech.trim() != ''"> ({{def.part_of_speech}})</span>
+    <div ng-if="word.notes.trim() != ''">
+      <h4>Notes</h4>
+      <p>{{word.notes}}</p>
     </div>
-    <div class="panel-body">
-	<p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin}})</span> - {{s.translation}}</p>
+    <div ng-if="word.related_words.length > 0">
+      <h4>Related words</h4>
+      <ul><li ng-repeat="w in word.related_words"><a href="#/browse/{{w.id}}">{{w.word}}</a><span ng-if="show_pinyin"> ({{w.pinyin}})</span></li></ul>
     </div>
-  </div>
-  <div ng-if="word.notes.trim() != ''">
-    <h4>Notes</h4>
-    <p>{{word.notes}}</p>
-  </div>
-  <div ng-if="word.related_words.length > 0">
-    <h4>Related words</h4>
-    <ul><li ng-repeat="w in word.related_words"><a href="#/browse/{{w.id}}">{{w.word}}</a><span ng-if="show_pinyin"> ({{w.pinyin}})</span></li></ul>
-  </div>
-  <div ng-if="word.tags.length > 0">
-    <h4>Tags:</h4>
-    <ul><li ng-repeat="tag in word.tags"> {{tag}}</li></ul>
-  </div>
-  <p><small>Added: <i>{{word.date_added | date:'medium'}}</i><br/>Last modified: <i>{{word.last_modified | date:'medium'}}</i></small></p>
+    <div ng-if="word.tags.length > 0">
+      <h4>Tags:</h4>
+      <ul><li ng-repeat="tag in word.tags"> {{tag}}</li></ul>
+    </div>
+    <p><small>Added: <i>{{word.date_added | date:'medium'}}</i><br/>Last modified: <i>{{word.last_modified | date:'medium'}}</i></small></p>
+  </span>
 </div>
