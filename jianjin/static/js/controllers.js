@@ -16,8 +16,8 @@ jianjinControllers.controller('BrowseListCtrl', function ($scope, $http) {
 });
 
 jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeParams) {
-  $scope.wordId = $routeParams.wordId;
-  $http.get('/words/words/' + $routeParams.wordId).success(function(data) {
+  $scope.word_id = $routeParams.word_id;
+  $http.get('/words/words/' + $routeParams.word_id).success(function(data) {
     $scope.word = data;
   }).error(function(data, status) {
     $scope.error = data;

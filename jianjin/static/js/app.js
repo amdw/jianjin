@@ -9,7 +9,7 @@ jianjinApp.config(function ($routeProvider) {
       templateUrl: '/static/browse.html',
       controller: 'BrowseListCtrl',
     }).
-    when('/browse/:wordId', {
+    when('/browse/:word_id', {
       templateUrl: '/static/word.html',
       controller: 'BrowseWordCtrl',
     }).
