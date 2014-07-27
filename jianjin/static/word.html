@@ -7,7 +7,7 @@
     <div class="row">
       <div class="col-sm-8">
         <h1 style="margin-top:0">
-          {{word.word}}<span ng-if="show_pinyin"> ({{word.pinyin}})</span>
+          {{word.word}}<span ng-if="show_pinyin"> ({{word.pinyin | pinyin}})</span>
         </h1>
       </div>
       <div class="col-sm-4 confidence">
@@ -21,7 +21,7 @@
         {{def.definition}}<span ng-if="def.part_of_speech.trim() != ''"> ({{def.part_of_speech}})</span>
       </div>
       <div class="panel-body">
-  	<p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin}})</span> - {{s.translation}}</p>
+        <p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span> - {{s.translation}}</p>
       </div>
     </div>
     <div ng-if="word.notes.trim() != ''">
@@ -30,7 +30,7 @@
     </div>
     <div ng-if="word.related_words.length > 0">
       <h4>Related words</h4>
-      <ul><li ng-repeat="w in word.related_words"><a href="#/browse/{{w.id}}">{{w.word}}</a><span ng-if="show_pinyin"> ({{w.pinyin}})</span></li></ul>
+      <ul><li ng-repeat="w in word.related_words"><a href="#/browse/{{w.id}}">{{w.word}}</a><span ng-if="show_pinyin"> ({{w.pinyin | pinyin}})</span></li></ul>
     </div>
     <div ng-if="word.tags.length > 0">
       <h4>Tags:</h4>

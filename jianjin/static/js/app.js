@@ -1,4 +1,4 @@
-var jianjinApp = angular.module('jianjinApp', ['ngRoute', 'jianjinControllers']);
+var jianjinApp = angular.module('jianjinApp', ['ngRoute', 'jianjinControllers', 'pinyin']);
 
 jianjinApp.config(function ($routeProvider) {
   $routeProvider.
