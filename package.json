@@ -1,0 +1,25 @@
+{
+  "name": "jianjin",
+  "version": "0.0.0",
+  "description": "Vocabulary manager for Chinese",
+  "scripts": {
+    "postinstall": "bower install",
+    "test": "node node_modules/karma/bin/karma start jianjin/static/js/test/karma.conf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amdw/jianjin.git"
+  },
+  "author": "Andrew Medworth <github@medworth.org.uk>",
+  "license": "AGPL",
+  "bugs": {
+    "url": "https://github.com/amdw/jianjin/issues"
+  },
+  "homepage": "https://github.com/amdw/jianjin",
+  "devDependencies": {
+    "karma": "^0.12.16",
+    "karma-chrome-launcher": "^0.1.4",
+    "karma-jasmine": "^0.1.5",
+    "bower": "^1.3.1"
+  }
+}

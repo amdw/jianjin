@@ -49,6 +49,15 @@ You should get a log message telling you what port the server has bound to; you 
 
 Note that if you want to run Django commands, e.g. using the ```manage.py``` interface, you will need to prefix them with ```foreman run``` in order to pull in the necessary configuration from the ```.env``` file. For example, if you want to run the Django development server rather than Gunicorn, you need to run ```foreman run python manage.py runserver```, or to run a Django shell, ```foreman run python manage.py shell```, etc.
 
+### Running JavaScript tests
+
+If you want to run the JavaScript tests, you will need to do the following:
+
+* Install [Node.JS](http://nodejs.org/)
+* Install [Bower](http://bower.io/) using ```npm install -g bower```
+* Run ```npm install``` in the root directory of the project; this will download some additional Java libraries for local testing
+* Run ```npm test```
+
 ## Deploying to Heroku or other PaaS
 
 Running Jianjin on the public Internet is much more useful than running it on a private computer, as it gives you access to the application and all your data from anywhere on any web-enabled device.
