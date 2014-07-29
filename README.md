@@ -37,10 +37,11 @@ For development or personal local use, you can run Jianjin on your own computer;
 
 * Install Python and virtualenv as described in [this guide](http://install.python-guide.org/)
 * Install the Heroku toolbelt as described in [this guide](https://devcenter.heroku.com/articles/getting-started-with-python#local-workstation-setup)
+* Install [Postgres](http://www.postgresql.org/) and ensure that the ```bin``` directory (containing ```pg_config```) is on your ```PATH```
 * Clone this Git repository and ```cd``` into it
 * Create a virtualenv: ```virtualenv venv```
 * Activate the virtualenv: ```source venv/bin/activate```
-* Install the Django toolbelt into your virtualenv: ```pip install django-toolbelt```
+* Install the Django toolbelt and the other required Python libraries into your virtualenv: ```pip install -r requirements.txt```
 * Create a ```.env``` file with local settings: ```cp env.sample .env```. Edit the ```DATABASE_URL``` in the new ```.env``` file to point to a suitable path for your SQLite database.
 * Set up the database and an admin user: ```foreman run python manage.py syncdb```
 * Start the local development server: ```foreman start```
