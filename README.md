@@ -33,7 +33,7 @@ Jianjin is designed to be easily deployed on any [PaaS](http://en.wikipedia.org/
 
 ## Local computer
 
-For development or personal local use, you can run Jianjin on your own computer; this is probably the easiest way to try it out. In order to do this, you need to do the following:
+For development or personal local use, you can run Jianjin on your own computer; this is probably the easiest way to try it out. (The following instructions assume a Unix-like environment, such as Linux or Mac OS X. There's no reason it shouldn't be possible to run this on Windows as well by similar means, but I haven't tried it.)
 
 * Install Python and virtualenv as described in [this guide](http://install.python-guide.org/)
 * Install the Heroku toolbelt as described in [this guide](https://devcenter.heroku.com/articles/getting-started-with-python#local-workstation-setup)
