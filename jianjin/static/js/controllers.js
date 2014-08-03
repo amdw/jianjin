@@ -28,7 +28,13 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
 jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routeParams) {
   $scope.tag = $routeParams.tag;
 
-  $scope.loadData = function() {
+  $scope.reset = function() {
+    $scope.show_pinyin_hint = false;
+    $scope.show_examples_hint = false;
+    $scope.show_answer = false;
+  };
+
+  $scope.load_data = function() {
     $http.get('/words/flashcard' + ($scope.tag ? '?tag=' + $scope.tag : '')).success(function(data) {
       $scope.word = data;
     }).error(function(data, status) {
@@ -37,5 +43,24 @@ jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routePar
     });
   };
 
-  $scope.loadData();
+  $scope.set_show_pinyin_hint = function() {
+    $scope.show_pinyin_hint = true;
+  };
+
+  $scope.set_show_examples_hint = function() {
+    $scope.show_examples_hint = true;
+  };
+
+  $scope.set_show_all = function() {
+    $scope.set_show_pinyin_hint();
+    $scope.set_show_examples_hint();
+    $scope.show_answer = true;
+  };
+
+  $scope.next_flashcard = function() {
+    $scope.reset();
+    $scope.load_data();
+  };
+
+  $scope.next_flashcard();
 });

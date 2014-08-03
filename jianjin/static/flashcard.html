@@ -1,14 +1,12 @@
-<div class="container-fluid page-header">
-  <div ng-if="error">
+<div class="container-fluid">
+  <div class="page-header" ng-if="error">
     <h1>Could not load flashcard</h1>
     <p>{{error}} ({{error_status}})</p>
   </div>
   <span ng-if="!error">
-    <div class="row">
+    <div class="row page-header">
       <div class="col-sm-8">
-        <h1 style="margin-top:0">
-          {{word.word}}
-        </h1>
+        <h1 style="margin-top:0">{{word.word}}</h1>
       </div>
       <div class="col-sm-4 confidence">
         <span style="padding-right: 5px">Confidence: {{word.confidence}}</span>
@@ -16,6 +14,33 @@
         <button type="button" class="btn btn-danger">-1</button>
       </div>
     </div>
-    <button class="btn btn-primary" ng-click="loadData()">Another</button>
+    <div class="row col-sm-12" ng-if="show_pinyin_hint">
+      <p class="lead">{{ word.pinyin | pinyin }}</p>
+    </div>
+    <div class="row col-sm-12" ng-if="show_examples_hint">
+      <p>Examples:</p>
+      <ul>
+	<span ng-repeat="def in word.definitions">
+	  <li ng-repeat="es in def.example_sentences">{{es.sentence}}<span ng-if="show_pinyin"> ({{es.pinyin | pinyin}})</span></li>
+	</span>
+      </ul>
+    </div>
+    <div class="row col-sm-12" ng-if="show_answer">
+      <div class="panel panel-primary" ng-repeat="def in word.definitions">
+        <div class="panel-heading">
+	  {{def.definition}}
+	</div>
+        <div class="panel-body">
+	  <p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span></p>
+	</div>
+      </div>
+      <p><a href="#/browse/{{word.id}}">Full entry for this word</a></p>
+    </div>
+    <div class="row col-sm-12">
+      <button class="btn btn-warning" ng-click="set_show_pinyin_hint()" ng-if="!show_pinyin_hint">Show Pinyin</button>
+      <button class="btn btn-warning" ng-click="set_show_examples_hint()" ng-if="!show_examples_hint">Show Example Usage</button>
+      <button class="btn btn-danger" ng-click="set_show_all()" ng-if="!show_answer">Show All</button>
+      <button class="btn btn-primary" ng-click="next_flashcard()">Next Flashcard</button>
+    </div>
   </span>
 </div>
