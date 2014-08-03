@@ -16,6 +16,12 @@ jianjinApp.config(function ($routeProvider) {
     when('/new', {
     }).
     when('/flashcard', {
+      templateUrl: '/static/flashcard.html',
+      controller: 'FlashcardCtrl',
+    }).
+    when('/flashcard/:tag', {
+      templateUrl: '/static/flashcard.html',
+      controller: 'FlashcardCtrl',
     }).
     when('/about', {
       templateUrl: '/static/about.html',

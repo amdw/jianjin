@@ -24,3 +24,18 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
     $scope.error_status = status;
   });
 });
+
+jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routeParams) {
+  $scope.tag = $routeParams.tag;
+
+  $scope.loadData = function() {
+    $http.get('/words/flashcard' + ($scope.tag ? '?tag=' + $scope.tag : '')).success(function(data) {
+      $scope.word = data;
+    }).error(function(data, status) {
+      $scope.error = data;
+      $scope.error_status = status;
+    });
+  };
+
+  $scope.loadData();
+});

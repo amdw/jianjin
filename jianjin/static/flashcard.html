@@ -1,0 +1,21 @@
+<div class="container-fluid page-header">
+  <div ng-if="error">
+    <h1>Could not load flashcard</h1>
+    <p>{{error}} ({{error_status}})</p>
+  </div>
+  <span ng-if="!error">
+    <div class="row">
+      <div class="col-sm-8">
+        <h1 style="margin-top:0">
+          {{word.word}}
+        </h1>
+      </div>
+      <div class="col-sm-4 confidence">
+        <span style="padding-right: 5px">Confidence: {{word.confidence}}</span>
+        <button type="button" class="btn btn-success">+1</button>
+        <button type="button" class="btn btn-danger">-1</button>
+      </div>
+    </div>
+    <button class="btn btn-primary" ng-click="loadData()">Another</button>
+  </span>
+</div>
