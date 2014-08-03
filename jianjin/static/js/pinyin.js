@@ -29,7 +29,7 @@ pinyin.constant('pickVowel', function(syllable) {
     if (syllable[i].match('[aeouvAEOUV]')) {
       return i;
     }
-    if (syllable[i].match('[aeiouvAEIOUV]') && firstVowelIdx < 0) {
+    if (syllable[i].match('[iI]') && firstVowelIdx < 0) {
 	firstVowelIdx = i;
     }
   }
