@@ -25,8 +25,7 @@ class FlashcardViewSet(viewsets.ViewSet):
         tag_name = request.QUERY_PARAMS.get('tag', None)
 
         if tag_name:
-            all_tags = Tag.objects.all()
-            tag = get_object_or_404(all_tags, tag=tag_name)
+            tag = get_object_or_404(Tag, tag=tag_name)
             words = tag.word_set.filter(user=self.request.user.id)
         else:
             words = Word.objects.filter(user=self.request.user.id)
