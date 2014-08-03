@@ -77,8 +77,8 @@ The following instructions are specific to Heroku; to deploy to other PaaS servi
 
 * Create a [Heroku account](http://heroku.com/), if you don't already have one, and run ```heroku login```
 * Run ```heroku create``` to create a new Heroku application
-* Run ```git push heroku master``` to push your current code to Heroku
 * Run ```jianjin/heroku-configure.py``` to set certain required configuration properties, such as generating a Django secret key
+* Run ```git push heroku master``` to push your current code to Heroku
 * Run ```heroku run python manage.py syncdb``` to set up the database
 
 Assuming all this worked, you should be able to run ```heroku open``` to open up the application.
