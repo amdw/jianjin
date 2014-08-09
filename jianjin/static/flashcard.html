@@ -31,7 +31,7 @@
 	  {{def.definition}}
 	</div>
         <div class="panel-body">
-	  <p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span></p>
+	  <p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span> - {{s.translation}}</p>
 	</div>
       </div>
       <p><a href="#/browse/{{word.id}}">Full entry for this word</a></p>
