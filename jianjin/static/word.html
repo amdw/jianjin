@@ -37,7 +37,7 @@
       </div>
       <div ng-if="word.tags.length > 0">
         <h4>Tags:</h4>
-        <ul><li ng-repeat="tag in word.tags"><a href="#/browsetag/{{tag}}">{{tag}}</a></li></ul>
+        <ul><li ng-repeat="tag in word.tags"><a href="#/browsetag/{{tag}}">{{tag}}</a> (<a href="#/flashcard/{{tag}}">flashcard</a>)</li></ul>
       </div>
       <p><small>Added: <i>{{word.date_added | date:'medium'}}</i><br/>Last modified: <i>{{word.last_modified | date:'medium'}}</i></small></p>
     </div>
