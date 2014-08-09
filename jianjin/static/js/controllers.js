@@ -6,13 +6,25 @@ jianjinControllers.controller('HeaderCtrl', function ($scope, $location) {
   };
 });
 
-jianjinControllers.controller('BrowseListCtrl', function ($scope, $http) {
-  $http.get('/words/words/').success(function(data) {
+jianjinControllers.constant('load_tags', function($scope, $http) {
+  $http.get('/words/tags').success(function(data) {
+    $scope.all_tags = data.map(function(t) { return t.tag });
+  }).error(function(data, status) {
+    $scope.error = data;
+    $scope.error_status = status;
+  });
+});
+
+jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeParams, load_tags) {
+  $scope.tag = $routeParams.tag;
+
+  $http.get($scope.tag ? '/words/wordsbytag/' + $scope.tag : '/words/words/').success(function(data) {
     $scope.words = data;
   }).error(function(data, status) {
     $scope.error = data;
     $scope.error_status = status;
   });
+  load_tags($scope, $http);
 });
 
 jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeParams) {
@@ -25,7 +37,7 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
   });
 });
 
-jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routeParams) {
+jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routeParams, load_tags) {
   $scope.tag = $routeParams.tag;
 
   $scope.reset = function() {
@@ -65,11 +77,5 @@ jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routePar
   // Initialisation
 
   $scope.next_flashcard();
-
-  $http.get('/words/tags').success(function(data) {
-    $scope.all_tags = data.map(function(t) { return t.tag });
-  }).error(function(data, status) {
-    $scope.error = data;
-    $scope.error_status = status;
-  });
+  load_tags($scope, $http);
 });

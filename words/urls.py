@@ -9,4 +9,5 @@ router.register(r'tags', views.TagsViewSet)
 
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),
+    url(r'^wordsbytag/([A-Za-z0-9]+)', views.words_by_tag),
 )
