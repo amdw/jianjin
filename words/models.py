@@ -1,12 +1,21 @@
+import re
+
 from django.db import models
 from django.core import urlresolvers
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+
+TAG_REGEX = "[A-Za-z0-9]+"
 
 class Tag(models.Model):
     tag = models.CharField(max_length=20)
 
     def __unicode__(self):
         return self.tag
+
+    def clean(self):
+        if not re.match("^{0}$".format(TAG_REGEX), self.tag):
+            raise ValidationError("Tag must match regular expression " + TAG_REGEX)
 
 class Word(models.Model):
     word = models.CharField(max_length=10)
