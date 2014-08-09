@@ -1,0 +1,223 @@
+[
+{
+    "pk": 1, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "user", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": true, 
+        "is_staff": true, 
+        "last_login": "2014-08-03T07:44:11.369Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$fEzYsVANBvGL$JEI15D1hiU8ga4sJFxwAYL53AHH1b6rYifmWJhDmWf8=", 
+        "email": "", 
+        "date_joined": "2014-06-14T11:00:01.254Z"
+    }
+},
+{
+    "pk": 2, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "dummy", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-08-03T07:19:21.346Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$bspLhFekT9SA$k61i//gfb6f2X6Qfgm3JHxoE1OOc4XhRcgNMNKTkU8M=", 
+        "email": "", 
+        "date_joined": "2014-08-03T07:19:21.346Z"
+    }
+},
+{
+    "pk": 1, 
+    "model": "words.tag", 
+    "fields": {
+        "tag": "awesome"
+    }
+},
+{
+    "pk": 2, 
+    "model": "words.tag", 
+    "fields": {
+        "tag": "funny"
+    }
+},
+{
+    "pk": 1, 
+    "model": "words.word", 
+    "fields": {
+        "confidence": 10, 
+        "word": "\u4f60\u597d", 
+        "tags": [
+            1
+        ], 
+        "pinyin": "ni3hao3", 
+        "notes": "", 
+        "last_modified": "2014-06-14T14:29:15.857Z", 
+        "user": [
+            "user"
+        ], 
+        "date_added": "2014-06-14T11:25:53.081Z", 
+        "related_words": [
+            3
+        ]
+    }
+},
+{
+    "pk": 2, 
+    "model": "words.word", 
+    "fields": {
+        "confidence": 0, 
+        "word": "\u86cb\u767d\u8d28", 
+        "tags": [
+            1
+        ], 
+        "pinyin": "dan4bai2zhi4", 
+        "notes": "", 
+        "last_modified": "2014-07-20T08:00:55.617Z", 
+        "user": [
+            "user"
+        ], 
+        "date_added": "2014-06-14T14:45:50.614Z", 
+        "related_words": []
+    }
+},
+{
+    "pk": 3, 
+    "model": "words.word", 
+    "fields": {
+        "confidence": 0, 
+        "word": "\u4e4c\u9f99\u7403", 
+        "tags": [
+            2
+        ], 
+        "pinyin": "wu1long2qiu2", 
+        "notes": "Same as oolong tea!", 
+        "last_modified": "2014-07-20T08:23:28.252Z", 
+        "user": [
+            "user"
+        ], 
+        "date_added": "2014-07-01T10:45:13.093Z", 
+        "related_words": [
+            1
+        ]
+    }
+},
+{
+    "pk": 4, 
+    "model": "words.word", 
+    "fields": {
+        "confidence": 0, 
+        "word": "\u5987\u5973", 
+        "tags": [], 
+        "pinyin": "fu4nv3", 
+        "notes": "", 
+        "last_modified": "2014-07-27T07:51:31.208Z", 
+        "user": [
+            "user"
+        ], 
+        "date_added": "2014-07-27T07:51:31.208Z", 
+        "related_words": []
+    }
+},
+{
+    "pk": 5, 
+    "model": "words.word", 
+    "fields": {
+        "confidence": 0, 
+        "word": "\u52a0\u6cb9", 
+        "tags": [], 
+        "pinyin": "jia1you2", 
+        "notes": "This should not show up!", 
+        "last_modified": "2014-08-03T07:20:02.652Z", 
+        "user": [
+            "dummy"
+        ], 
+        "date_added": "2014-08-03T07:20:02.652Z", 
+        "related_words": []
+    }
+},
+{
+    "pk": 1, 
+    "model": "words.definition", 
+    "fields": {
+        "definition": "Hello!", 
+        "word": 1, 
+        "part_of_speech": " "
+    }
+},
+{
+    "pk": 2, 
+    "model": "words.definition", 
+    "fields": {
+        "definition": "Protein", 
+        "word": 2, 
+        "part_of_speech": "N"
+    }
+},
+{
+    "pk": 3, 
+    "model": "words.definition", 
+    "fields": {
+        "definition": "Own goal", 
+        "word": 3, 
+        "part_of_speech": "N"
+    }
+},
+{
+    "pk": 4, 
+    "model": "words.definition", 
+    "fields": {
+        "definition": "woman", 
+        "word": 4, 
+        "part_of_speech": "N"
+    }
+},
+{
+    "pk": 1, 
+    "model": "words.examplesentence", 
+    "fields": {
+        "definition": 3, 
+        "translation": "He scored an own goal!", 
+        "pinyin": "Ta1 ti3le yi1ge4 wu1long2qiu2!", 
+        "sentence": "\u4ed6\u8e22\u4e86\u4e00\u4e2a\u4e4c\u9f99\u7403\uff01"
+    }
+},
+{
+    "pk": 2, 
+    "model": "words.examplesentence", 
+    "fields": {
+        "definition": 2, 
+        "translation": "This is a protein.", 
+        "pinyin": "Zhe4 shi4 yi1ge4 dan4bai2zhi4.", 
+        "sentence": "\u8fd9\u662f\u4e00\u4e2a\u86cb\u767d\u8d28\u3002"
+    }
+},
+{
+    "pk": 3, 
+    "model": "words.examplesentence", 
+    "fields": {
+        "definition": 3, 
+        "translation": "Don't score an own goal!", 
+        "pinyin": "Bu4yao4 ti3 wu1long2qiu2!", 
+        "sentence": "\u4e0d\u8981\u8e22\u4e4c\u9f99\u7403\uff01"
+    }
+},
+{
+    "pk": 4, 
+    "model": "words.examplesentence", 
+    "fields": {
+        "definition": 4, 
+        "translation": "She is a woman.", 
+        "pinyin": "Ta1 shi4 yi1ge4 fu4nv3.", 
+        "sentence": "\u5979\u662f\u4e00\u4e2a\u5987\u5973\u3002"
+    }
+}
+]

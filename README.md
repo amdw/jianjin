@@ -50,6 +50,14 @@ You should get a log message telling you what port the server has bound to; you 
 
 Note that if you want to run Django commands, e.g. using the ```manage.py``` interface, you will need to prefix them with ```foreman run``` in order to pull in the necessary configuration from the ```.env``` file. For example, if you want to run the Django development server rather than Gunicorn, you need to run ```foreman run python manage.py runserver```, or to run a Django shell, ```foreman run python manage.py shell```, etc.
 
+### Running Python tests
+
+To run the Python tests, run ```foreman run python manage.py test words``` (make sure you have the virtualenv activated as described above).
+
+A useful command for dumping your data into [test fixtures](https://docs.djangoproject.com/en/dev/topics/testing/tools/#fixture-loading) is:
+
+```foreman run python manage.py dumpdata --natural --indent=4 --exclude=contenttypes --exclude=auth.permission --exclude=admin --exclude=sessions```
+
 ### Running JavaScript tests
 
 If you want to run the JavaScript tests, you will need to do the following:
