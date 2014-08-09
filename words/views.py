@@ -8,7 +8,11 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 
 from words.models import Word, Tag
-from serializers import WordSerializer
+from serializers import WordSerializer, TagSerializer
+
+class TagsViewSet(viewsets.ModelViewSet):
+    model = Tag
+    serializer_class = TagSerializer
 
 class WordsViewSet(viewsets.ModelViewSet):
     model = Word

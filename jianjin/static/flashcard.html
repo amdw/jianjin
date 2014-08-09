@@ -42,5 +42,8 @@
       <button class="btn btn-danger" ng-click="set_show_all()" ng-if="!show_answer">Show All</button>
       <button class="btn btn-primary" ng-click="next_flashcard()">Next Flashcard</button>
     </div>
+    <div class="row col-sm-12" style="padding-top:15px" ng-if="all_tags">
+      <p>Filter by tag: <span ng-repeat="t in all_tags"><a href="#/flashcard/{{t}}" ng-if="t != tag">{{t}}</a><b ng-if="t == tag">{{t}}</b> | </span><a href="#/flashcard" ng-if="tag">All</a><b ng-if="!tag">All</b></p>
+    </div>
   </span>
 </div>

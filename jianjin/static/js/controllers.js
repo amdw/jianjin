@@ -34,7 +34,7 @@ jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routePar
     $scope.show_answer = false;
   };
 
-  $scope.load_data = function() {
+  $scope.load_flashcard = function() {
     $http.get('/words/flashcard' + ($scope.tag ? '?tag=' + $scope.tag : '')).success(function(data) {
       $scope.word = data;
     }).error(function(data, status) {
@@ -59,8 +59,17 @@ jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routePar
 
   $scope.next_flashcard = function() {
     $scope.reset();
-    $scope.load_data();
+    $scope.load_flashcard();
   };
 
+  // Initialisation
+
   $scope.next_flashcard();
+
+  $http.get('/words/tags').success(function(data) {
+    $scope.all_tags = data.map(function(t) { return t.tag });
+  }).error(function(data, status) {
+    $scope.error = data;
+    $scope.error_status = status;
+  });
 });
