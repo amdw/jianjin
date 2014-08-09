@@ -22,6 +22,7 @@
         {{def.definition}}<span ng-if="def.part_of_speech.trim() != ''"> ({{def.part_of_speech}})</span>
       </div>
       <div class="panel-body">
+	<p ng-if="!def.example_sentences.length"><i>(No examples entered)</i></p>
         <p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span> - {{s.translation}}</p>
       </div>
     </div>
