@@ -17,7 +17,7 @@
     <div class="row col-sm-12" ng-if="show_pinyin_hint">
       <p class="lead">{{ word.pinyin | pinyin }}</p>
     </div>
-    <div class="row col-sm-12" ng-if="show_examples_hint">
+    <div class="row col-sm-12" ng-if="show_examples_hint && !show_answer">
       <p>Examples:</p>
       <ul>
 	<span ng-repeat="def in word.definitions">
