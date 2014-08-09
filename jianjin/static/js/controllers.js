@@ -47,7 +47,7 @@ jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routePar
   };
 
   $scope.load_flashcard = function() {
-    $http.get('/words/flashcard' + ($scope.tag ? '?tag=' + $scope.tag : '')).success(function(data) {
+    $http.get('/words/flashcard' + ($scope.tag ? '/' + $scope.tag : '')).success(function(data) {
       $scope.word = data;
     }).error(function(data, status) {
       $scope.error = data;

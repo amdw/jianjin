@@ -16,11 +16,8 @@ class TagsViewSet(viewsets.ModelViewSet):
     model = Tag
     serializer_class = TagSerializer
 
-def load_words(request, tag_name=None):
-    "Retrieve matching words for a particular HTTP request, with tag as an optional parameter"
-    if not tag_name:
-        tag_name = request.QUERY_PARAMS.get('tag', None)
-
+def load_words(request, tag_name):
+    "Retrieve matching words for a particular HTTP request"
     if tag_name:
         tag = get_object_or_404(Tag, tag=tag_name)
         words = tag.word_set.filter(user=request.user.id)
@@ -38,17 +35,16 @@ class WordsViewSet(viewsets.ModelViewSet):
         return Word.objects.filter(user=self.request.user.id)
 
 @api_view(['GET'])
-def words_by_tag(request, tag):
+def words_by_tag(request, tag_name):
     """View function to load words for a particular tag"""
-    words = load_words(request, tag)
+    words = load_words(request, tag_name)
     serializer = WordSerializer(words, many=True)
     return Response(serializer.data)
 
-class FlashcardViewSet(viewsets.ViewSet):
-    model = Word
-
-    def list(self, request):
-        words = load_words(request)
-        word = random.choice(words)
-        serializer = WordSerializer(word)
-        return Response(serializer.data)
+@api_view(['GET'])
+def flashcard_word(request, tag_name=None):
+    """View function to load random word for flashcard purposes"""
+    words = load_words(request, tag_name)
+    word = random.choice(words)
+    serializer = WordSerializer(word)
+    return Response(serializer.data)
