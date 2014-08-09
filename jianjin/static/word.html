@@ -9,6 +9,7 @@
         <h1 style="margin-top:0">
           {{word.word}}<span ng-if="show_pinyin"> ({{word.pinyin | pinyin}})</span>
         </h1>
+	(<a href="{{word.word | mdbglink}}" target="_new">MDBG</a>)
       </div>
       <div class="col-sm-4 confidence">
         <span style="padding-right: 5px">Confidence: {{word.confidence}}</span>

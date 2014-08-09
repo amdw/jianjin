@@ -77,3 +77,8 @@ pinyin.filter('pinyin', function(splitText, convertPart) {
   };
 });
 
+pinyin.filter('mdbglink', function() {
+  return function(word) {
+    return "http://www.mdbg.net/chindict/chindict.php?page=worddict&wdrst=0&wdqb=" + word;
+  };
+});

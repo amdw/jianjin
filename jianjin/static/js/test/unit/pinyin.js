@@ -20,4 +20,8 @@ describe('pinyin', function() {
     expect(pinyinFilter("nz3hao3")).toBe("nz3hǎo");
     expect(pinyinFilter("ni3hao5")).toBe("nǐhao5");
   }));
+
+  it('should correctly generate MDBG links', inject(function(mdbglinkFilter) {
+    expect(mdbglinkFilter("蛋白质")).toBe("http://www.mdbg.net/chindict/chindict.php?page=worddict&wdrst=0&wdqb=蛋白质");
+  }));
 });
