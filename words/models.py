@@ -5,7 +5,7 @@ from django.core import urlresolvers
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
-TAG_REGEX = "[A-Za-z0-9]+"
+TAG_REGEX = "[a-z0-9]+"
 
 class Tag(models.Model):
     tag = models.CharField(max_length=20)
