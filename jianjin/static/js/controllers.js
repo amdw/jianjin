@@ -1,5 +1,11 @@
 var jianjinControllers = angular.module('jianjinControllers', []);
 
+jianjinControllers.config(function($httpProvider) {
+  // Need these settings to line up with what Django does
+  $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+  $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+});
+
 jianjinControllers.controller('HeaderCtrl', function ($scope, $location) {
   $scope.isActive = function (viewLocation) {
     return $location.path().indexOf(viewLocation) == 0;
@@ -36,6 +42,32 @@ jianjinControllers.factory('load_tags', function(handle_error) {
   };
 });
 
+jianjinControllers.factory('change_confidence', function($http) {
+  return function($scope, new_confidence) {
+    // Disable buttons while this request is in progress
+    $scope.enable_confidence = false;
+    $http.post('/words/confidence/' + $scope.word.id, {"new": new_confidence}).success(function(data) {
+      $scope.enable_confidence = true;
+      $scope.word.confidence = data['new'];
+    }).error(function(data, status) {
+      window.alert("Failed to update confidence (" + status + "):\n" + JSON.stringify(data));
+      $scope.enable_confidence = true;
+    });
+  };
+});
+
+jianjinControllers.factory('increase_confidence', function(change_confidence) {
+  return function($scope) {
+    change_confidence($scope, $scope.word.confidence + 1);
+  };
+});
+
+jianjinControllers.factory('decrease_confidence', function(change_confidence) {
+  return function($scope) {
+    change_confidence($scope, $scope.word.confidence - 1);
+  };
+});
+
 jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeParams, load_tags, handle_error) {
   $scope.tag = $routeParams.tag;
 
@@ -45,20 +77,25 @@ jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeP
   load_tags($scope, $http);
 });
 
-jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeParams, handle_error) {
+jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeParams, handle_error, increase_confidence, decrease_confidence) {
   $scope.word_id = $routeParams.word_id;
+  $scope.increase_confidence = function() { increase_confidence($scope) };
+  $scope.decrease_confidence = function() { decrease_confidence($scope) };
+  $scope.enable_confidence = true;
+
   $http.get('/words/words/' + $routeParams.word_id).success(function(data) {
     $scope.word = data;
   }).error(handle_error($scope));
 });
 
-jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routeParams, load_tags, handle_error, extract_examples) {
+jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routeParams, load_tags, handle_error, extract_examples, increase_confidence, decrease_confidence) {
   $scope.tag = $routeParams.tag;
 
   $scope.reset = function() {
     $scope.show_pinyin_hint = false;
     $scope.show_examples_hint = false;
     $scope.show_answer = false;
+    $scope.enable_confidence = true;
     $scope.examples = [];
   };
 
@@ -87,6 +124,9 @@ jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routePar
     $scope.reset();
     $scope.load_flashcard();
   };
+
+  $scope.increase_confidence = function() { increase_confidence($scope) };
+  $scope.decrease_confidence = function() { decrease_confidence($scope) };
 
   // Initialisation
 

@@ -10,8 +10,8 @@
       </div>
       <div class="col-sm-4 confidence">
         <span style="padding-right: 5px">Confidence: {{word.confidence}}</span>
-        <button type="button" class="btn btn-success">+1</button>
-        <button type="button" class="btn btn-danger">-1</button>
+        <button type="button" class="btn btn-success" ng-click="increase_confidence()" ng-disabled="!enable_confidence">+1</button>
+        <button type="button" class="btn btn-danger" ng-click="decrease_confidence()" ng-disabled="!enable_confidence">-1</button>
       </div>
     </div>
     <div class="row col-sm-12" ng-if="show_pinyin_hint">
