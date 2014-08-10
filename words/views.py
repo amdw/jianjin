@@ -60,10 +60,10 @@ def confidence(request, word_id):
     word = get_object_or_404(Word, pk=int(word_id))
     if not 'new' in request.DATA:
         return Response({"error": "Must specify 'new' confidence value"}, status=status.HTTP_400_BAD_REQUEST)
-    new_confidence_str = request.DATA['new']
-    if not new_confidence_str.isdigit():
-        return Response({"error": "New confidence value must be a number, not '{0}'".format(new_confidence_str)},
+    new_confidence = request.DATA['new']
+    if isinstance(new_confidence, basestring) and not new_confidence.isdigit():
+        return Response({"error": "New confidence value must be a number, not '{0}'".format(new_confidence)},
                         status=status.HTTP_400_BAD_REQUEST)
-    word.confidence = int(request.DATA['new'])
+    word.confidence = int(new_confidence)
     word.save()
     return Response({"new": word.confidence})

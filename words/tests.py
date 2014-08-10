@@ -23,6 +23,10 @@ class JsonApiTest(TestCase):
         self.assertEqual('application/json', response['Content-Type'])
         return json.loads(response.content)
 
+    def post_json(self, url, data):
+        """Post data to URL as JSON string"""
+        return self.client.post(url, content_type="application/json", data=json.dumps(data))
+
     def test_get_tags(self):
         response = self.client.get('/words/tags/')
         json_response = self.assert_successful_json(response)
@@ -30,7 +34,7 @@ class JsonApiTest(TestCase):
 
     def test_tags_read_only(self):
         """Tags should only be updated via words, so posting directly should not work"""
-        response = self.client.post('/words/tags/', {"tag": "wibble"})
+        response = self.post_json('/words/tags/', {"tag": "wibble"})
         self.assertEqual(405, response.status_code)
 
     def test_get_words(self):
@@ -49,30 +53,42 @@ class JsonApiTest(TestCase):
         response = self.client.get('/words/flashcard/blah', follow=True)
         self.assertEqual(404, response.status_code)
         # Read-only API point
-        response = self.client.post('/words/flashcard/', {"word": "blah"})
+        response = self.post_json('/words/flashcard/', {"word": "blah"})
         self.assertEqual(405, response.status_code)
 
     def test_confidence(self):
         """Test API points to adjust confidence scores"""
         pk = 1
-        orig_confidence = models.Word.objects.get(pk=pk).confidence
-        response = self.client.post('/words/confidence/{0}'.format(pk), {"new": orig_confidence + 1})
+
+        def get_confidence():
+            return models.Word.objects.get(pk=pk).confidence
+
+        orig_confidence = get_confidence()
+        url = '/words/confidence/{0}'.format(pk)
+
+        response = self.post_json(url, {"new": orig_confidence + 1})
         self.assertEqual(200, response.status_code)
-        self.assertEqual(orig_confidence + 1, models.Word.objects.get(pk=pk).confidence)
-        response = self.client.post('/words/confidence/{0}'.format(pk), {"new": orig_confidence - 1})
+        self.assertEqual(orig_confidence + 1, get_confidence())
+        response = self.post_json(url, {"new": orig_confidence - 1})
         self.assertEqual(200, response.status_code)
-        self.assertEqual(orig_confidence - 1, models.Word.objects.get(pk=pk).confidence)
+        self.assertEqual(orig_confidence - 1, get_confidence())
+        # String also works
+        response = self.post_json(url, {"new": str(orig_confidence + 2)})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(orig_confidence + 2, get_confidence())
 
         # Test erroneous input
-        response = self.client.post('/words/confidence/{0}'.format(pk), {"nyew": orig_confidence - 14})
+        orig_confidence = get_confidence()
+        response = self.post_json(url, {"nyew": orig_confidence - 14})
         self.assertEqual(400, response.status_code)
-        self.assertEqual(orig_confidence - 1, models.Word.objects.get(pk=pk).confidence)
+        self.assertEqual(orig_confidence, get_confidence())
         # Test non-existent word
-        response = self.client.post('/words/confidence/77', {"new": -14})
+        response = self.post_json('/words/confidence/77', {"new": -14})
         self.assertEqual(404, response.status_code)
         # Test non-integer
-        response = self.client.post('/words/confidence/{0}'.format(pk), {"new": "12zzz"})
+        response = self.post_json('/words/confidence/{0}'.format(pk), {"new": "12zzz"})
         self.assertEqual(400, response.status_code)
+        self.assertEqual(orig_confidence, get_confidence())
 
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
