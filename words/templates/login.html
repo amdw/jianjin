@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <title>Login</title>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <h1 class="page-header">Login</h1>
+      {% if form.errors %}
+        <p style="color:red">Invalid username and password.</p>
+      {% endif %}
+      <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+        {% csrf_token %}
+	<div class="form-group">
+          {{ form.username.label_tag }}
+	  <input type="text" class="form-control" id="{{ form.username.id_for_label }}" name="{{ form.username.html_name }}"{% if form.username.value %} value="{{ form.username.value }}{% endif %}"/>
+	</div>
+	<div class="form-group">
+          {{ form.password.label_tag }}
+	  <input type="password" class="form-control" id="{{ form.password.id_for_label }}" name="{{ form.password.html_name }}"{% if form.password.value %} value="{{ form.password.value }}"{% endif %}/>
+	</div>
+        <button type="submit" class="btn btn-default">Log In</button>
+        <input type="hidden" name="next" value="{{ next }}"/>
+      </form>
+    </div>
+  </body>
+</html>
