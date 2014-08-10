@@ -12,7 +12,8 @@ from rest_framework.response import Response
 from words.models import Word, Tag
 from serializers import WordSerializer, TagSerializer
 
-class TagsViewSet(viewsets.ModelViewSet):
+class TagsViewSet(viewsets.ReadOnlyModelViewSet):
+    """Tags are only updated via words, so this is a read-only view set"""
     model = Tag
     serializer_class = TagSerializer
 

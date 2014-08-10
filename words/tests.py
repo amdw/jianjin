@@ -26,6 +26,11 @@ class JsonApiTest(TestCase):
         json_response = self.assert_successful_json(response)
         self.assertEqual(sorted(["awesome", "funny"]), sorted([t['tag'] for t in json_response]))
 
+    def test_tags_read_only(self):
+        """Tags should only be updated via words, so posting directly should not work"""
+        response = self.client.post('/words/tags/', {"tag": "wibble"})
+        self.assertEqual(405, response.status_code)
+
     def test_get_words(self):
         response = self.client.get('/words/words/')
         json_response = self.assert_successful_json(response)
