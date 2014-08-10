@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.shortcuts import get_object_or_404
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -53,3 +53,17 @@ def flashcard_word(request, tag_name=None):
     word = random.choice(words)
     serializer = WordSerializer(word)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def confidence(request, word_id):
+    """View function to allow direct adjustments of confidence"""
+    word = get_object_or_404(Word, pk=int(word_id))
+    if not 'new' in request.DATA:
+        return Response({"error": "Must specify 'new' confidence value"}, status=status.HTTP_400_BAD_REQUEST)
+    new_confidence_str = request.DATA['new']
+    if not new_confidence_str.isdigit():
+        return Response({"error": "New confidence value must be a number, not '{0}'".format(new_confidence_str)},
+                        status=status.HTTP_400_BAD_REQUEST)
+    word.confidence = int(request.DATA['new'])
+    word.save()
+    return Response({"new": word.confidence})

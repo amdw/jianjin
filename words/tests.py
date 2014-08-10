@@ -5,6 +5,8 @@ import json
 from django.test import TestCase, Client
 from django.test.utils import setup_test_environment
 
+import models
+
 USER = 'user'
 PASSWORD = 'password'
 
@@ -49,6 +51,28 @@ class JsonApiTest(TestCase):
         # Read-only API point
         response = self.client.post('/words/flashcard/', {"word": "blah"})
         self.assertEqual(405, response.status_code)
+
+    def test_confidence(self):
+        """Test API points to adjust confidence scores"""
+        pk = 1
+        orig_confidence = models.Word.objects.get(pk=pk).confidence
+        response = self.client.post('/words/confidence/{0}'.format(pk), {"new": orig_confidence + 1})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(orig_confidence + 1, models.Word.objects.get(pk=pk).confidence)
+        response = self.client.post('/words/confidence/{0}'.format(pk), {"new": orig_confidence - 1})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(orig_confidence - 1, models.Word.objects.get(pk=pk).confidence)
+
+        # Test erroneous input
+        response = self.client.post('/words/confidence/{0}'.format(pk), {"nyew": orig_confidence - 14})
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(orig_confidence - 1, models.Word.objects.get(pk=pk).confidence)
+        # Test non-existent word
+        response = self.client.post('/words/confidence/77', {"new": -14})
+        self.assertEqual(404, response.status_code)
+        # Test non-integer
+        response = self.client.post('/words/confidence/{0}'.format(pk), {"new": "12zzz"})
+        self.assertEqual(400, response.status_code)
 
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
