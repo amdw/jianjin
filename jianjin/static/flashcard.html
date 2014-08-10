@@ -20,10 +20,9 @@
     <div class="row col-sm-12" ng-if="show_examples_hint && !show_answer">
       <p>Examples:</p>
       <ul>
-	<span ng-repeat="def in word.definitions">
-	  <li ng-repeat="es in def.example_sentences">{{es.sentence}}<span ng-if="show_pinyin"> ({{es.pinyin | pinyin}})</span></li>
-	</span>
+        <li ng-repeat="es in examples">{{es.sentence}}<span ng-if="show_pinyin"> ({{es.pinyin | pinyin}})</span></li>
       </ul>
+      <p ng-if="!examples.length"><i>None provided</i></p>
     </div>
     <div class="row col-sm-12" ng-if="show_answer">
       <div class="panel panel-primary" ng-repeat="def in word.definitions">
@@ -32,6 +31,7 @@
 	</div>
         <div class="panel-body">
 	  <p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span> - {{s.translation}}</p>
+	  <p ng-if="!def.example_sentences.length"><i>No examples provided</i></p>
 	</div>
       </div>
       <p><a href="#/browse/{{word.id}}">Full entry for this word</a></p>

@@ -13,6 +13,21 @@ jianjinControllers.constant('handle_error', function($scope) {
   };
 });
 
+jianjinControllers.constant('extract_examples', function(word) {
+  var result = [];
+  for (i in word.definitions) {
+    var def = word.definitions[i];
+    for (j in def.example_sentences) {
+      var s = def.example_sentences[j];
+      // Quadratic, but example_sentences will usually be short
+      if (result.indexOf(s) < 0) {
+        result.push(s);
+      }
+    }
+  }
+  return result;
+});
+
 jianjinControllers.factory('load_tags', function(handle_error) {
   return function($scope, $http) {
     $http.get('/words/tags').success(function(data) {
@@ -37,18 +52,20 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
   }).error(handle_error($scope));
 });
 
-jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routeParams, load_tags, handle_error) {
+jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routeParams, load_tags, handle_error, extract_examples) {
   $scope.tag = $routeParams.tag;
 
   $scope.reset = function() {
     $scope.show_pinyin_hint = false;
     $scope.show_examples_hint = false;
     $scope.show_answer = false;
+    $scope.examples = [];
   };
 
   $scope.load_flashcard = function() {
     $http.get('/words/flashcard' + ($scope.tag ? '/' + $scope.tag : '')).success(function(data) {
       $scope.word = data;
+      $scope.examples = extract_examples(data);
     }).error(handle_error($scope));
   };
 
