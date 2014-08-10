@@ -36,6 +36,20 @@ class JsonApiTest(TestCase):
         json_response = self.assert_successful_json(response)
         self.assertEqual(sorted([u"你好", u"蛋白质", u"乌龙球", u"妇女"]), sorted(w['word'] for w in json_response))
 
+    def test_flashcard(self):
+        response = self.client.get('/words/flashcard', follow=True)
+        self.assert_successful_json(response)
+        response = self.client.get('/words/flashcard/awesome', follow=True)
+        self.assert_successful_json(response)
+
+    def test_flashcard_errors(self):
+        # Non-existent tag
+        response = self.client.get('/words/flashcard/blah', follow=True)
+        self.assertEqual(404, response.status_code)
+        # Read-only API point
+        response = self.client.post('/words/flashcard/', {"word": "blah"})
+        self.assertEqual(405, response.status_code)
+
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
 
