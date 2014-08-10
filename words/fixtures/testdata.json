@@ -50,6 +50,13 @@
     }
 },
 {
+    "pk": 3,
+    "model": "words.tag",
+    "fields": {
+        "tag": "cool"
+    }
+},
+{
     "pk": 1, 
     "model": "words.word", 
     "fields": {
@@ -133,7 +140,9 @@
     "fields": {
         "confidence": 0, 
         "word": "\u52a0\u6cb9", 
-        "tags": [], 
+        "tags": [
+            3
+        ], 
         "pinyin": "jia1you2", 
         "notes": "This should not show up!", 
         "last_modified": "2014-08-03T07:20:02.652Z", 

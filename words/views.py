@@ -16,6 +16,10 @@ class TagsViewSet(viewsets.ModelViewSet):
     model = Tag
     serializer_class = TagSerializer
 
+    def get_queryset(self):
+        # Only return tags which the user has actually used
+        return list(set(Tag.objects.filter(word__user=self.request.user.id)))
+
 def load_words(request, tag_name):
     "Retrieve matching words for a particular HTTP request"
     if tag_name:

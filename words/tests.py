@@ -19,4 +19,4 @@ class JsonApiTest(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual('application/json', response['Content-Type'])
         json_response = json.loads(response.content)
-        self.assertEqual(set(["awesome", "funny"]), set([t['tag'] for t in json_response]))
+        self.assertEqual(sorted(["awesome", "funny"]), sorted([t['tag'] for t in json_response]))
