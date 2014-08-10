@@ -6,38 +6,38 @@ jianjinControllers.controller('HeaderCtrl', function ($scope, $location) {
   };
 });
 
-jianjinControllers.constant('load_tags', function($scope, $http) {
-  $http.get('/words/tags').success(function(data) {
-    $scope.all_tags = data.map(function(t) { return t.tag });
-  }).error(function(data, status) {
+jianjinControllers.constant('handle_error', function($scope) {
+  return function(data, status) {
     $scope.error = data;
     $scope.error_status = status;
-  });
+  };
 });
 
-jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeParams, load_tags) {
+jianjinControllers.factory('load_tags', function(handle_error) {
+  return function($scope, $http) {
+    $http.get('/words/tags').success(function(data) {
+      $scope.all_tags = data.map(function(t) { return t.tag });
+    }).error(handle_error($scope));
+  };
+});
+
+jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeParams, load_tags, handle_error) {
   $scope.tag = $routeParams.tag;
 
   $http.get($scope.tag ? '/words/wordsbytag/' + $scope.tag : '/words/words/').success(function(data) {
     $scope.words = data;
-  }).error(function(data, status) {
-    $scope.error = data;
-    $scope.error_status = status;
-  });
+  }).error(handle_error($scope));
   load_tags($scope, $http);
 });
 
-jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeParams) {
+jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeParams, handle_error) {
   $scope.word_id = $routeParams.word_id;
   $http.get('/words/words/' + $routeParams.word_id).success(function(data) {
     $scope.word = data;
-  }).error(function(data, status) {
-    $scope.error = data;
-    $scope.error_status = status;
-  });
+  }).error(handle_error($scope));
 });
 
-jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routeParams, load_tags) {
+jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routeParams, load_tags, handle_error) {
   $scope.tag = $routeParams.tag;
 
   $scope.reset = function() {
@@ -49,10 +49,7 @@ jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routePar
   $scope.load_flashcard = function() {
     $http.get('/words/flashcard' + ($scope.tag ? '/' + $scope.tag : '')).success(function(data) {
       $scope.word = data;
-    }).error(function(data, status) {
-      $scope.error = data;
-      $scope.error_status = status;
-    });
+    }).error(handle_error($scope));
   };
 
   $scope.set_show_pinyin_hint = function() {
