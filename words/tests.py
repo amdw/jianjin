@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import json
 
 from django.test import TestCase, Client
@@ -11,15 +13,23 @@ class JsonApiTest(TestCase):
 
     def setUp(self):
         setup_test_environment()
-        self.client = Client()
         self.assertTrue(self.client.login(username=USER, password=PASSWORD))
+
+    def assert_successful_json(self, response):
+        """Assert that the response was successful, and contains JSON content. Return the parsed content."""
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('application/json', response['Content-Type'])
+        return json.loads(response.content)
 
     def test_get_tags(self):
         response = self.client.get('/words/tags/')
-        self.assertEqual(200, response.status_code)
-        self.assertEqual('application/json', response['Content-Type'])
-        json_response = json.loads(response.content)
+        json_response = self.assert_successful_json(response)
         self.assertEqual(sorted(["awesome", "funny"]), sorted([t['tag'] for t in json_response]))
+
+    def test_get_words(self):
+        response = self.client.get('/words/words/')
+        json_response = self.assert_successful_json(response)
+        self.assertEqual(sorted([u"你好", u"蛋白质", u"乌龙球", u"妇女"]), sorted(w['word'] for w in json_response))
 
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
@@ -32,3 +42,8 @@ class AuthenticationTest(TestCase):
         response = self.client.get('/', follow=True)
         self.assertEqual(200, response.status_code)
         self.assertEqual([("http://testserver/accounts/login/?next=/", 302)], response.redirect_chain)
+
+    def test_json_auth(self):
+        """Test that the JSON API cannot be accessed unless logged in"""
+        response = self.client.get('/words/words/')
+        self.assertEqual(403, response.status_code)
