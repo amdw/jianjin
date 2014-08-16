@@ -19,6 +19,10 @@ jianjinControllers.constant('handle_error', function($scope) {
   };
 });
 
+jianjinControllers.constant('get_word_url', function(word_id) {
+  return '/words/words/' + word_id + '/';
+});
+
 jianjinControllers.constant('extract_examples', function(word) {
   var result = [];
   for (i in word.definitions) {
@@ -77,7 +81,7 @@ jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeP
   load_tags($scope, $http);
 });
 
-jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeParams, handle_error, increase_confidence, decrease_confidence) {
+jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeParams, handle_error, increase_confidence, decrease_confidence, get_word_url) {
   $scope.word_id = $routeParams.word_id;
   $scope.increase_confidence = function() { increase_confidence($scope) };
   $scope.decrease_confidence = function() { decrease_confidence($scope) };
@@ -93,7 +97,12 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
   };
 
   $scope.save = function() {
-    window.alert("Not implemented yet!\n" + JSON.stringify($scope.word));
+    $http.put(get_word_url($scope.word_id), $scope.word).success(function(data) {
+      $scope.word = data;
+      $scope.editing = false;
+    }).error(function(data, status) {
+      window.alert("Error " + status + " updating word:\n" + JSON.stringify(data));
+    });
   };
 
   $scope.cancel_edits = function() {
@@ -128,7 +137,7 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
     $scope.word.tags = $scope.word.tags.filter(function(t) { return t !== tag });
   };
 
-  $http.get('/words/words/' + $routeParams.word_id + '/').success(function(data) {
+  $http.get(get_word_url($routeParams.word_id)).success(function(data) {
     $scope.word = data;
   }).error(handle_error($scope));
 });

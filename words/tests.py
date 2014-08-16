@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import copy
 import json
 
 from django.test import TestCase, Client
@@ -22,14 +23,17 @@ class LoggedInJsonTest(TestCase):
 
     def assert_successful_json(self, response):
         """Assert that the response was successful, and contains JSON content. Return the parsed content."""
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(200, response.status_code, msg="Got HTTP {0}, content: {1}".format(response.status_code, response.content))
         self.assertEqual('application/json', response['Content-Type'])
         return json.loads(response.content)
 
     def post_json(self, url, data):
         """Post data to URL as JSON string"""
-        return self.client.post(url, content_type="application/json", data=json.dumps(data))
+        return self.client.post(url, content_type="application/json", data=json.dumps(data), follow=True)
 
+    def put_json(self, url, data):
+        """PUT data to URL as JSON string"""
+        return self.client.put(url, content_type="application/json", data=json.dumps(data), follow=True)
 
 class MiscJsonApiTest(LoggedInJsonTest):
     def test_get_tags(self):
@@ -100,8 +104,7 @@ class WordsApiTest(LoggedInJsonTest):
                           u'definitions': [{u'definition': u'Hello!',
                                             u'example_sentences': [],
                                             u'id': 1,
-                                            u'part_of_speech': u' ',
-                                            u'word': 1}],
+                                            u'part_of_speech': u' '}],
                           u'id': 1,
                           u'last_modified': u'2014-06-14T14:29:15.857Z',
                           u'notes': u'',
@@ -112,17 +115,61 @@ class WordsApiTest(LoggedInJsonTest):
                           u'tags': [{u'tag': u'awesome'}],
                           u'user': u'user',
                           u'word': u'\u4f60\u597d'}
+        self.word_url = '/words/words/{0}/'.format(self.orig_word['id'])
     
+    def latest_word(self):
+        """Load the latest version of the word from the database"""
+        return models.Word.objects.get(pk=self.orig_word['id'])
+
     def test_get_words(self):
         response = self.client.get('/words/words/')
         json_response = self.assert_successful_json(response)
         self.assertEqual(sorted([u"你好", u"蛋白质", u"乌龙球", u"妇女"]), sorted(w['word'] for w in json_response))
 
     def test_get_word(self):
-        response = self.client.get('/words/words/{0}'.format(self.orig_word['id']), follow=True)
+        response = self.client.get(self.word_url, follow=True)
         word = self.assert_successful_json(response)
         self.maxDiff = None
         self.assertEqual(self.orig_word, word)
+
+    def test_update_word(self):
+        new_word = copy.deepcopy(self.orig_word)
+        new_word['word'] = u'你是谁'
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        #self.assertEqual({}, json_response)
+        self.assertEqual(new_word['word'], self.latest_word().word)
+
+    def test_add_definition(self):
+        new_word = copy.deepcopy(self.orig_word)
+        new_word['definitions'].append({'definition': 'Hi there!', 'example_sentences': [], 'part_of_speech': ' '})
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        self.assertEqual(len(new_word['definitions']), len(self.latest_word().definitions.all()))
+        self.assertEqual(len(new_word['definitions']), len(json_response['definitions']))
+
+    def test_add_sentence(self):
+        new_word = copy.deepcopy(self.orig_word)
+        new_defs = new_word['definitions'][0]['example_sentences']
+        new_defs.append({'sentence': '你好亲爱的!', 'pinyin': 'Ni3hao3 qin1ai4de!', 'translation': 'Hello dear!'})
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        self.assertEqual(len(new_defs),
+                         len(self.latest_word().definitions.all()[0].example_sentences.all()))
+        self.assertEqual(len(new_defs),
+                         len(json_response['definitions'][0]['example_sentences']))
+
+    def test_add_tag(self):
+        new_word = copy.deepcopy(self.orig_word)
+        new_word['tags'].append({'tag': 'splendiferous'})
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        self.assertTrue('splendiferous' in [t.tag for t in self.latest_word().tags.all()])
+        self.assertTrue('splendiferous' in [t['tag'] for t in json_response['tags']])
+
+    def test_add_related_word(self):
+        # TODO Related words are still not editable...
+        pass
 
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
