@@ -5,41 +5,90 @@
   </div>
   <span ng-if="!error">
     <div class="row page-header">
-      <div class="col-sm-8">
-        <h1 style="margin-top:0">
-          {{word.word}}<span ng-if="show_pinyin"> ({{word.pinyin | pinyin}})</span>
-        </h1>
-	(<a href="{{word.word | mdbglink}}" target="_new">MDBG</a>)
-      </div>
-      <div class="col-sm-4 confidence">
-        <span style="padding-right: 5px">Confidence: {{word.confidence}}</span>
-        <button type="button" class="btn btn-success" ng-click="increase_confidence()" ng-disabled="!enable_confidence">+1</button>
-        <button type="button" class="btn btn-danger" ng-click="decrease_confidence()" ng-disabled="!enable_confidence">-1</button>
+      <span ng-if="!editing">
+        <div class="col-sm-8">
+          <h1 style="margin-top:0">
+            {{word.word}}<span ng-if="show_pinyin"> ({{word.pinyin | pinyin}})</span>
+          </h1>
+  	(<a href="{{word.word | mdbglink}}" target="_new">MDBG</a>)
+        </div>
+        <div class="col-sm-4 confidence">
+          <span style="padding-right: 5px">Confidence: {{word.confidence}}</span>
+          <button type="button" class="btn btn-success" ng-click="increase_confidence()" ng-disabled="!enable_confidence">+1</button>
+          <button type="button" class="btn btn-danger" ng-click="decrease_confidence()" ng-disabled="!enable_confidence">-1</button>
+        </div>
+      </span>
+      <div class="col-sm-12" ng-if="editing">
+        <input type="text" class="form-control" placeholder="词语" ng-model="word.word"/>
+        <input type="text" class="form-control" placeholder="Pinyin" ng-model="word.pinyin"/>
+        <a href="{{word.word | mdbglink}}" target="_new" ng-if="word.word">MDBG lookup</a> <span ng-if="word.pinyin">({{word.pinyin | pinyin}})</span>
       </div>
     </div>
     <div class="panel panel-primary" ng-repeat="def in word.definitions">
       <div class="panel-heading">
-        {{def.definition}}<span ng-if="def.part_of_speech.trim() != ''"> ({{def.part_of_speech}})</span>
+        <span ng-if="!editing"><span class="badge" ng-if="def.part_of_speech.trim() != ''">{{def.part_of_speech}}</span> {{def.definition}}</span>
+        <span ng-if="editing">
+          <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <div class="col-sm-10">
+                <input type="text" class="form-control" placeholder="Definition" ng-model="def.definition"/>
+              </div>
+              <div class="col-sm-1">
+                <select class="form-control" ng-model="def.part_of_speech" ng-options="p for p in parts_of_speech"></select>
+              </div>
+              <div class="col-sm-1">
+                <button class="btn btn-danger" ng-click="delete_definition(def)">Delete</button>
+              </div>
+            </div>
+          </form>
+        </span>
       </div>
       <div class="panel-body">
         <p ng-if="!def.example_sentences.length"><i>(No examples entered)</i></p>
-        <p ng-repeat="s in def.example_sentences">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span> - {{s.translation}}</p>
+        <span ng-repeat="s in def.example_sentences">
+          <p ng-if="!editing">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span> - {{s.translation}}</p>
+          <div ng-if="editing" class="example-sentence-edit">
+            <input class="form-control" placeholder="句子" ng-model="s.sentence"/>
+            <input class="form-control" placeholder="Pinyin" ng-model="s.pinyin"/>
+            <input class="form-control" placeholder="Translation" ng-model="s.translation"/>
+            <button class="btn btn-danger" ng-click="delete_example_sentence(def, s)">Delete</button>
+	  </div>
+	</span>
+	<button class="btn btn-info" ng-if="editing" ng-click="add_example_sentence(def)">Add Example</button>
       </div>
     </div>
+    <button class="btn btn-info" ng-if="editing" ng-click="add_definition()">Add Definition</button>
     <div class="row col-sm-12">
       <div ng-if="word.notes.trim() != ''">
         <h4>Notes</h4>
-        <p>{{word.notes}}</p>
+        <p ng-if="!editing">{{word.notes}}</p>
+        <textarea ng-if="editing" class="form-control" ng-model="word.notes"></textarea>
       </div>
       <div ng-if="word.related_words.length > 0">
         <h4>Related words</h4>
         <ul><li ng-repeat="w in word.related_words"><a href="#/browse/{{w.id}}">{{w.word}}</a><span ng-if="show_pinyin"> ({{w.pinyin | pinyin}})</span></li></ul>
       </div>
-      <div ng-if="word.tags.length > 0">
+      <div ng-if="editing || word.tags.length > 0">
         <h4>Tags:</h4>
-        <ul><li ng-repeat="tag in word.tags"><a href="#/browsetag/{{tag}}">{{tag}}</a> (<a href="#/flashcard/{{tag}}">flashcard</a>)</li></ul>
+        <ul ng-if="!editing">
+          <li ng-repeat="tag in word.tags"><a href="#/browsetag/{{tag.tag}}">{{tag.tag}}</a> (<a href="#/flashcard/{{tag.tag}}">flashcard</a>)</li>
+        </ul>
+        <div ng-if="editing">
+          <form class="form-horizontal" role="form">
+            <div class="form-group" ng-repeat="tag in word.tags">
+              <div class="col-sm-10"><input class="form-control" ng-model="tag.tag"/></div>
+              <div class="col-sm-2"><button class="btn btn-danger" ng-click="remove_tag(tag)">Remove</button></div>
+            </div>
+            <div class="form-group col-sm-12"><button class="btn btn-info" ng-if="editing" ng-click="add_tag()">Add Tag</button></div>
+          </form>
+        </div>
       </div>
-      <p><small>Added: <i>{{word.date_added | date:'medium'}}</i><br/>Last modified: <i>{{word.last_modified | date:'medium'}}</i></small></p>
+      <p ng-if="!editing"><small>Added: <i>{{word.date_added | date:'medium'}}</i><br/>Last modified: <i>{{word.last_modified | date:'medium'}}</i></small></p>
+    </div>
+    <div class="row col-sm-12" style="margin-top:10px">
+      <button type="button" class="btn btn-warning" ng-if="!editing" ng-click="edit()">Edit</button>
+      <button type="button" class="btn btn-primary" ng-if="editing" ng-click="save()">Save</button>
+      <button type="button" class="btn btn-default" ng-if="editing" ng-click="cancel_edits()">Cancel</button>
     </div>
   </span>
 </div>

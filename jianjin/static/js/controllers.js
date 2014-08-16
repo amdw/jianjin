@@ -81,7 +81,52 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
   $scope.word_id = $routeParams.word_id;
   $scope.increase_confidence = function() { increase_confidence($scope) };
   $scope.decrease_confidence = function() { decrease_confidence($scope) };
+  $scope.parts_of_speech = [" ", "N", "V", "ADJ", "ADV", "PREP"];
+
   $scope.enable_confidence = true;
+  $scope.editing = false;
+
+  $scope.edit = function() {
+    $scope.editing = true;
+    // Poor man's deep copy
+    $scope.original_word = JSON.parse(JSON.stringify($scope.word));
+  };
+
+  $scope.save = function() {
+    window.alert("Not implemented yet!\n" + JSON.stringify($scope.word));
+  };
+
+  $scope.cancel_edits = function() {
+    $scope.word = $scope.original_word;
+    $scope.editing = false;
+  };
+
+  $scope.add_definition = function() {
+    $scope.word.definitions.push({});
+  };
+
+  $scope.delete_definition = function(def) {
+    $scope.word.definitions = $scope.word.definitions.filter(function(d) { return d !== def });
+  };
+
+  $scope.add_example_sentence = function(def) {
+    if (typeof def.example_sentences == 'undefined') {
+      def.example_sentences = [];
+    }
+    def.example_sentences.push({});
+  };
+
+  $scope.delete_example_sentence = function(def, sentence) {
+    def.example_sentences = def.example_sentences.filter(function(s) { return s !== sentence });
+  };
+
+  $scope.add_tag = function() {
+    $scope.word.tags.push({"tag": ""});
+  };
+
+  $scope.remove_tag = function(tag) {
+    $scope.word.tags = $scope.word.tags.filter(function(t) { return t !== tag });
+  };
 
   $http.get('/words/words/' + $routeParams.word_id).success(function(data) {
     $scope.word = data;

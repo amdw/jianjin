@@ -11,3 +11,8 @@ body {
     text-align: right;
     margin-bottom: 10px;
 }
+
+.example-sentence-edit {
+    margin-bottom: 10px;
+    padding: 5px;
+}
