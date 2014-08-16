@@ -167,6 +167,34 @@ class WordsApiTest(LoggedInJsonTest):
         self.assertTrue('splendiferous' in [t.tag for t in self.latest_word().tags.all()])
         self.assertTrue('splendiferous' in [t['tag'] for t in json_response['tags']])
 
+    def test_add_duplicate_tag(self):
+        """
+        Adding words with duplicate tags should work fine, but it should not result
+        in multiple tag objects in the database
+        """
+        new_word = copy.deepcopy(self.orig_word)
+        existing_tag = new_word['tags'][0]
+        new_word['tags'].append(existing_tag)
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        self.assertEquals(1, len(models.Tag.objects.filter(tag=existing_tag['tag'])))
+        self.assertEquals(len(self.orig_word['tags']), len(json_response['tags']))
+
+    def test_remove_tag(self):
+        """
+        Add a tag at the end of the list and remove it again
+        """
+        new_word = copy.deepcopy(self.orig_word)
+        new_tag = {"tag": "wibble"}
+        new_word['tags'].append(new_tag)
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        new_word['tags'].remove(new_tag)
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        self.assertEquals(self.orig_word['tags'], json_response['tags'])
+        self.assertEquals([t['tag'] for t in self.orig_word['tags']], [t.tag for t in self.latest_word().tags.all()])
+
     def test_add_related_word(self):
         # TODO Related words are still not editable...
         pass

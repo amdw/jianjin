@@ -29,7 +29,7 @@ class WordSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, allow_add_remove=True)
     related_words = RelatedWordSerializer(many=True)
     definitions = DefinitionSerializer(many=True, allow_add_remove=True)
-    
+
     def save(self, **kwargs):
         # This ugly hack is necessitated by a bug in Django Rest Framework in the handling
         # of adding and removing nested objects through many-to-many relationships.
@@ -41,7 +41,7 @@ class WordSerializer(serializers.ModelSerializer):
                 if not tag.id:
                     tag.save()
 
-        super(WordSerializer, self).save(**kwargs)
+        return super(WordSerializer, self).save(**kwargs)
 
     class Meta:
         model = Word

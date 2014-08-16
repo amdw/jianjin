@@ -48,7 +48,7 @@
         <span ng-repeat="s in def.example_sentences">
           <p ng-if="!editing">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span> - {{s.translation}}</p>
           <div ng-if="editing" class="example-sentence-edit">
-            <input class="form-control" placeholder="句子" ng-model="s.sentence"/>
+            <input class="form-control" placeholder="句子" ng-model="s.sentence"/><span ng-if="s.sentence">(<a href="{{s.sentence | mdbglink}}" target="_new">MDBG</a>)</span>
             <input class="form-control" placeholder="Pinyin" ng-model="s.pinyin"/>
             <input class="form-control" placeholder="Translation" ng-model="s.translation"/>
             <button class="btn btn-danger" ng-click="delete_example_sentence(def, s)">Delete</button>
@@ -75,8 +75,8 @@
         </ul>
         <div ng-if="editing">
           <form class="form-horizontal" role="form">
-            <div class="form-group" ng-repeat="tag in word.tags">
-              <div class="col-sm-10"><input class="form-control" ng-model="tag.tag"/></div>
+            <div class="form-group tag-form-row" ng-repeat="tag in word.tags">
+              <div class="col-sm-2"><input class="form-control" ng-if="tag.new" ng-model="tag.tag"/><span ng-if="!tag.new"><b>{{tag.tag}}</b></span></div>
               <div class="col-sm-2"><button class="btn btn-danger" ng-click="remove_tag(tag)">Remove</button></div>
             </div>
             <div class="form-group col-sm-12"><button class="btn btn-info" ng-if="editing" ng-click="add_tag()">Add Tag</button></div>

@@ -97,6 +97,11 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
   };
 
   $scope.save = function() {
+    for (i in $scope.word.tags) {
+      if ($scope.word.tags[i].new) {
+        delete $scope.word.tags[i].new;
+      }
+    }
     $http.put(get_word_url($scope.word_id), $scope.word).success(function(data) {
       $scope.word = data;
       $scope.editing = false;
@@ -130,7 +135,7 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
   };
 
   $scope.add_tag = function() {
-    $scope.word.tags.push({"tag": ""});
+    $scope.word.tags.push({"tag": "", "new": true});
   };
 
   $scope.remove_tag = function(tag) {
