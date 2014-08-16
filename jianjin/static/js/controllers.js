@@ -36,7 +36,7 @@ jianjinControllers.constant('extract_examples', function(word) {
 
 jianjinControllers.factory('load_tags', function(handle_error) {
   return function($scope, $http) {
-    $http.get('/words/tags').success(function(data) {
+    $http.get('/words/tags/').success(function(data) {
       $scope.all_tags = data.map(function(t) { return t.tag });
     }).error(handle_error($scope));
   };
@@ -46,7 +46,7 @@ jianjinControllers.factory('change_confidence', function($http) {
   return function($scope, new_confidence) {
     // Disable buttons while this request is in progress
     $scope.enable_confidence = false;
-    $http.post('/words/confidence/' + $scope.word.id, {"new": new_confidence}).success(function(data) {
+    $http.post('/words/confidence/' + $scope.word.id + '/', {"new": new_confidence}).success(function(data) {
       $scope.enable_confidence = true;
       $scope.word.confidence = data['new'];
     }).error(function(data, status) {
@@ -71,7 +71,7 @@ jianjinControllers.factory('decrease_confidence', function(change_confidence) {
 jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeParams, load_tags, handle_error) {
   $scope.tag = $routeParams.tag;
 
-  $http.get($scope.tag ? '/words/wordsbytag/' + $scope.tag : '/words/words/').success(function(data) {
+  $http.get($scope.tag ? '/words/wordsbytag/' + $scope.tag + '/' : '/words/words/').success(function(data) {
     $scope.words = data;
   }).error(handle_error($scope));
   load_tags($scope, $http);
@@ -128,7 +128,7 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
     $scope.word.tags = $scope.word.tags.filter(function(t) { return t !== tag });
   };
 
-  $http.get('/words/words/' + $routeParams.word_id).success(function(data) {
+  $http.get('/words/words/' + $routeParams.word_id + '/').success(function(data) {
     $scope.word = data;
   }).error(handle_error($scope));
 });
@@ -145,7 +145,7 @@ jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routePar
   };
 
   $scope.load_flashcard = function() {
-    $http.get('/words/flashcard' + ($scope.tag ? '/' + $scope.tag : '')).success(function(data) {
+    $http.get('/words/flashcard' + ($scope.tag ? '/' + $scope.tag : '') + '/').success(function(data) {
       $scope.word = data;
       $scope.examples = extract_examples(data);
     }).error(handle_error($scope));
