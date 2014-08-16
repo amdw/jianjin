@@ -10,7 +10,10 @@ import models
 USER = 'user'
 PASSWORD = 'password'
 
-class JsonApiTest(TestCase):
+class LoggedInJsonTest(TestCase):
+    """
+    Base class for use in tests which need to be logged in and which require JSON assertions.
+    """
     fixtures = ['testdata.json']
 
     def setUp(self):
@@ -27,6 +30,8 @@ class JsonApiTest(TestCase):
         """Post data to URL as JSON string"""
         return self.client.post(url, content_type="application/json", data=json.dumps(data))
 
+
+class MiscJsonApiTest(LoggedInJsonTest):
     def test_get_tags(self):
         response = self.client.get('/words/tags/')
         json_response = self.assert_successful_json(response)
@@ -36,33 +41,6 @@ class JsonApiTest(TestCase):
         """Tags should only be updated via words, so posting directly should not work"""
         response = self.post_json('/words/tags/', {"tag": "wibble"})
         self.assertEqual(405, response.status_code)
-
-    def test_get_words(self):
-        response = self.client.get('/words/words/')
-        json_response = self.assert_successful_json(response)
-        self.assertEqual(sorted([u"你好", u"蛋白质", u"乌龙球", u"妇女"]), sorted(w['word'] for w in json_response))
-
-    def test_get_word(self):
-        response = self.client.get('/words/words/1', follow=True)
-        word = self.assert_successful_json(response)
-        expected_word = {u'confidence': 10,
-                         u'date_added': u'2014-06-14T11:25:53.081Z',
-                         u'definitions': [{u'definition': u'Hello!',
-                                           u'example_sentences': [],
-                                           u'id': 1,
-                                           u'part_of_speech': u' ',
-                                           u'word': 1}],
-                         u'id': 1,
-                         u'last_modified': u'2014-06-14T14:29:15.857Z',
-                         u'notes': u'',
-                         u'pinyin': u'ni3hao3',
-                         u'related_words': [{u'id': 3,
-                                             u'pinyin': u'wu1long2qiu2',
-                                             u'word': u'\u4e4c\u9f99\u7403'}],
-                         u'tags': [u'awesome'],
-                         u'user': u'user',
-                         u'word': u'\u4f60\u597d'}
-        self.assertEqual(expected_word, word)
 
     def test_flashcard(self):
         response = self.client.get('/words/flashcard', follow=True)
@@ -111,6 +89,38 @@ class JsonApiTest(TestCase):
         response = self.post_json('/words/confidence/{0}'.format(pk), {"new": "12zzz"})
         self.assertEqual(400, response.status_code)
         self.assertEqual(orig_confidence, get_confidence())
+
+
+class WordsApiTest(LoggedInJsonTest):
+    """Test the words JSON API itself (the most complex part of the API)"""
+
+    def test_get_words(self):
+        response = self.client.get('/words/words/')
+        json_response = self.assert_successful_json(response)
+        self.assertEqual(sorted([u"你好", u"蛋白质", u"乌龙球", u"妇女"]), sorted(w['word'] for w in json_response))
+
+    def test_get_word(self):
+        response = self.client.get('/words/words/1', follow=True)
+        word = self.assert_successful_json(response)
+        expected_word = {u'confidence': 10,
+                         u'date_added': u'2014-06-14T11:25:53.081Z',
+                         u'definitions': [{u'definition': u'Hello!',
+                                           u'example_sentences': [],
+                                           u'id': 1,
+                                           u'part_of_speech': u' ',
+                                           u'word': 1}],
+                         u'id': 1,
+                         u'last_modified': u'2014-06-14T14:29:15.857Z',
+                         u'notes': u'',
+                         u'pinyin': u'ni3hao3',
+                         u'related_words': [{u'id': 3,
+                                             u'pinyin': u'wu1long2qiu2',
+                                             u'word': u'\u4e4c\u9f99\u7403'}],
+                         u'tags': [u'awesome'],
+                         u'user': u'user',
+                         u'word': u'\u4f60\u597d'}
+        self.assertEqual(expected_word, word)
+
 
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
