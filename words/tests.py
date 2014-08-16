@@ -116,9 +116,10 @@ class WordsApiTest(LoggedInJsonTest):
                          u'related_words': [{u'id': 3,
                                              u'pinyin': u'wu1long2qiu2',
                                              u'word': u'\u4e4c\u9f99\u7403'}],
-                         u'tags': [u'awesome'],
+                         u'tags': [{u'tag': u'awesome'}],
                          u'user': u'user',
                          u'word': u'\u4f60\u597d'}
+        self.maxDiff = None
         self.assertEqual(expected_word, word)
 
 

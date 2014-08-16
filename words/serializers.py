@@ -5,6 +5,7 @@ from models import Definition, ExampleSentence, Tag, Word
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
+        fields = ('tag',)
 
 class RelatedWordSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,7 +24,7 @@ class DefinitionSerializer(serializers.ModelSerializer):
 
 class WordSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='username')
-    tags = serializers.SlugRelatedField(many=True, slug_field='tag')
+    tags = TagSerializer(many=True)
     related_words = RelatedWordSerializer(many=True)
     definitions = DefinitionSerializer(many=True)
     
