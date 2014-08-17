@@ -233,7 +233,7 @@ class WordsApiTest(LoggedInJsonTest):
         # Tag should get deleted, as there are no words on it left
         self.assertEquals(0, len(models.Tag.objects.filter(tag=new_tag['tag'])))
 
-    def test_add_existing_related_word(self):
+    def test_add_remove_existing_related_word(self):
         new_word = copy.deepcopy(self.orig_word)
         related_word = {'word': u'蛋白质'}
         new_word['related_words'].append(related_word)
@@ -246,6 +246,15 @@ class WordsApiTest(LoggedInJsonTest):
                           sorted([w.word for w in self.latest_word().related_words.all()]))
         # Reverse relation should also be present
         self.assertTrue(self.orig_word['id'] in [w.id for w in models.Word.objects.get(word=related_word['word']).related_words.all()])
+
+        # Try removing it again
+        new_word['related_words'].remove(related_word)
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        self.assertTrue(related_word['word'] not in [w.word for w in self.latest_word().related_words.all()])
+        self.assertTrue(related_word['word'] not in [w['word'] for w in json_response['related_words']])
+        # Reverse relation should also be gone
+        self.assertTrue(self.orig_word['word'] not in [w.word for w in models.Word.objects.get(word=related_word['word']).related_words.all()])
 
     def test_add_new_related_word(self):
         """
