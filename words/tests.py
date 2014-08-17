@@ -339,6 +339,7 @@ class AuthorizationTest(LoggedInJsonTest):
         self.assertEquals(404, response.status_code)
         self.assertEquals(0, len(models.Word.objects.get(pk=new_related_word['id']).related_words.all()))
 
+
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
 
