@@ -102,6 +102,11 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
         delete $scope.word.tags[i].new;
       }
     }
+    for (i in $scope.word.related_words) {
+      if ($scope.word.related_words[i].new) {
+        delete $scope.word.related_words[i].new;
+      }
+    }
     $http.put(get_word_url($scope.word_id), $scope.word).success(function(data) {
       $scope.word = data;
       $scope.editing = false;
@@ -132,6 +137,14 @@ jianjinControllers.controller('BrowseWordCtrl', function ($scope, $http, $routeP
 
   $scope.delete_example_sentence = function(def, sentence) {
     def.example_sentences = def.example_sentences.filter(function(s) { return s !== sentence });
+  };
+
+  $scope.add_related_word = function() {
+    $scope.word.related_words.push({"word": "", "new": true});
+  };
+
+  $scope.remove_related_word = function(related_word) {
+    $scope.word.related_words = $scope.word.related_words.filter(function(w) { return w !== related_word });
   };
 
   $scope.add_tag = function() {
