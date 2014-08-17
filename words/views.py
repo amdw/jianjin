@@ -31,28 +31,61 @@ def load_words(request, tag_name):
 
     return words
 
-class WordsViewSet(viewsets.ModelViewSet):
-    model = Word
-    serializer_class = WordSerializer
+class WordsViewSet(viewsets.ViewSet):
+    """
+    Using ModelViewSet should work here, but unfortunately the DRF serializers are just too buggy
+    right now in regard to their handling of many-to-many relationships. For example, see:
+    https://github.com/tomchristie/django-rest-framework/labels/writable%20nested%20serializers
 
-    def get_queryset(self):
-        # Only return words which belong to the current user
-        return Word.objects.filter(user=self.request.user.id)
+    Once these issues have been addressed, it should be possible to simplify this considerably.
+    """
+    model = Word
+
+    def _get_serializer(self):
+        return WordSerializer()
+
+    def list(self, request):
+        words = Word.objects.filter(user=request.user.id)
+        serializer = self._get_serializer()
+        return Response(serializer.serialize_many(words))
+
+    def retrieve(self, request, pk=None):
+        word = get_object_or_404(Word, pk=pk)
+        serializer = self._get_serializer()
+        return Response(serializer.serialize(word))
+
+    def create(self, request):
+        serializer = self._get_serializer()
+        word = serializer.deserialize_and_update(request.DATA)
+        return Response(serializer.serialize(word))
+
+    def update(self, request, pk=None):
+        serializer = self._get_serializer()
+        word = serializer.deserialize_and_update(request.DATA, pk)
+        return Response(serializer.serialize(word))
+
+    def partial_update(self, request, pk=None):
+        # Is this even needed?
+        pass
+
+    def destroy(self, request, pk=None):
+        #TODO
+        pass
 
 @api_view(['GET'])
 def words_by_tag(request, tag_name):
     """View function to load words for a particular tag"""
     words = load_words(request, tag_name)
-    serializer = WordSerializer(words, many=True)
-    return Response(serializer.data)
+    serializer = WordSerializer()
+    return Response(serializer.serialize_many(words))
 
 @api_view(['GET'])
 def flashcard_word(request, tag_name=None):
     """View function to load random word for flashcard purposes"""
     words = load_words(request, tag_name)
     word = random.choice(words)
-    serializer = WordSerializer(word)
-    return Response(serializer.data)
+    serializer = WordSerializer()
+    return Response(serializer.serialize(word))
 
 @api_view(['POST'])
 def confidence(request, word_id):

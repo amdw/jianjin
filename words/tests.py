@@ -132,6 +132,11 @@ class WordsApiTest(LoggedInJsonTest):
         self.maxDiff = None
         self.assertEqual(self.orig_word, word)
 
+    def test_get_words_by_tag(self):
+        response = self.client.get('/words/wordsbytag/awesome', follow=True)
+        json_response = self.assert_successful_json(response)
+        self.assertEqual(sorted([u'蛋白质', u'你好']), [w['word'] for w in json_response])
+
     def test_update_word(self):
         new_word = copy.deepcopy(self.orig_word)
         new_word['word'] = u'你是谁'
