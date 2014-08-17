@@ -50,6 +50,7 @@
           <div ng-if="editing" class="example-sentence-edit">
             <input class="form-control" placeholder="句子" ng-model="s.sentence"/><span ng-if="s.sentence">(<a href="{{s.sentence | mdbglink}}" target="_new">MDBG</a>)</span>
             <input class="form-control" placeholder="Pinyin" ng-model="s.pinyin"/>
+            <span ng-if="s.pinyin">{{s.pinyin | pinyin}}</span>
             <input class="form-control" placeholder="Translation" ng-model="s.translation"/>
             <button class="btn btn-danger" ng-click="delete_example_sentence(def, s)">Delete</button>
 	  </div>
