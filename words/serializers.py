@@ -64,13 +64,11 @@ class WordSerializer:
         and create it in the database if it does not exist or update it if it does.
         """
         if pk:
-            word = get_object_or_404(Word, pk=pk)
+            word = get_object_or_404(Word, pk=pk, user=user_id)
         elif 'id' in obj:
-            word = get_object_or_404(Word, obj['id'])
+            word = get_object_or_404(Word, pk=obj['id'], user=user_id)
         else:
             word = Word.objects.create()
-        if word.user.id != user_id:
-            raise Http404
 
         word.word = obj.get('word', word.word)
         word.pinyin = obj.get('pinyin', word.pinyin)

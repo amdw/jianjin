@@ -50,9 +50,7 @@ class WordsViewSet(viewsets.ViewSet):
         return Response(serializer.serialize_many(words))
 
     def retrieve(self, request, pk=None):
-        word = get_object_or_404(Word, pk=pk)
-        if word.user.id != request.user.id:
-            raise Http404
+        word = get_object_or_404(Word, pk=pk, user=request.user.id)
         serializer = self._get_serializer()
         return Response(serializer.serialize(word))
 
@@ -92,9 +90,7 @@ def flashcard_word(request, tag_name=None):
 @api_view(['POST'])
 def confidence(request, word_id):
     """View function to allow direct adjustments of confidence"""
-    word = get_object_or_404(Word, pk=int(word_id))
-    if word.user.id != request.user.id:
-        raise Http404
+    word = get_object_or_404(Word, pk=int(word_id), user=request.user.id)
     if not 'new' in request.DATA:
         return Response({"error": "Must specify 'new' confidence value"},
                         status=status.HTTP_400_BAD_REQUEST)
