@@ -283,6 +283,31 @@ class AuthorizationTest(LoggedInJsonTest):
         self.assertEquals("Come on!",
                           models.Definition.objects.get(pk=new_definition['id']).definition)
 
+    def test_update_anothers_example(self):
+        """
+        Make a sneaky attempt to update someone else's example sentence through one of
+        your own words
+        """
+        word_url = '/words/words/1/'
+        word_map = self.assert_successful_json(self.client.get(word_url))
+        new_example_sentence = {'id': 5,
+                                'sentence': 'Something utterly alien',
+                                'pinyin': 'Yoink!',
+                                'translation': "Wouldn't you like to know!"}
+        word_map['definitions'][0]['example_sentences'].append(new_example_sentence)
+        response = self.put_json(word_url, word_map)
+        self.assertEquals(404, response.status_code)
+        self.assertEquals(self.client.get('/words/words/79/').content, response.content)
+        self.assertEquals("Come on! Come on!",
+                          models.ExampleSentence.objects.get(pk=new_example_sentence['id']).translation)
+
+    def test_relate_anothers_word(self):
+        """
+        Try to relate someone else's word to your own
+        """
+        # TODO
+        pass
+
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
 

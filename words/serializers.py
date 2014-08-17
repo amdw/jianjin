@@ -126,7 +126,6 @@ class WordSerializer:
         Update the list of definitions for a word (create any new ones, delete any old ones,
         and update any existing ones).
         """
-        # TODO Prevent updates to example sentences which don't belong to this user
         new_def_ids = [d['id'] for d in def_maps if 'id' in d]
         removed_defs = [d for d in word.definitions.all() if d.id not in new_def_ids]
         for def_map in def_maps:
@@ -136,6 +135,13 @@ class WordSerializer:
                     raise Http404
             else:
                 existing_def = word.definitions.create()
+            # Test that people can't sneakily try to update each other's sentences
+            if 'example_sentences' in def_map:
+                for sentence in def_map['example_sentences']:
+                    if 'id' in sentence:
+                        existing_sentence = get_object_or_404(ExampleSentence, pk=sentence['id'])
+                        if existing_sentence.definition.word.user.id != user_id:
+                            raise Http404
             def_serializer = DefinitionSerializer(existing_def, data=def_map)
             if not def_serializer.is_valid():
                 raise serializers.ValidationError("Invalid definitions: {0}".format(def_serializer.errors))

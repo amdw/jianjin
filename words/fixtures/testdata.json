@@ -237,5 +237,15 @@
         "pinyin": "Ta1 shi4 yi1ge4 fu4nv3.", 
         "sentence": "\u5979\u662f\u4e00\u4e2a\u5987\u5973\u3002"
     }
+},
+{
+    "pk": 5,
+    "model": "words.examplesentence",
+    "fields": {
+        "definition": 5,
+        "translation": "Come on! Come on!",
+        "pinyin": "Jia1you2! Jia1you2!",
+        "sentence": "\u52a0\u6cb9! \u52a0\u6cb9!"
+    }
 }
 ]
