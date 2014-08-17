@@ -51,6 +51,8 @@ class WordsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         word = get_object_or_404(Word, pk=pk)
+        if word.user.id != request.user.id:
+            return Response({"detail": "Not found"}, status.HTTP_404_NOT_FOUND)
         serializer = self._get_serializer()
         return Response(serializer.serialize(word))
 

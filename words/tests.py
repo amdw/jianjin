@@ -238,6 +238,16 @@ class WordsApiTest(LoggedInJsonTest):
         pass
 
 
+class AuthorizationTest(LoggedInJsonTest):
+    """
+    Check that users cannot read or manipulate entities which don't belong to them
+    """
+    def test_read_anothers_word(self):
+        response = self.client.get('/words/words/5/')
+        # Shouldn't even tell them it exists
+        self.assertEquals(404, response.status_code)
+        self.assertEquals(self.client.get('/words/words/79/').content, response.content)
+
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
 
