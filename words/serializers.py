@@ -24,7 +24,7 @@ class ExampleSentenceSerializer(serializers.ModelSerializer):
         exclude = ('definition',)
         
 class DefinitionSerializer(serializers.ModelSerializer):
-    example_sentences = ExampleSentenceSerializer(many=True, allow_add_remove=True)
+    example_sentences = ExampleSentenceSerializer(many=True, allow_add_remove=True, required=False)
     
     class Meta:
         model = Definition

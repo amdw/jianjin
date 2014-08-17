@@ -181,6 +181,15 @@ class WordsApiTest(LoggedInJsonTest):
         self.assertEqual(0, len(models.Definition.objects.filter(definition=new_def['definition'])))
         self.assertEqual(0, len(models.ExampleSentence.objects.filter(sentence=new_def['example_sentences'][0]['sentence'])))
 
+    def test_add_def_without_examples(self):
+        new_word = copy.deepcopy(self.orig_word)
+        new_def = {'definition': 'something', 'part_of_speech': ' '}
+        new_word['definitions'].append(new_def)
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        self.assertEquals([], json_response['definitions'][-1]['example_sentences'])
+        self.assertTrue('something' in [d.definition for d in self.latest_word().definitions.all()])
+
     def test_add_sentence(self):
         new_word = copy.deepcopy(self.orig_word)
         new_defs = new_word['definitions'][0]['example_sentences']
