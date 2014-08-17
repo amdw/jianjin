@@ -93,7 +93,7 @@ Assuming all this worked, you should be able to run ```heroku open``` to open up
 
 # Architecture
 
-Jianjin uses [Angular.JS](http://angularjs.org/) for the front end user interface, with the back-end RESTful JSON API being implemented in Python using [Django](http://djangoproject.com/).
+Jianjin uses [Angular.JS](http://angularjs.org/) for the front end user interface, with the back-end RESTful JSON API being implemented in Python using [Django](http://djangoproject.com/) and the [Django REST Framework](http://www.django-rest-framework.org/).
 
 I chose these technologies because I wanted to learn more about them by using them for "real work", not because I necessarily think they are best-in-class. I'm still developing my opinions on that as I go.
 
