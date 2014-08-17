@@ -198,11 +198,15 @@ class WordsApiTest(LoggedInJsonTest):
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
         self.assertEquals(self.orig_word['tags'], json_response['tags'])
-        self.assertEquals([t['tag'] for t in self.orig_word['tags']], [t.tag for t in self.latest_word().tags.all()])
+        self.assertEquals([t['tag'] for t in self.orig_word['tags']],
+                          [t.tag for t in self.latest_word().tags.all()])
+        # Tag should get deleted, as there are no words on it left
+        self.assertEquals(0, len(models.Tag.objects.filter(tag=new_tag['tag'])))
 
     def test_add_related_word(self):
         # TODO Related words are still not editable...
         pass
+
 
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']

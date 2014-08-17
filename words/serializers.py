@@ -82,21 +82,31 @@ class WordSerializer:
             self._update_definitions(word, obj['definitions'])
 
         if 'tags' in obj:
-            # Special behaviour to de-dupe and do the needful
-            tags = self._get_tags(set([t['tag'] for t in obj['tags']]))
-            word.tags.clear()
-            word.tags.add(*tags)
+            self._update_tags(word, obj['tags'])
 
         # TODO related_words
 
         return word
+
+    def _update_tags(self, word, tag_maps):
+        """
+        Given a word and a list of tags, set the tag list for the word to these tags,
+        creating any which don't already exist, and remove any tags which no longer have
+        any associated words.
+        """
+        tags = self._get_tags(set([t['tag'] for t in tag_maps]))
+        removed_tags = [t for t in word.tags.all() if not t in tags]
+        word.tags.clear()
+        word.tags.add(*tags)
+        for tag in removed_tags:
+            if not len(tag.word_set.all()):
+                tag.delete()
 
     def _get_tags(self, tags):
         """
         Given a list of tag names, load them from the database if they exist,
         and create them otherwise
         """
-        # TODO Delete old tags if there are no words on them any more
         result = []
         for tag in tags:
             db_tags = Tag.objects.filter(tag=tag)
