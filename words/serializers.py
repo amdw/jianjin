@@ -123,9 +123,10 @@ class WordSerializer:
         Update the list of definitions for a word (create any new ones, delete any old ones,
         and update any existing ones).
         """
-        # TODO Delete old ones
         # TODO Prevent updates to definitions which don't belong to this user
         # TODO Prevent updates to example sentences which don't belong to this user
+        new_def_ids = [d['id'] for d in def_maps if 'id' in d]
+        removed_defs = [d for d in word.definitions.all() if d.id not in new_def_ids]
         for def_map in def_maps:
             if 'id' in def_map:
                 existing_def = get_object_or_404(Definition, pk=def_map['id'])
@@ -135,3 +136,6 @@ class WordSerializer:
             if not def_serializer.is_valid():
                 raise serializers.ValidationError("Invalid definitions: {0}".format(def_serializer.errors))
             def_serializer.save()
+
+        for definition in removed_defs:
+            definition.delete()

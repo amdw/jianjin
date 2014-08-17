@@ -145,13 +145,29 @@ class WordsApiTest(LoggedInJsonTest):
         #self.assertEqual({}, json_response)
         self.assertEqual(new_word['word'], self.latest_word().word)
 
-    def test_add_definition(self):
+    def test_add_and_remove_definition(self):
         new_word = copy.deepcopy(self.orig_word)
-        new_word['definitions'].append({'definition': 'Hi there!', 'example_sentences': [], 'part_of_speech': ' '})
+        new_def = {'definition': 'Hi there!',
+                   'example_sentences': [{'sentence': u'你好小猫',
+                                          'pinyin': u'ni3hao3 xiao3mao1',
+                                          'translation': u'Hello kitty!'}],
+                   'part_of_speech': ' '}
+        new_word['definitions'].append(new_def)
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
         self.assertEqual(len(new_word['definitions']), len(self.latest_word().definitions.all()))
         self.assertEqual(len(new_word['definitions']), len(json_response['definitions']))
+        new_word['definitions'].pop(1)
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        self.assertEqual(new_word['definitions'], self.orig_word['definitions'])
+        self.assertEqual(len(self.orig_word['definitions']), len(self.latest_word().definitions.all()))
+        self.assertEqual(len(self.orig_word['definitions']), len(json_response['definitions']))
+        self.assertEqual(self.orig_word['definitions'][0]['definition'], self.latest_word().definitions.all()[0].definition)
+        self.assertEqual(self.orig_word['definitions'][0]['definition'], json_response['definitions'][0]['definition'])
+        # Old definition and example sentence should be gone from the database
+        self.assertEqual(0, len(models.Definition.objects.filter(definition=new_def['definition'])))
+        self.assertEqual(0, len(models.ExampleSentence.objects.filter(sentence=new_def['example_sentences'][0]['sentence'])))
 
     def test_add_sentence(self):
         new_word = copy.deepcopy(self.orig_word)
