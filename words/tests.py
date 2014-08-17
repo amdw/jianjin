@@ -6,7 +6,7 @@ import json
 from django.test import TestCase, Client
 from django.test.utils import setup_test_environment
 
-import models
+import models, serializers
 
 USER = 'user'
 PASSWORD = 'password'
@@ -107,13 +107,13 @@ class WordsApiTest(LoggedInJsonTest):
     def __init__(self, *args, **kwargs):
         super(LoggedInJsonTest, self).__init__(*args, **kwargs)
         self.orig_word = {u'confidence': 10,
-                          u'date_added': u'2014-06-14T11:25:53.081Z',
+                          u'date_added': u'2014-06-14T11:25:53.081000+00:00',
                           u'definitions': [{u'definition': u'Hello!',
                                             u'example_sentences': [],
                                             u'id': 1,
                                             u'part_of_speech': u' '}],
                           u'id': 1,
-                          u'last_modified': u'2014-06-14T14:29:15.857Z',
+                          u'last_modified': u'2014-06-14T14:29:15.857000+00:00',
                           u'notes': u'',
                           u'pinyin': u'ni3hao3',
                           u'related_words': [{u'id': 3,
@@ -247,6 +247,23 @@ class AuthorizationTest(LoggedInJsonTest):
         # Shouldn't even tell them it exists
         self.assertEquals(404, response.status_code)
         self.assertEquals(self.client.get('/words/words/79/').content, response.content)
+
+    def test_write_anothers_word(self):
+        word = models.Word.objects.get(pk=5)
+        serializer = serializers.WordSerializer()
+        word_map = serializer.serialize(word)
+        word_map['confidence'] += 1
+        response = self.put_json('/words/words/5/', word_map)
+        self.assertEquals(404, response.status_code,
+                          msg="Expected 404, got {0}".format(response.content))
+        self.assertEquals(self.put_json('/words/words/79/', word_map).content, response.content)
+
+        # Shouldn't be able to do it through the confidence API either
+        response = self.post_json('/words/confidence/5/', {"new": word_map['confidence']})
+        self.assertEquals(404, response.status_code,
+                          msg="Expected 404, got {0}".format(response.content))
+        self.assertEquals(self.post_json('/words/confidence/79/', {"new": 0}).content,
+                          response.content)
 
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']

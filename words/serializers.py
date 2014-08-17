@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
@@ -52,12 +53,12 @@ class WordSerializer:
                 'notes': word.notes,
                 'user': word.user.username,
                 'tags': tags,
-                'date_added': word.date_added,
-                'last_modified': word.last_modified,
+                'date_added': word.date_added.isoformat(),
+                'last_modified': word.last_modified.isoformat(),
                 'confidence': word.confidence,
                 'related_words': related_words}
 
-    def deserialize_and_update(self, obj, pk=None):
+    def deserialize_and_update(self, obj, user_id, pk=None):
         """
         Given an incoming dictionary parsed from JSON, convert it into a model object,
         and create it in the database if it does not exist or update it if it does.
@@ -68,12 +69,14 @@ class WordSerializer:
             word = get_object_or_404(Word, obj['id'])
         else:
             word = Word.objects.create()
+        if word.user.id != user_id:
+            raise Http404
+
         word.word = obj.get('word', word.word)
         word.pinyin = obj.get('pinyin', word.pinyin)
         word.notes = obj.get('notes', word.notes)
         # Don't allow updates to user or date_added, and ignore any user-provided last_modified
-        # TODO Check user to ensure you can't update words which aren't yours
-        word.last_modified = datetime.now().isoformat()
+        word.last_modified = datetime.now()
         word.confidence = obj.get('confidence', word.confidence)
 
         word.save()

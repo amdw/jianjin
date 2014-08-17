@@ -1,6 +1,6 @@
 import random
 
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.core import serializers
 from django.shortcuts import get_object_or_404
 
@@ -52,18 +52,18 @@ class WordsViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         word = get_object_or_404(Word, pk=pk)
         if word.user.id != request.user.id:
-            return Response({"detail": "Not found"}, status.HTTP_404_NOT_FOUND)
+            raise Http404
         serializer = self._get_serializer()
         return Response(serializer.serialize(word))
 
     def create(self, request):
         serializer = self._get_serializer()
-        word = serializer.deserialize_and_update(request.DATA)
+        word = serializer.deserialize_and_update(request.DATA, request.user.id)
         return Response(serializer.serialize(word))
 
     def update(self, request, pk=None):
         serializer = self._get_serializer()
-        word = serializer.deserialize_and_update(request.DATA, pk)
+        word = serializer.deserialize_and_update(request.DATA, request.user.id, pk)
         return Response(serializer.serialize(word))
 
     def partial_update(self, request, pk=None):
@@ -93,8 +93,11 @@ def flashcard_word(request, tag_name=None):
 def confidence(request, word_id):
     """View function to allow direct adjustments of confidence"""
     word = get_object_or_404(Word, pk=int(word_id))
+    if word.user.id != request.user.id:
+        raise Http404
     if not 'new' in request.DATA:
-        return Response({"error": "Must specify 'new' confidence value"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": "Must specify 'new' confidence value"},
+                        status=status.HTTP_400_BAD_REQUEST)
     new_confidence = request.DATA['new']
     if isinstance(new_confidence, basestring) and not new_confidence.isdigit():
         return Response({"error": "New confidence value must be a number, not '{0}'".format(new_confidence)},
