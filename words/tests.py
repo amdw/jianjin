@@ -233,8 +233,25 @@ class WordsApiTest(LoggedInJsonTest):
         # Tag should get deleted, as there are no words on it left
         self.assertEquals(0, len(models.Tag.objects.filter(tag=new_tag['tag'])))
 
-    def test_add_related_word(self):
-        # TODO Related words are still not editable...
+    def test_add_existing_related_word(self):
+        new_word = copy.deepcopy(self.orig_word)
+        related_word = {'word': u'蛋白质'}
+        new_word['related_words'].append(related_word)
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        expected_related_words = [u'蛋白质', u'乌龙球']
+        self.assertEquals(sorted(expected_related_words),
+                          sorted([w['word'] for w in json_response['related_words']]))
+        self.assertEquals(sorted(expected_related_words),
+                          sorted([w.word for w in self.latest_word().related_words.all()]))
+        # Reverse relation should also be present
+        self.assertTrue(self.orig_word['id'] in [w.id for w in models.Word.objects.get(word=related_word['word']).related_words.all()])
+
+    def test_add_new_related_word(self):
+        """
+        Test adding a new word as a related word to another word.
+        """
+        # TODO
         pass
 
 
@@ -305,8 +322,13 @@ class AuthorizationTest(LoggedInJsonTest):
         """
         Try to relate someone else's word to your own
         """
-        # TODO
-        pass
+        word_url = '/words/words/1/'
+        word_map = self.assert_successful_json(self.client.get(word_url))
+        new_related_word = {'id': 5}
+        word_map['related_words'].append(new_related_word)
+        response = self.put_json(word_url, word_map)
+        self.assertEquals(404, response.status_code)
+        self.assertEquals(0, len(models.Word.objects.get(pk=new_related_word['id']).related_words.all()))
 
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']

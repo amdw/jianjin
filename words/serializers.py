@@ -87,7 +87,8 @@ class WordSerializer:
         if 'tags' in obj:
             self._update_tags(word, obj['tags'])
 
-        # TODO related_words
+        if 'related_words' in obj:
+            self._update_related_words(word, obj['related_words'], user_id)
 
         return word
 
@@ -149,3 +150,24 @@ class WordSerializer:
 
         for definition in removed_defs:
             definition.delete()
+
+    def _update_related_words(self, word, related_word_maps, user_id):
+        """
+        Update the list of related words for a word
+        """
+        #import pdb; pdb.set_trace()
+        word.related_words.clear()
+        related_words = []
+        for word_map in related_word_maps:
+            if 'id' in word_map:
+                related_word = get_object_or_404(Word, pk=word_map['id'], user=user_id)
+            else:
+                if not 'word' in word_map:
+                    raise serializers.ValidationError("Must specify 'word' or 'id' for related_words")
+                related_word_list = Word.objects.filter(word=word_map['word'], user=user_id)
+                if not related_word_list:
+                    raise Http404
+                # TODO Better handling of the case where multiple words come back
+                related_word = related_word_list[0]
+            related_words.append(related_word)
+        word.related_words.add(*related_words)
