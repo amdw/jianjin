@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib.auth.models import User
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
@@ -163,9 +164,12 @@ class WordSerializer:
                 if not 'word' in word_map:
                     raise serializers.ValidationError("Must specify 'word' or 'id' for related_words")
                 related_word_list = Word.objects.filter(word=word_map['word'], user=user_id)
-                if not related_word_list:
-                    raise Http404
-                # TODO Better handling of the case where multiple words come back
-                related_word = related_word_list[0]
+                if related_word_list:
+                    # TODO Better handling of the case where multiple words come back
+                    related_word = related_word_list[0]
+                else:
+                    # Create a new word to act as a placeholder
+                    related_word = Word.objects.create(word=word_map['word'],
+                                                       user=get_object_or_404(User, pk=user_id))
             related_words.append(related_word)
         word.related_words.add(*related_words)

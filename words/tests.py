@@ -260,8 +260,17 @@ class WordsApiTest(LoggedInJsonTest):
         """
         Test adding a new word as a related word to another word.
         """
-        # TODO
-        pass
+        new_word = copy.deepcopy(self.orig_word)
+        related_word = {'word': u'自行车'}
+        new_word['related_words'].append(related_word)
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        self.assertEquals(1, len(models.Word.objects.filter(word=related_word['word'])))
+        self.assertTrue(related_word['word'] in [w['word'] for w in json_response['related_words']])
+        self.assertTrue(related_word['word'] in [w.word for w in self.latest_word().related_words.all()])
+        created_word = models.Word.objects.get(word=related_word['word'])
+        self.assertEquals([self.orig_word['word']], [w.word for w in created_word.related_words.all()])
+        self.assertEquals(USER, created_word.user.username)
 
 
 class AuthorizationTest(LoggedInJsonTest):
