@@ -265,6 +265,24 @@ class AuthorizationTest(LoggedInJsonTest):
         self.assertEquals(self.post_json('/words/confidence/79/', {"new": 0}).content,
                           response.content)
 
+    def test_update_anothers_definition(self):
+        """
+        Make a sneaky attempt to update someone else's definition through one of your
+        own words
+        """
+        word_url = '/words/words/1/'
+        word_map = self.assert_successful_json(self.client.get(word_url))
+        new_definition = {'id': 5,
+                          'definition': 'Something completely different',
+                          'example_sentences': [],
+                          'part_of_speech': 'V'}
+        word_map['definitions'].append(new_definition)
+        response = self.put_json(word_url, word_map)
+        self.assertEquals(404, response.status_code)
+        self.assertEquals(self.client.get('/words/words/79/').content, response.content)
+        self.assertEquals("Come on!",
+                          models.Definition.objects.get(pk=new_definition['id']).definition)
+
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
 

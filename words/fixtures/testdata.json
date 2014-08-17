@@ -190,6 +190,15 @@
     }
 },
 {
+    "pk": 5,
+    "model": "words.definition",
+    "fields": {
+        "definition": "Come on!",
+        "word": 5,
+        "part_of_speech": " "
+    }
+},
+{
     "pk": 1, 
     "model": "words.examplesentence", 
     "fields": {

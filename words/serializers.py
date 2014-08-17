@@ -82,7 +82,7 @@ class WordSerializer:
         word.save()
 
         if 'definitions' in obj:
-            self._update_definitions(word, obj['definitions'])
+            self._update_definitions(word, obj['definitions'], user_id)
 
         if 'tags' in obj:
             self._update_tags(word, obj['tags'])
@@ -121,18 +121,19 @@ class WordSerializer:
                 result.append(db_tag)
         return result
 
-    def _update_definitions(self, word, def_maps):
+    def _update_definitions(self, word, def_maps, user_id):
         """
         Update the list of definitions for a word (create any new ones, delete any old ones,
         and update any existing ones).
         """
-        # TODO Prevent updates to definitions which don't belong to this user
         # TODO Prevent updates to example sentences which don't belong to this user
         new_def_ids = [d['id'] for d in def_maps if 'id' in d]
         removed_defs = [d for d in word.definitions.all() if d.id not in new_def_ids]
         for def_map in def_maps:
             if 'id' in def_map:
                 existing_def = get_object_or_404(Definition, pk=def_map['id'])
+                if existing_def.word.user.id != user_id:
+                    raise Http404
             else:
                 existing_def = word.definitions.create()
             def_serializer = DefinitionSerializer(existing_def, data=def_map)
