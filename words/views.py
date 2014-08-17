@@ -79,11 +79,43 @@ def words_by_tag(request, tag_name):
     serializer = WordSerializer()
     return Response(serializer.serialize_many(words))
 
+def random_choice_by_weight(choices, r=random):
+    """
+    Given a list of 2-tuples (choice, weight), return a random choice with the
+    probabilities weighted so that for a particular choice X with weight W, the
+    probability P(X) of returning X is W/sum(all weights).
+
+    The optional argument r is to allow deterministic tests to be written.
+    """
+    if [w for (_, w) in choices if w < 0]:
+        raise ArithmeticError("Negative weights are not allowed!")
+    total_weights = sum([weight for (_, weight) in choices])
+    weight_index = r.uniform(0, total_weights)
+    weight_sum = 0
+    for (choice, weight) in choices:
+        weight_sum += weight
+        if weight_sum > weight_index:
+            return choice
+    raise ArithmeticError("Weight selection algorithm failed")
+
+def weights_for_words(words):
+    """
+    Calculate flashcard probability weights for a given set of words based on confidence
+    """
+    confidences = [w.confidence for w in words]
+    # Shift all confidence scores so larger confidence means smaller weight and 1 is the minimum
+    shift = -max(confidences)
+    weights = [-c - shift + 1 for c in confidences]
+    return weights
+
 @api_view(['GET'])
 def flashcard_word(request, tag_name=None):
     """View function to load random word for flashcard purposes"""
     words = load_words(request, tag_name)
-    word = random.choice(words)
+    if not words:
+        raise Http404
+    weights = weights_for_words(words)
+    word = random_choice_by_weight(zip(words, weights))
     serializer = WordSerializer()
     return Response(serializer.serialize(word))
 

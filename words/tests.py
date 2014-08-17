@@ -6,7 +6,7 @@ import json
 from django.test import TestCase, Client
 from django.test.utils import setup_test_environment
 
-import models, serializers
+import models, serializers, views
 
 USER = 'user'
 PASSWORD = 'password'
@@ -365,3 +365,42 @@ class AuthenticationTest(TestCase):
         """Test that the JSON API cannot be accessed unless logged in"""
         response = self.client.get('/words/words/')
         self.assertEqual(403, response.status_code)
+
+class MiscUnitTests(TestCase):
+    """
+    Miscellaneous unit tests which do not require the HTTP client
+    """
+
+    def test_random_flashcard_choice(self):
+        """
+        Test that the flashcard selector function weights things as we would expect
+        """
+        class Random:
+            """Deterministic source of 'randomness' to control the test"""
+            def __init__(self, answer):
+                self.answer = answer
+            def uniform(self, a, b):
+                if self.answer < a:
+                    return a
+                if self.answer > b:
+                    return b
+                return self.answer
+        choices = [('a', 1), ('b', 2), ('c', 3), ('d', 4)]
+        results = {}
+        for i in range(10):
+            choice = views.random_choice_by_weight(choices, Random(i))
+            results[choice] = results.get(choice, 0) + 1
+        expected_results = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+        self.assertEquals(expected_results, results)
+
+    def test_flashcard_weights(self):
+        """
+        Test flashcard weight generator for words
+        """
+        class Word:
+            def __init__(self, confidence):
+                self.confidence = confidence
+
+        weights = views.weights_for_words([Word(-2), Word(-10), Word(3), Word(0), Word(100)])
+        expected_weights = [103, 111, 98, 101, 1]
+        self.assertEquals(expected_weights, weights)
