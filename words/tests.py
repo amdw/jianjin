@@ -22,18 +22,25 @@ class LoggedInJsonTest(TestCase):
         self.assertTrue(self.client.login(username=USER, password=PASSWORD))
 
     def assert_successful_json(self, response):
-        """Assert that the response was successful, and contains JSON content. Return the parsed content."""
-        self.assertEqual(200, response.status_code, msg="Got HTTP {0}, content: {1}".format(response.status_code, response.content))
+        """
+        Assert that the response was successful, and contains JSON content.
+        Return the parsed content.
+        """
+        self.assertEqual(200, response.status_code,
+                         msg="Got HTTP {0}, content: {1}".format(response.status_code,
+                                                                 response.content))
         self.assertEqual('application/json', response['Content-Type'])
         return json.loads(response.content)
 
     def post_json(self, url, data):
         """Post data to URL as JSON string"""
-        return self.client.post(url, content_type="application/json", data=json.dumps(data), follow=True)
+        return self.client.post(url, content_type="application/json",
+                                data=json.dumps(data), follow=True)
 
     def put_json(self, url, data):
         """PUT data to URL as JSON string"""
-        return self.client.put(url, content_type="application/json", data=json.dumps(data), follow=True)
+        return self.client.put(url, content_type="application/json",
+                               data=json.dumps(data), follow=True)
 
 class MiscJsonApiTest(LoggedInJsonTest):
     def test_get_tags(self):
@@ -124,7 +131,8 @@ class WordsApiTest(LoggedInJsonTest):
     def test_get_words(self):
         response = self.client.get('/words/words/')
         json_response = self.assert_successful_json(response)
-        self.assertEqual(sorted([u"你好", u"蛋白质", u"乌龙球", u"妇女"]), sorted(w['word'] for w in json_response))
+        self.assertEqual(sorted([u"你好", u"蛋白质", u"乌龙球", u"妇女"]),
+                         sorted(w['word'] for w in json_response))
 
     def test_get_word(self):
         response = self.client.get(self.word_url, follow=True)
@@ -161,10 +169,14 @@ class WordsApiTest(LoggedInJsonTest):
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
         self.assertEqual(new_word['definitions'], self.orig_word['definitions'])
-        self.assertEqual(len(self.orig_word['definitions']), len(self.latest_word().definitions.all()))
-        self.assertEqual(len(self.orig_word['definitions']), len(json_response['definitions']))
-        self.assertEqual(self.orig_word['definitions'][0]['definition'], self.latest_word().definitions.all()[0].definition)
-        self.assertEqual(self.orig_word['definitions'][0]['definition'], json_response['definitions'][0]['definition'])
+        self.assertEqual(len(self.orig_word['definitions']),
+                         len(self.latest_word().definitions.all()))
+        self.assertEqual(len(self.orig_word['definitions']),
+                         len(json_response['definitions']))
+        self.assertEqual(self.orig_word['definitions'][0]['definition'],
+                         self.latest_word().definitions.all()[0].definition)
+        self.assertEqual(self.orig_word['definitions'][0]['definition'],
+                         json_response['definitions'][0]['definition'])
         # Old definition and example sentence should be gone from the database
         self.assertEqual(0, len(models.Definition.objects.filter(definition=new_def['definition'])))
         self.assertEqual(0, len(models.ExampleSentence.objects.filter(sentence=new_def['example_sentences'][0]['sentence'])))
@@ -172,7 +184,9 @@ class WordsApiTest(LoggedInJsonTest):
     def test_add_sentence(self):
         new_word = copy.deepcopy(self.orig_word)
         new_defs = new_word['definitions'][0]['example_sentences']
-        new_defs.append({'sentence': '你好亲爱的!', 'pinyin': 'Ni3hao3 qin1ai4de!', 'translation': 'Hello dear!'})
+        new_defs.append({'sentence': '你好亲爱的!',
+                         'pinyin': 'Ni3hao3 qin1ai4de!',
+                         'translation': 'Hello dear!'})
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
         self.assertEqual(len(new_defs),
