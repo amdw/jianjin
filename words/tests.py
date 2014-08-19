@@ -2,6 +2,7 @@
 
 import copy
 import json
+import unittest
 
 from django.test import TestCase, Client
 from django.test.utils import setup_test_environment
@@ -375,7 +376,7 @@ class AuthenticationTest(TestCase):
         response = self.client.get('/words/words/')
         self.assertEqual(403, response.status_code)
 
-class MiscUnitTests(TestCase):
+class MiscUnitTests(unittest.TestCase):
     """
     Miscellaneous unit tests which do not require the HTTP client
     """
