@@ -129,6 +129,33 @@ class WordsApiTest(LoggedInJsonTest):
         """Load the latest version of the word from the database"""
         return models.Word.objects.get(pk=self.orig_word['id'])
 
+    def test_create_new_word(self):
+        new_word_map = {"word": u"小猪",
+                        "definitions": [{"definition": "piglet",
+                                         "part_of_speech": "N",
+                                         "example_sentences": [{"sentence": u"这是一只小猪。",
+                                                                "pinyin": "Zhe4 shi4 yi1zhi1 xiao3zhu1.",
+                                                                "translation": "This is a piglet."}]}],
+                        "pinyin": "xiao3zhu1"}
+        response = self.post_json('/words/words/', new_word_map)
+        json_response = self.assert_successful_json(response)
+
+        expected_fillins = ['id', 'date_added', 'last_modified']
+        for key in expected_fillins:
+            self.assertTrue(json_response.get(key, None) is not None)
+
+        expected_defaults = {'confidence': 0,
+                             'tags': [],
+                             'notes': '',
+                             'related_words': [],
+                             'user': USER}
+        for (key, expected_val) in expected_defaults.items():
+            self.assertEquals(expected_val, json_response.get(key, None),
+                              msg="Expected key '{0}' to be defaulted to '{1}', found '{2}'".format(key, expected_val, json_response.get(key, None)))
+
+        new_word = models.Word.objects.get(pk=json_response['id'])
+        self.assertEquals(new_word_map["word"], new_word.word)
+
     def test_get_words(self):
         response = self.client.get('/words/words/')
         json_response = self.assert_successful_json(response)

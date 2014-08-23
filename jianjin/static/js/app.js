@@ -18,6 +18,8 @@ jianjinApp.config(function ($routeProvider) {
       controller: 'BrowseWordCtrl',
     }).
     when('/new', {
+      templateUrl: '/static/word.html',
+      controller: 'NewWordCtrl',
     }).
     when('/flashcard', {
       templateUrl: '/static/flashcard.html',

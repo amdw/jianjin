@@ -97,8 +97,9 @@
     </div>
     <div class="row col-sm-12" style="margin-top:10px">
       <button type="button" class="btn btn-warning" ng-if="!editing" ng-click="edit()">Edit</button>
-      <button type="button" class="btn btn-primary" ng-if="editing" ng-click="save()">Save</button>
-      <button type="button" class="btn btn-default" ng-if="editing" ng-click="cancel_edits()">Cancel</button>
+      <button type="button" class="btn btn-primary" ng-if="editing && !is_new" ng-click="save()">Save</button>
+      <button type="button" class="btn btn-default" ng-if="editing && !is_new" ng-click="cancel_edits()">Cancel</button>
+      <button type="button" class="btn btn-primary" ng-if="editing && is_new" ng-click="save()">Create</button>
     </div>
   </span>
 </div>

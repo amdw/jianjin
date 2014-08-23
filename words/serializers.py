@@ -69,7 +69,7 @@ class WordSerializer:
         elif 'id' in obj:
             word = get_object_or_404(Word, pk=obj['id'], user=user_id)
         else:
-            word = Word.objects.create()
+            word = Word.objects.create(user=get_object_or_404(User, pk=user_id))
 
         word.word = obj.get('word', word.word)
         word.pinyin = obj.get('pinyin', word.pinyin)
@@ -154,7 +154,6 @@ class WordSerializer:
         """
         Update the list of related words for a word
         """
-        #import pdb; pdb.set_trace()
         word.related_words.clear()
         related_words = []
         for word_map in related_word_maps:
