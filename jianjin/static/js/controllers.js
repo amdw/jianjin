@@ -176,6 +176,10 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
       $scope.word.tags = $scope.word.tags.filter(function(t) { return t !== tag });
     };
 
+    $scope.highlight = function(text) {
+      return text.replace(new RegExp($scope.word.word, 'g'), '<span class="highlight">' + $scope.word.word + '</span>');
+    };
+
     if ($scope.is_new) {
       $scope.word = {};
       $scope.add_definition();

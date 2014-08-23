@@ -20,3 +20,7 @@ body {
 .tag-form-row {
     margin-bottom: 0;
 }
+
+.highlight {
+    color: orange;
+}

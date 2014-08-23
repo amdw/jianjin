@@ -46,7 +46,7 @@
       <div class="panel-body">
         <p ng-if="!def.example_sentences.length"><i>(No examples entered)</i></p>
         <span ng-repeat="s in def.example_sentences">
-          <p ng-if="!editing">{{s.sentence}}<span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span> - {{s.translation}} (<a href="{{s.sentence | mdbglink}}" target="_blank">MDBG</a>)</p>
+          <p ng-if="!editing"><span ng-bind-html="highlight(s.sentence)"</span><span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span> - {{s.translation}} (<a href="{{s.sentence | mdbglink}}" target="_blank">MDBG</a>)</p>
           <div ng-if="editing" class="example-sentence-edit">
             <input class="form-control" placeholder="句子" ng-model="s.sentence"/><span ng-if="s.sentence">(<a href="{{s.sentence | mdbglink}}" target="_blank">MDBG</a>)</span>
             <input class="form-control" placeholder="Pinyin" ng-model="s.pinyin"/>
