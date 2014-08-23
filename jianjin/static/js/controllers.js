@@ -16,6 +16,7 @@ jianjinControllers.constant('handle_error', function($scope) {
   return function(data, status) {
     $scope.error = data;
     $scope.error_status = status;
+    $scope.loading = false;
   };
 });
 
@@ -74,9 +75,11 @@ jianjinControllers.factory('decrease_confidence', function(change_confidence) {
 
 jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeParams, load_tags, handle_error) {
   $scope.tag = $routeParams.tag;
+  $scope.loading = true;
 
   $http.get($scope.tag ? '/words/wordsbytag/' + $scope.tag + '/' : '/words/words/').success(function(data) {
     $scope.words = data;
+    $scope.loading = false;
   }).error(handle_error($scope));
   load_tags($scope, $http);
 });
@@ -112,13 +115,16 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
       var on_success = function(data) {
         $scope.word = data;
         $scope.editing = false;
+        $scope.loading = false;
         if ($scope.is_new) {
           $location.path('/browse/' + data.id);
         }
       };
       var on_error = function(data, status) {
         window.alert("Error " + status + " saving word:\n" + JSON.stringify(data));
+        $scope.loading = false;
       };
+      $scope.loading = true;
       if ($scope.is_new) {
         $http.post("/words/words/", $scope.word).success(on_success).error(on_error);
       }
@@ -185,8 +191,10 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
       $scope.add_definition();
     }
     else {
+      $scope.loading = true;
       $http.get(get_word_url($routeParams.word_id)).success(function(data) {
         $scope.word = data;
+        $scope.loading = false;
       }).error(handle_error($scope));
     }
   };
@@ -208,9 +216,11 @@ jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routePar
   };
 
   $scope.load_flashcard = function() {
+    $scope.loading = true;
     $http.get('/words/flashcard' + ($scope.tag ? '/' + $scope.tag : '') + '/').success(function(data) {
       $scope.word = data;
       $scope.examples = extract_examples(data);
+      $scope.loading = false;
     }).error(handle_error($scope));
   };
 

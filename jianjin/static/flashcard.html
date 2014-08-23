@@ -3,7 +3,8 @@
     <h1>Could not load flashcard</h1>
     <p>{{error}} ({{error_status}})</p>
   </div>
-  <span ng-if="!error">
+  <div class="page-header" ng-if="loading">Loading... <i class="fa fa-spinner fa-spin"></i></div>
+  <span ng-if="!error && !loading">
     <div class="row page-header">
       <div class="col-sm-8">
         <h1 style="margin-top:0">{{word.word}}</h1>

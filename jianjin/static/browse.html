@@ -2,7 +2,8 @@
   <h1>Error loading word list</h1>
   <p>{{error}} ({{error_status}})</p>
 </div>
-<div ng-if="!error">
+<div class="page-header" ng-if="loading">Loading... <i class="fa fa-spinner fa-spin"></i></div>
+<div ng-if="!error && !loading">
   <div class="page-header"><h1>Browse</h1></div>
   
   <ul>
