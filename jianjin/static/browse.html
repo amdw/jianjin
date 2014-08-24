@@ -1,4 +1,4 @@
-<div ng-if="error">
+<div ng-if="error" class="page-header">
   <h1>Error loading word list</h1>
   <p>{{error}} ({{error_status}})</p>
 </div>
@@ -19,5 +19,10 @@
 
   <div class="row col-sm-12" style="padding-top:15px" ng-if="all_tags">
     <p>Filter by tag: <span ng-repeat="t in all_tags"><a href="#/browsetag/{{t}}" ng-if="t != tag">{{t}}</a><b ng-if="t == tag">{{t}}</b> | </span><a href="#/browse" ng-if="tag">All</a><b ng-if="!tag">All</b></p>
+  </div>
+
+  <div class="row col-sm-4">
+    <label>Words per page</label><input class="form-control" type="text" ng-model="params.words_per_page"/>
+    <button class="btn btn-default" ng-click="load_words(make_url())">Go</button>
   </div>
 </div>

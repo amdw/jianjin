@@ -75,6 +75,11 @@ jianjinControllers.factory('decrease_confidence', function(change_confidence) {
 
 jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeParams, load_tags, handle_error) {
   $scope.tag = $routeParams.tag;
+  $scope.params = {"words_per_page": 10};
+
+  $scope.make_url = function() {
+    return ($scope.tag ? '/words/wordsbytag/' + $scope.tag + '/' : '/words/words/') + "?page_size=" + $scope.params.words_per_page;
+  };
 
   $scope.load_words = function(url) {
     $scope.loading = true;
@@ -106,7 +111,7 @@ jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeP
     }
   };
 
-  $scope.load_words($scope.tag ? '/words/wordsbytag/' + $scope.tag + '/' : '/words/words/');
+  $scope.load_words($scope.make_url());
   load_tags($scope, $http);
 });
 
