@@ -94,10 +94,6 @@ class WordsViewSet(viewsets.ViewSet):
         word = serializer.deserialize_and_update(request.DATA, request.user.id, pk)
         return Response(serializer.serialize(word))
 
-    def partial_update(self, request, pk=None):
-        # Is this even needed?
-        pass
-
     def destroy(self, request, pk=None):
         #TODO
         pass
