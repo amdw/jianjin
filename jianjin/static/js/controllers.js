@@ -75,12 +75,38 @@ jianjinControllers.factory('decrease_confidence', function(change_confidence) {
 
 jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeParams, load_tags, handle_error) {
   $scope.tag = $routeParams.tag;
-  $scope.loading = true;
 
-  $http.get($scope.tag ? '/words/wordsbytag/' + $scope.tag + '/' : '/words/words/').success(function(data) {
-    $scope.words = data;
-    $scope.loading = false;
-  }).error(handle_error($scope));
+  $scope.load_words = function(url) {
+    $scope.loading = true;
+    $http.get(url).success(function(data) {
+      $scope.count = data['count'];
+      $scope.page = data['page'];
+      $scope.next_page_url = data['next'];
+      $scope.previous_page_url = data['previous'];
+      $scope.words = data['results'];
+      $scope.loading = false;
+    }).error(handle_error($scope));
+  };
+
+  $scope.previous_page = function() {
+    if ($scope.previous_page_url) {
+      $scope.load_words($scope.previous_page_url);
+    }
+    else {
+      window.alert("There is no previous page!");
+    }
+  };
+
+  $scope.next_page = function() {
+    if ($scope.next_page_url) {
+      $scope.load_words($scope.next_page_url);
+    }
+    else {
+      window.alert("There is no next page!");
+    }
+  };
+
+  $scope.load_words($scope.tag ? '/words/wordsbytag/' + $scope.tag + '/' : '/words/words/');
   load_tags($scope, $http);
 });
 

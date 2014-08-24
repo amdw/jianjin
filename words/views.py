@@ -2,12 +2,14 @@ import random
 
 from django.http import HttpResponse, Http404
 from django.core import serializers
+from django.core.paginator import Paginator, InvalidPage
 from django.shortcuts import get_object_or_404
 
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.templatetags.rest_framework import replace_query_param
 
 from words.models import Word, Tag
 from serializers import WordSerializer, TagSerializer
@@ -31,36 +33,64 @@ def load_words(request, tag_name):
 
     return words
 
+def _get_page_size(request):
+    """Get number of words per page from an HTTP request, and apply some validations"""
+    page_size = int(request.QUERY_PARAMS.get('page_size', 10))
+    if page_size > 100:
+        raise ValueError("{0} is above max page size".format(page_size))
+    if page_size <= 0:
+        raise ValueError("Page size must be positive, found {0}".format(page_size))
+    return page_size
+
+def paginate_words(words, request):
+    """Generate paginated output from a word query set"""
+    try:
+        page_size = _get_page_size(request)
+        page_num = int(request.QUERY_PARAMS.get('page', 1))
+        paginator = Paginator(words, page_size)
+        page = paginator.page(page_num)
+    except ValueError as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    except InvalidPage as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = WordSerializer()
+    response = {'count': paginator.count,
+                'page_count': paginator.num_pages,
+                'page': page_num,
+                'results': serializer.serialize_many(page.object_list)}
+    request_url = request.build_absolute_uri()
+    if page.has_previous():
+        response['previous'] = replace_query_param(request_url, 'page', page.previous_page_number())
+    if page.has_next():
+        response['next'] = replace_query_param(request_url, 'page', page.next_page_number())
+    return Response(response)
+
 class WordsViewSet(viewsets.ViewSet):
     """
-    Using ModelViewSet should work here, but unfortunately the DRF serializers are just too buggy
-    right now in regard to their handling of many-to-many relationships. For example, see:
-    https://github.com/tomchristie/django-rest-framework/labels/writable%20nested%20serializers
+    Main JSON view set for the manipulation of words.
 
-    Once these issues have been addressed, it should be possible to simplify this considerably.
+    For more on why the implementation of this does not use ModelViewSet for the time being,
+    see serializers.WordSerializer.
     """
     model = Word
 
-    def _get_serializer(self):
-        return WordSerializer()
-
     def list(self, request):
-        words = Word.objects.filter(user=request.user.id)
-        serializer = self._get_serializer()
-        return Response(serializer.serialize_many(words))
+        words = Word.objects.filter(user=request.user.id).extra(order_by = ['word'])
+        return paginate_words(words, request)
 
     def retrieve(self, request, pk=None):
         word = get_object_or_404(Word, pk=pk, user=request.user.id)
-        serializer = self._get_serializer()
+        serializer = WordSerializer()
         return Response(serializer.serialize(word))
 
     def create(self, request):
-        serializer = self._get_serializer()
+        serializer = WordSerializer()
         word = serializer.deserialize_and_update(request.DATA, request.user.id)
         return Response(serializer.serialize(word))
 
     def update(self, request, pk=None):
-        serializer = self._get_serializer()
+        serializer = WordSerializer()
         word = serializer.deserialize_and_update(request.DATA, request.user.id, pk)
         return Response(serializer.serialize(word))
 
@@ -76,8 +106,7 @@ class WordsViewSet(viewsets.ViewSet):
 def words_by_tag(request, tag_name):
     """View function to load words for a particular tag"""
     words = load_words(request, tag_name)
-    serializer = WordSerializer()
-    return Response(serializer.serialize_many(words))
+    return paginate_words(words, request)
 
 def random_choice_by_weight(choices, r=random):
     """

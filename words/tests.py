@@ -160,7 +160,24 @@ class WordsApiTest(LoggedInJsonTest):
         response = self.client.get('/words/words/')
         json_response = self.assert_successful_json(response)
         self.assertEqual(sorted([u"你好", u"蛋白质", u"乌龙球", u"妇女"]),
-                         sorted(w['word'] for w in json_response))
+                         sorted(w['word'] for w in json_response['results']))
+
+    def test_get_words_pagination(self):
+        response = self.client.get('/words/words/?page_size=3')
+        json_response = self.assert_successful_json(response)
+        self.assertEqual(4, json_response['count'])
+        self.assertEqual(2, json_response['page_count'])
+        self.assertEqual(1, json_response['page'])
+        self.assertFalse('previous' in json_response)
+        self.assertEqual(sorted([u"你好", u"乌龙球", u"妇女"]), sorted(w['word'] for w in json_response['results']))
+        response = self.client.get(json_response['next'])
+        json_response = self.assert_successful_json(response)
+        self.assertEqual(4, json_response['count'])
+        self.assertEqual(2, json_response['page_count'])
+        self.assertEqual(2, json_response['page'])
+        self.assertTrue('previous' in json_response)
+        self.assertFalse('next' in json_response)
+        self.assertEqual([u"蛋白质"], sorted(w['word'] for w in json_response['results']))
 
     def test_get_word(self):
         response = self.client.get(self.word_url, follow=True)
@@ -171,7 +188,7 @@ class WordsApiTest(LoggedInJsonTest):
     def test_get_words_by_tag(self):
         response = self.client.get('/words/wordsbytag/awesome', follow=True)
         json_response = self.assert_successful_json(response)
-        self.assertEqual(sorted([u'蛋白质', u'你好']), [w['word'] for w in json_response])
+        self.assertEqual(sorted([u'蛋白质', u'你好']), [w['word'] for w in json_response['results']])
 
     def test_update_word(self):
         new_word = copy.deepcopy(self.orig_word)

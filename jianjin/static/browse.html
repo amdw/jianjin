@@ -6,9 +6,16 @@
 <div ng-if="!error && !loading">
   <div class="page-header"><h1>Browse</h1></div>
   
-  <ul>
-    <li ng-repeat="word in words"><a href="#/browse/{{word.id}}">{{word.word}}</a><span ng-if="show_pinyin"> ({{word.pinyin | pinyin}})</span></li>
-  </ul>
+  <div class="row col-sm-12"><p>
+    <button class="btn btn-primary" ng-if="previous_page_url" ng-click="previous_page()">Previous</button>
+    <button class="btn btn-primary" ng-if="next_page_url" ng-click="next_page()">Next</button>
+  </p></div>
+
+  <div class="row col-sm-12">
+    <ul>
+      <li ng-repeat="word in words"><a href="#/browse/{{word.id}}">{{word.word}}</a><span ng-if="show_pinyin"> ({{word.pinyin | pinyin}})</span></li>
+    </ul>
+  </div>
 
   <div class="row col-sm-12" style="padding-top:15px" ng-if="all_tags">
     <p>Filter by tag: <span ng-repeat="t in all_tags"><a href="#/browsetag/{{t}}" ng-if="t != tag">{{t}}</a><b ng-if="t == tag">{{t}}</b> | </span><a href="#/browse" ng-if="tag">All</a><b ng-if="!tag">All</b></p>
