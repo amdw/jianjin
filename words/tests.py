@@ -179,6 +179,22 @@ class WordsApiTest(LoggedInJsonTest):
         self.assertFalse('next' in json_response)
         self.assertEqual([u"蛋白质"], sorted(w['word'] for w in json_response['results']))
 
+    def test_get_words_sorting(self):
+        sorts = ["word", "pinyin", "confidence"]
+        reverse_sorts = ["date_added", "last_modified"]
+        for (sort, is_reverse) in dict(dict.fromkeys(sorts, False).items() +
+                                       dict.fromkeys(reverse_sorts, True).items()).items():
+            response = self.client.get('/words/words/?order={0}'.format(sort))
+            json_response = self.assert_successful_json(response)
+            expected_order = sorted(models.Word.objects.filter(user=1), key=lambda w: getattr(w, sort))
+            if is_reverse:
+                expected_order.reverse()
+            self.assertEquals([w.pinyin for w in expected_order], [w['pinyin'] for w in json_response['results']])
+
+        # Test disallowed sort
+        response = self.client.get('/words/words/?order=rufriblath')
+        self.assertEquals(400, response.status_code)
+
     def test_get_word(self):
         response = self.client.get(self.word_url, follow=True)
         word = self.assert_successful_json(response)

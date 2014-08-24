@@ -23,13 +23,16 @@ class TagsViewSet(viewsets.ReadOnlyModelViewSet):
         # Only return tags which the user has actually used
         return list(set(Tag.objects.filter(word__user=self.request.user.id)))
 
-def load_words(request, tag_name):
-    "Retrieve matching words for a particular HTTP request"
+def load_words(request, tag_name, ordering=None):
+    """Retrieve matching words for a particular HTTP request"""
     if tag_name:
         tag = get_object_or_404(Tag, tag=tag_name)
         words = tag.word_set.filter(user=request.user.id)
     else:
         words = Word.objects.filter(user=request.user.id)
+
+    if ordering:
+        words = words.extra(order_by=ordering)
 
     return words
 
@@ -42,17 +45,25 @@ def _get_page_size(request):
         raise ValueError("Page size must be positive, found {0}".format(page_size))
     return page_size
 
+def _get_ordering(request):
+    """Get word ordering from an HTTP request, and apply some validations"""
+    ordering_text = request.QUERY_PARAMS.get('order', None)
+    if not ordering_text:
+        return ["word"]
+    ordering_text = ordering_text.lower()
+    # Reverse orderings
+    if ordering_text in ["date_added", "last_modified"]:
+        return ["-{0}".format(ordering_text)]
+    if ordering_text in ["word", "pinyin", "confidence"]:
+        return [ordering_text]
+    raise ValueError("Unsupported ordering '{0}'".format(ordering_text))
+
 def paginate_words(words, request):
     """Generate paginated output from a word query set"""
-    try:
-        page_size = _get_page_size(request)
-        page_num = int(request.QUERY_PARAMS.get('page', 1))
-        paginator = Paginator(words, page_size)
-        page = paginator.page(page_num)
-    except ValueError as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    except InvalidPage as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    page_size = _get_page_size(request)
+    page_num = int(request.QUERY_PARAMS.get('page', 1))
+    paginator = Paginator(words, page_size)
+    page = paginator.page(page_num)
 
     serializer = WordSerializer()
     response = {'count': paginator.count,
@@ -66,6 +77,18 @@ def paginate_words(words, request):
         response['next'] = replace_query_param(request_url, 'page', page.next_page_number())
     return Response(response)
 
+def words_response(request, tag_name=None):
+    """Generate response to a given request for words."""
+    try:
+        ordering = _get_ordering(request)
+        words = load_words(request, tag_name, ordering)
+        return paginate_words(words, request)
+    except ValueError as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    except InvalidPage as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class WordsViewSet(viewsets.ViewSet):
     """
     Main JSON view set for the manipulation of words.
@@ -76,8 +99,7 @@ class WordsViewSet(viewsets.ViewSet):
     model = Word
 
     def list(self, request):
-        words = Word.objects.filter(user=request.user.id).extra(order_by = ['word'])
-        return paginate_words(words, request)
+        return words_response(request)
 
     def retrieve(self, request, pk=None):
         word = get_object_or_404(Word, pk=pk, user=request.user.id)
@@ -101,8 +123,7 @@ class WordsViewSet(viewsets.ViewSet):
 @api_view(['GET'])
 def words_by_tag(request, tag_name):
     """View function to load words for a particular tag"""
-    words = load_words(request, tag_name)
-    return paginate_words(words, request)
+    return words_response(request, tag_name)
 
 def random_choice_by_weight(choices, r=random):
     """

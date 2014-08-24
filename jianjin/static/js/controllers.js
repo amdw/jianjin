@@ -75,10 +75,11 @@ jianjinControllers.factory('decrease_confidence', function(change_confidence) {
 
 jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeParams, load_tags, handle_error) {
   $scope.tag = $routeParams.tag;
-  $scope.params = {"words_per_page": 10};
+  $scope.params = {"words_per_page": 10, "order": "word"};
+  $scope.available_orders = ["word", "pinyin", "confidence", "date_added", "last_modified"];
 
   $scope.make_url = function() {
-    return ($scope.tag ? '/words/wordsbytag/' + $scope.tag + '/' : '/words/words/') + "?page_size=" + $scope.params.words_per_page;
+    return ($scope.tag ? '/words/wordsbytag/' + $scope.tag + '/' : '/words/words/') + "?page_size=" + $scope.params.words_per_page + "&order=" + $scope.params.order;
   };
 
   $scope.load_words = function(url) {
@@ -109,6 +110,11 @@ jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeP
     else {
       window.alert("There is no next page!");
     }
+  };
+
+  $scope.set_order = function(order) {
+    $scope.params.order = order;
+    $scope.load_words($scope.make_url());
   };
 
   $scope.load_words($scope.make_url());
