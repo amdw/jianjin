@@ -25,7 +25,7 @@ I wrote this software because I want to use it, and because I wanted to practice
 
 # Current status
 
-This software is currently still incomplete and should be considered to be in pre-alpha state. The interface is still changing a lot, and the data model is not yet fully developed. I apologise that this isn't much use yet, but I believe in [releasing early and often](http://www.catb.org/esr/writings/homesteading/cathedral-bazaar/ar01s04.html)!
+The software is basically usable in its current state. There are a lot more features to be added, and I can't promise the data model won't change in the future, but the features which exist are already useful. See [the list of issues](https://github.com/amdw/jianjin/issues) for the list of things I would still like to do.
 
 # Installing and running
 
