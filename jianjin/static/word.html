@@ -35,7 +35,7 @@
                 <input type="text" class="form-control" placeholder="Definition" ng-model="def.definition"/>
               </div>
               <div class="col-sm-2">
-                <select class="form-control" ng-model="def.part_of_speech" ng-options="p for p in parts_of_speech" ng-init="def.part_of_speech=' '"></select>
+                <select class="form-control" ng-model="def.part_of_speech" ng-options="p for p in parts_of_speech"></select>
               </div>
               <div class="col-sm-2">
                 <button class="btn btn-danger" ng-click="delete_definition(def)">Delete</button>

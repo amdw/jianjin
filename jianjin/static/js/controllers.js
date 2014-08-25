@@ -179,7 +179,7 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
       if (typeof $scope.word.definitions == 'undefined') {
         $scope.word.definitions = [];
       }
-      $scope.word.definitions.push({});
+      $scope.word.definitions.push({"part_of_speech": " "});
     };
 
     $scope.delete_definition = function(def) {
