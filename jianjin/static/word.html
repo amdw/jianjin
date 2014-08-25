@@ -61,7 +61,7 @@
     </div>
     <button class="btn btn-info" ng-if="editing" ng-click="add_definition()">Add Definition</button>
     <div class="row col-sm-12">
-      <div ng-if="word.notes.trim() != ''">
+      <div ng-if="editing || word.notes.trim() != ''">
         <h4>Notes</h4>
         <p ng-if="!editing">{{word.notes}}</p>
         <textarea ng-if="editing" class="form-control" ng-model="word.notes"></textarea>
