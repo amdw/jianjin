@@ -91,6 +91,18 @@ The following instructions are specific to Heroku; to deploy to other PaaS servi
 
 Assuming all this worked, you should be able to run ```heroku open``` to open up the application.
 
+### Backing up your data
+
+If you use the free Heroku tier to run Jianjin, I recommend you back up your data on a regular basis if you don't want to lose it.
+
+To back up your data from Heroku, you can use Django's dumpdata feature via ```heroku run```, as follows:
+
+```heroku run python manage.py dumpdata --natural --indent=4 --exclude=contenttypes --exclude=auth.permission --exclude=admin --exclude=sessions > data.json```
+
+You will have to delete the first line of the resulting data.json file, because ```heroku``` sends its progress updates to stdout rather than stderr so they get mixed up with the output, which is unfortunate.
+
+To restore such a file to an empty (post-syncdb) database, simply run ```python manage.py loaddata data.json```, preceded by ```foreman run``` or ```heroku run``` as appropriate.
+
 # Architecture
 
 Jianjin uses [Angular.JS](http://angularjs.org/) for the front end user interface, with the back-end RESTful JSON API being implemented in Python using [Django](http://djangoproject.com/) and the [Django REST Framework](http://www.django-rest-framework.org/). Credit must also go to [Font Awesome](http://fortawesome.github.io/Font-Awesome/) for the spinner logo.
