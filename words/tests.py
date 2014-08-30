@@ -104,6 +104,18 @@ class MiscJsonApiTest(LoggedInJsonTest):
         self.assertEqual(400, response.status_code)
         self.assertEqual(orig_confidence, get_confidence())
 
+    def test_search_exact(self):
+        """Test searching for exact word"""
+        response = self.client.get(u'/words/searchexact/你好', follow=True)
+        json_response = self.assert_successful_json(response)
+        self.assertEqual(1, len(json_response))
+        self.assertEqual(u'你好', json_response[0]['word'])
+
+        # Non-existent word
+        response = self.client.get('/words/searchexact/wibble', follow=True)
+        json_response = self.assert_successful_json(response)
+        self.assertEqual(0, len(json_response))
+
 
 @override_settings(SSLIFY_DISABLE=True)
 class WordsApiTest(LoggedInJsonTest):
@@ -441,6 +453,12 @@ class AuthorizationTest(LoggedInJsonTest):
         response = self.put_json(word_url, word_map)
         self.assertEquals(404, response.status_code)
         self.assertEquals(0, len(models.Word.objects.get(pk=new_related_word['id']).related_words.all()))
+
+    def test_search_anothers_word(self):
+        """Try to search for someone else's word"""
+        response = self.client.get(u'/words/searchexact/加油', follow=True)
+        json_response = self.assert_successful_json(response)
+        self.assertEquals(0, len(json_response))
 
 
 @override_settings(SSLIFY_DISABLE=True)

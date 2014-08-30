@@ -131,6 +131,9 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
     $scope.enable_confidence = true;
     $scope.editing = is_new;
     $scope.is_new = is_new;
+    $scope.checking_existing = false;
+    $scope.existing = [];
+    $scope.existing_error = "";
 
     $scope.edit = function() {
       $scope.editing = true;
@@ -169,6 +172,26 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
         $http.put(get_word_url($scope.word_id), $scope.word).success(on_success).error(on_error);
       }
     };
+
+    if (is_new) {
+      $scope.check_existing = function() {
+        if (!$scope.word.word) {
+          return;
+        }
+        $scope.checking_existing = true;
+        $http.get("/words/searchexact/" + $scope.word.word).success(function(data) {
+          $scope.checking_existing = false;
+          $scope.existing = data;
+          $scope.existing_error = "";
+        }).error(function(data, status) {
+          $scope.checking_existing = false;
+          $scope.existing_error = "Error " + status + ": " + data;
+        });
+      };
+    }
+    else {
+      $scope.check_existing = function() {};
+    }
 
     $scope.cancel_edits = function() {
       $scope.word = $scope.original_word;

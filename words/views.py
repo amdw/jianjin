@@ -190,3 +190,10 @@ def confidence(request, word_id):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     word.save()
     return Response({"new": word.confidence})
+
+@api_view(['GET'])
+def search_exact(request, word):
+    """Search for an exact word"""
+    words = Word.objects.filter(word=word, user=request.user.id)
+    serializer = WordSerializer()
+    return Response(serializer.serialize_many(words))
