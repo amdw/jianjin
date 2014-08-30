@@ -345,6 +345,26 @@ class WordsApiTest(LoggedInJsonTest):
         self.assertEquals([self.orig_word['word']], [w.word for w in created_word.related_words.all()])
         self.assertEquals(USER, created_word.user.username)
 
+    def test_tag_validation(self):
+        """
+        Test that new blank tags are ignored, and that other kinds of illegal tags cause errors
+        """
+        new_word = copy.deepcopy(self.orig_word)
+        blank_tags = ['', '  ', '\t']
+        new_word['tags'].extend([{'tag': t} for t in blank_tags])
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        self.assertEquals(self.orig_word['tags'], json_response['tags'])
+        for t in blank_tags:
+            self.assertEquals(0, len([t.tag for t in models.Tag.objects.filter(tag=t)]))
+
+        illegal_tags = ['foo_bar', 'w!bble']
+        for tag in illegal_tags:
+            new_word = copy.deepcopy(self.orig_word)
+            new_word['tags'].append({'tag': tag})
+            response = self.put_json(self.word_url, new_word)
+            self.assertEquals(400, response.status_code)
+
 
 @override_settings(SSLIFY_DISABLE=True)
 class AuthorizationTest(LoggedInJsonTest):

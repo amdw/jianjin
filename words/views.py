@@ -1,8 +1,9 @@
 import random
 
-from django.http import HttpResponse, Http404
 from django.core import serializers
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, InvalidPage
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 
 from rest_framework import viewsets, status
@@ -108,12 +109,18 @@ class WordsViewSet(viewsets.ViewSet):
 
     def create(self, request):
         serializer = WordSerializer()
-        word = serializer.deserialize_and_update(request.DATA, request.user.id)
+        try:
+            word = serializer.deserialize_and_update(request.DATA, request.user.id)
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.serialize(word))
 
     def update(self, request, pk=None):
         serializer = WordSerializer()
-        word = serializer.deserialize_and_update(request.DATA, request.user.id, pk)
+        try:
+            word = serializer.deserialize_and_update(request.DATA, request.user.id, pk)
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.serialize(word))
 
     def destroy(self, request, pk=None):
@@ -177,5 +184,9 @@ def confidence(request, word_id):
         return Response({"error": "New confidence value must be a number, not '{0}'".format(new_confidence)},
                         status=status.HTTP_400_BAD_REQUEST)
     word.confidence = int(new_confidence)
+    try:
+        word.full_clean()
+    except ValidationError as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     word.save()
     return Response({"new": word.confidence})

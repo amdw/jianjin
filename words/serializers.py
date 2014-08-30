@@ -63,6 +63,9 @@ class WordSerializer:
         """
         Given an incoming dictionary parsed from JSON, convert it into a model object,
         and create it in the database if it does not exist or update it if it does.
+
+        Errors (e.g. object not found, validation errors) are signalled by raising exceptions
+        out of this method, so callers should be prepared to handle those.
         """
         if pk:
             word = get_object_or_404(Word, pk=pk, user=user_id)
@@ -78,6 +81,7 @@ class WordSerializer:
         word.last_modified = datetime.now()
         word.confidence = obj.get('confidence', word.confidence)
 
+        word.full_clean()
         word.save()
 
         if 'definitions' in obj:
@@ -97,7 +101,7 @@ class WordSerializer:
         creating any which don't already exist, and remove any tags which no longer have
         any associated words.
         """
-        tags = self._get_tags(set([t['tag'] for t in tag_maps]))
+        tags = self._get_tags(set([t['tag'] for t in tag_maps if t['tag'].strip() != '']))
         removed_tags = [t for t in word.tags.all() if not t in tags]
         word.tags.clear()
         word.tags.add(*tags)
@@ -117,6 +121,7 @@ class WordSerializer:
                 result.append(db_tags[0]) # Guaranteed unique
             else:
                 db_tag = Tag(tag=tag)
+                db_tag.full_clean()
                 db_tag.save()
                 result.append(db_tag)
         return result
