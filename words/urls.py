@@ -13,4 +13,5 @@ urlpatterns = patterns('',
     url(r'^wordsbytag/({0})'.format(models.TAG_REGEX), views.words_by_tag),
     url(r'^confidence/([0-9]+)', views.confidence),
     url(r'^searchexact/(.+)', views.search_exact),
+    url(r'^search/(.+)', views.search_exact),
 )

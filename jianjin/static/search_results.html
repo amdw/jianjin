@@ -1,0 +1,16 @@
+<div class="page-header" ng-if="error">
+  <h1>Could not complete search for {{search_text}}</h1>
+  <p>{{error}} ({{error_status}})</p>
+</div>
+<div class="page-header" ng-if="loading">Loading... <i class="fa fa-spinner fa-spin"></i></div>
+<span ng-if="!error && !loading">
+  <div class="page-header">
+    <h1>Search results</h1>
+  </div>
+  <div class="row col-sm-12">
+    <ul ng-if="search_results.length">
+      <li ng-repeat="word in search_results"><a href="#/browse/{{word.id}}">{{word.word}}</a> ({{word.pinyin | pinyin}})</li>
+    </ul>
+    <p ng-if="!search_results.length">No search results for {{search_text}}.</p>
+  </div>
+</span>

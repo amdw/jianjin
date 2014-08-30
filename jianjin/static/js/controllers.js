@@ -10,6 +10,15 @@ jianjinControllers.controller('HeaderCtrl', function ($scope, $location) {
   $scope.isActive = function (viewLocation) {
     return $location.path().indexOf(viewLocation) == 0;
   };
+
+  $scope.search_key = function(event) {
+    if (event.keyIdentifier != "Enter" || !$scope.search_text) {
+      return;
+    }
+    var search_text = $scope.search_text;
+    $scope.search_text = "";
+    $location.path('/search/' + search_text);
+  };
 });
 
 jianjinControllers.constant('handle_error', function($scope) {
@@ -312,3 +321,17 @@ jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routePar
   load_tags($scope, $http);
 });
 
+jianjinControllers.controller('SearchResultsCtrl', function($scope, $http, $routeParams, handle_error) {
+  $scope.search_text = $routeParams.search_text;
+  $scope.search_results = [];
+
+  $scope.search = function(search_text) {
+    $scope.loading = true;
+    $http.get('/words/search/' + $scope.search_text).success(function(data) {
+      $scope.loading = false;
+      $scope.search_results = data;
+    }).error(handle_error($scope));
+  };
+
+  $scope.search($scope.search_text);
+});

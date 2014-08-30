@@ -32,6 +32,10 @@ jianjinApp.config(function ($routeProvider) {
     when('/about', {
       templateUrl: '/static/about.html',
     }).
+    when('/search/:search_text', {
+      templateUrl: '/static/search_results.html',
+      controller: 'SearchResultsCtrl',
+    }).
     otherwise({
       redirectTo: '/'
     });
