@@ -103,6 +103,12 @@ You will have to delete the first line of the resulting data.json file, because 
 
 To restore such a file to an empty (post-syncdb) database, simply run ```python manage.py loaddata data.json```, preceded by ```foreman run``` or ```heroku run``` as appropriate.
 
+## Tips for mobile use
+
+Jianjin has built-in links to dictionary sites like MDBG so you can look up words as you are typing them in. However, some mobile browsers have an extremely annoying habit of arbitrarily reloading tabs when you switch between them; if you switch to a dictionary tab and then back to Jianjin while you are editing a word, then if the browser decides to reload Jianjin at that point, you will lose your edits.
+
+On Safari on iOS 7, this seems to be avoidable by going into Settings / Safari and disabling the "Open New Tabs in Background" option, so if you're going to use Jianjin on iPad or iPhone a lot, I would recommend you do this.
+
 # Architecture
 
 Jianjin uses [Angular.JS](http://angularjs.org/) for the front end user interface, with the back-end RESTful JSON API being implemented in Python using [Django](http://djangoproject.com/) and the [Django REST Framework](http://www.django-rest-framework.org/). Credit must also go to [Font Awesome](http://fortawesome.github.io/Font-Awesome/) for the spinner logo.
