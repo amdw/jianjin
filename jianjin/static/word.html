@@ -30,7 +30,7 @@
           </span>
         </span>
         <input type="text" class="form-control" placeholder="Pinyin" ng-model="word.pinyin"/>
-        <a href="{{word.word | mdbglink}}" target="_blank" ng-if="word.word">MDBG lookup</a>, <a href="{{word.word | googletranslatelink}}" target="_blank">Google Translate</a> <span ng-if="word.pinyin">({{word.pinyin | pinyin}})</span>
+        <span ng-if="word.word"><a href="{{word.word | mdbglink}}" target="_blank">MDBG lookup</a>, <a href="{{word.word | googletranslatelink}}" target="_blank">Google Translate</a> </span><span ng-if="word.pinyin">({{word.pinyin | pinyin}})</span>
       </div>
     </div>
     <div class="panel panel-primary" ng-repeat="def in word.definitions">
