@@ -84,8 +84,8 @@ jianjinControllers.factory('decrease_confidence', function(change_confidence) {
 
 jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeParams, load_tags, handle_error) {
   $scope.tag = $routeParams.tag;
-  $scope.params = {"words_per_page": 10, "order": "word"};
-  $scope.available_orders = ["word", "pinyin", "confidence", "date_added", "last_modified"];
+  $scope.params = {"words_per_page": 10, "order": "date_added"};
+  $scope.available_orders = ["date_added", "last_modified", "word", "pinyin", "confidence"];
 
   $scope.make_url = function() {
     return ($scope.tag ? '/words/wordsbytag/' + $scope.tag + '/' : '/words/words/') + "?page_size=" + $scope.params.words_per_page + "&order=" + $scope.params.order;

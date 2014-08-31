@@ -50,7 +50,7 @@ def _get_ordering(request):
     """Get word ordering from an HTTP request, and apply some validations"""
     ordering_text = request.QUERY_PARAMS.get('order', None)
     if not ordering_text:
-        return ["word"]
+        return ["-date_added"]
     ordering_text = ordering_text.lower()
     # Reverse orderings
     if ordering_text in ["date_added", "last_modified"]:

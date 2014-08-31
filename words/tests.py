@@ -174,17 +174,23 @@ class WordsApiTest(LoggedInJsonTest):
     def test_get_words(self):
         response = self.client.get('/words/words/')
         json_response = self.assert_successful_json(response)
-        self.assertEqual(sorted([u"你好", u"蛋白质", u"乌龙球", u"妇女"]),
-                         sorted(w['word'] for w in json_response['results']))
+        words = models.Word.objects.filter(user=1)
+        # Default sort should be by date_added
+        self.assertEqual([w.word for w in sorted(words, key=lambda wd: wd.date_added, reverse=True)],
+                         [w['word'] for w in json_response['results']])
 
     def test_get_words_pagination(self):
+        words = models.Word.objects.filter(user=1)
+
         response = self.client.get('/words/words/?page_size=3')
         json_response = self.assert_successful_json(response)
         self.assertEqual(4, json_response['count'])
         self.assertEqual(2, json_response['page_count'])
         self.assertEqual(1, json_response['page'])
         self.assertFalse('previous' in json_response)
-        self.assertEqual(sorted([u"你好", u"乌龙球", u"妇女"]), sorted(w['word'] for w in json_response['results']))
+        self.assertEqual([w.word for w in sorted(words, key=lambda wd: wd.date_added, reverse=True)][0:3],
+                         [w['word'] for w in json_response['results']])
+
         response = self.client.get(json_response['next'])
         json_response = self.assert_successful_json(response)
         self.assertEqual(4, json_response['count'])
@@ -192,7 +198,8 @@ class WordsApiTest(LoggedInJsonTest):
         self.assertEqual(2, json_response['page'])
         self.assertTrue('previous' in json_response)
         self.assertFalse('next' in json_response)
-        self.assertEqual([u"蛋白质"], sorted(w['word'] for w in json_response['results']))
+        self.assertEqual([w.word for w in sorted(words, key=lambda wd: wd.date_added, reverse=True)][3:6],
+                         [w['word'] for w in json_response['results']])
 
     def test_get_words_sorting(self):
         sorts = ["word", "pinyin", "confidence"]
@@ -219,7 +226,9 @@ class WordsApiTest(LoggedInJsonTest):
     def test_get_words_by_tag(self):
         response = self.client.get('/words/wordsbytag/awesome', follow=True)
         json_response = self.assert_successful_json(response)
-        self.assertEqual(sorted([u'蛋白质', u'你好']), [w['word'] for w in json_response['results']])
+        words = models.Tag.objects.get(tag='awesome').word_set.all()
+        self.assertEqual([w.word for w in sorted(words, key=lambda wd: wd.date_added, reverse=True)],
+                         [w['word'] for w in json_response['results']])
 
     def test_update_word(self):
         new_word = copy.deepcopy(self.orig_word)
