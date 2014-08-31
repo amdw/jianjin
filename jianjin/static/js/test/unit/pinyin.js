@@ -24,4 +24,8 @@ describe('pinyin', function() {
   it('should correctly generate MDBG links', inject(function(mdbglinkFilter) {
     expect(mdbglinkFilter("蛋白质")).toBe("http://www.mdbg.net/chindict/chindict.php?page=worddict&wdrst=0&wdqb=蛋白质");
   }));
+
+  it('should correctly generate Google Translate links', inject(function(googletranslatelinkFilter) {
+    expect(googletranslatelinkFilter("蛋白质")).toBe("https://translate.google.com/#zh-CN/en/蛋白质");
+  }));
 });

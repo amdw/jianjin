@@ -82,3 +82,9 @@ pinyin.filter('mdbglink', function() {
     return "http://www.mdbg.net/chindict/chindict.php?page=worddict&wdrst=0&wdqb=" + word;
   };
 });
+
+pinyin.filter('googletranslatelink', function() {
+  return function(word) {
+    return "https://translate.google.com/#zh-CN/en/" + word;
+  };
+});
