@@ -135,7 +135,7 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
     $scope.word_id = $routeParams.word_id;
     $scope.increase_confidence = function() { increase_confidence($scope) };
     $scope.decrease_confidence = function() { decrease_confidence($scope) };
-    $scope.parts_of_speech = [" ", "N", "V", "ADJ", "ADV", "PREP"];
+    $scope.parts_of_speech = [" ", "N", "V", "ADJ", "ADV", "PREP", "MW"];
 
     $scope.enable_confidence = true;
     $scope.editing = is_new;

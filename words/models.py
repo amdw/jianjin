@@ -41,6 +41,7 @@ PART_CHOICES = (
     ('ADJ', 'adjective'),
     ('ADV', 'adverb'),
     ('PREP', 'preposition'),
+    ('MW', 'measure'),
 )
     
 class Definition(models.Model):
