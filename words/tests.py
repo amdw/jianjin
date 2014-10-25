@@ -49,11 +49,20 @@ class MiscJsonApiTest(LoggedInJsonTest):
     def test_get_tags(self):
         response = self.client.get('/words/tags/')
         json_response = self.assert_successful_json(response)
-        self.assertEqual(sorted(["awesome", "funny"]), sorted([t['tag'] for t in json_response]))
+        self.assertEqual(sorted(["awesome", "funny", "awesome2", "awesome3", "awesome4", "awesome5"]), sorted([t['tag'] for t in json_response]))
+
+    def test_common_tags(self):
+        """Test common tag functionality"""
+        response = self.client.get('/words/commontags/')
+        json_response = self.assert_successful_json(response)
+        self.assertEqual(['awesome', 'funny', 'awesome2', 'awesome3', 'awesome4'],
+                         [t['tag'] for t in json_response])
 
     def test_tags_read_only(self):
         """Tags should only be updated via words, so posting directly should not work"""
         response = self.post_json('/words/tags/', {"tag": "wibble"})
+        self.assertEqual(405, response.status_code)
+        response = self.post_json('/words/commontags/', {"tag": "wibble"})
         self.assertEqual(405, response.status_code)
 
     def test_flashcard(self):

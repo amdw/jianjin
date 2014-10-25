@@ -3,6 +3,7 @@ import random
 from django.core import serializers
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, InvalidPage
+from django.db.models.aggregates import Count
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 
@@ -23,6 +24,19 @@ class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         # Only return tags which the user has actually used
         return list(set(Tag.objects.filter(word__user=self.request.user.id)))
+
+class CommonTagsViewSet(viewsets.ReadOnlyModelViewSet):
+    """View set for the most common tags"""
+    model = Tag
+    serializer_class = TagSerializer
+
+    def get_queryset(self):
+        words = Word.objects.filter(user=self.request.user.id)
+        aggregate = words.values('tags').annotate(Count('id')).order_by('-id__count')
+        common_tag_ids = [t['tags'] for t in aggregate if t['tags']][:5]
+        common_tags = Tag.objects.in_bulk(common_tag_ids)
+        return [common_tags[id] for id in common_tag_ids]
+
 
 def load_words(request, tag_name, ordering=None):
     """Retrieve matching words for a particular HTTP request"""

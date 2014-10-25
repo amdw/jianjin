@@ -37,14 +37,14 @@
 },
 {
     "pk": 1, 
-    "model": "words.tag", 
+    "model": "words.tag",
     "fields": {
         "tag": "awesome"
     }
 },
 {
     "pk": 2, 
-    "model": "words.tag", 
+    "model": "words.tag",
     "fields": {
         "tag": "funny"
     }
@@ -54,6 +54,34 @@
     "model": "words.tag",
     "fields": {
         "tag": "cool"
+    }
+},
+{
+    "pk": 4,
+    "model": "words.tag",
+    "fields": {
+        "tag": "awesome2"
+    }
+},
+{
+    "pk": 5,
+    "model": "words.tag",
+    "fields": {
+        "tag": "awesome3"
+    }
+},
+{
+    "pk": 6,
+    "model": "words.tag",
+    "fields": {
+        "tag": "awesome4"
+    }
+},
+{
+    "pk": 7,
+    "model": "words.tag",
+    "fields": {
+        "tag": "awesome5"
     }
 },
 {
@@ -70,7 +98,7 @@
         "last_modified": "2014-06-14T14:29:15.857Z", 
         "user": [
             "user"
-        ], 
+        ],
         "date_added": "2014-06-14T11:25:53.081Z", 
         "related_words": [
             3
@@ -84,7 +112,7 @@
         "confidence": 0, 
         "word": "\u86cb\u767d\u8d28", 
         "tags": [
-            1
+            1, 4, 5, 6, 7
         ], 
         "pinyin": "dan4bai2zhi4", 
         "notes": "", 

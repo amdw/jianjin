@@ -5,6 +5,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'words', views.WordsViewSet)
 router.register(r'tags', views.TagsViewSet)
+router.register(r'commontags', views.CommonTagsViewSet)
 
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),

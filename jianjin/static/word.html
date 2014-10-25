@@ -98,6 +98,9 @@
               <div class="col-sm-2"><input class="form-control" ng-if="tag.new" ng-model="tag.tag"/><span ng-if="!tag.new"><b>{{tag.tag}}</b></span></div>
               <div class="col-sm-2"><button class="btn btn-danger" ng-click="remove_tag(tag)">Remove</button></div>
             </div>
+            <div class="form-group col-sm-12" ng-if="common_tags">
+              <span ng-repeat="ct in common_tags"><button class="btn btn-default" ng-click="add_tag(ct)" ng-disabled="has_tag(ct)">{{ct}}</button> </span>
+            </div>
             <div class="form-group col-sm-12"><button class="btn btn-info" ng-click="add_tag()">Add Tag</button></div>
           </form>
         </div>
