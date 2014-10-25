@@ -194,7 +194,7 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
           $scope.existing_error = "";
         }).error(function(data, status) {
           $scope.checking_existing = false;
-          $scope.existing_error = "Error " + status + ": " + data;
+          $scope.existing_error = "Error " + status + ": " + JSON.stringify(data);
         });
       };
     }
