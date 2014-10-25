@@ -24,7 +24,7 @@
         <span ng-if="is_new">
           <span ng-if="checking_existing">Checking for existing words... <i class="fa fa-spinner fa-spin"></i></span>
           <span ng-if="!checking_existing">
-            <span ng-if="existing.length">Existing words: <span ng-repeat="ew in existing"><a href="#/browse/{{ew.id}}">{{ew.pinyin | pinyin}}</a> </span></span>
+            <span ng-if="existing.length">Existing words: <span ng-repeat="ew in existing"><a href="#/browse/{{ew.id}}"><span ng-if="ew.pinyin">{{ew.pinyin | pinyin}}</span><span ng-if="!ew.pinyin">{{ew.word}} ({{ew.id}})</span></a> </span></span>
             <span ng-if="existing_error">Error looking for existing words: {{existing_error}}</span>
             <span ng-if="word.word && !existing.length && !existing_error">This is a new word.</span>
           </span>
