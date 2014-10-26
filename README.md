@@ -95,13 +95,7 @@ Assuming all this worked, you should be able to run ```heroku open``` to open up
 
 If you use the free Heroku tier to run Jianjin, I recommend you back up your data on a regular basis if you don't want to lose it.
 
-To back up your data from Heroku, you can use Django's dumpdata feature via ```heroku run```, as follows:
-
-```heroku run python manage.py dumpdata --natural --indent=4 --exclude=contenttypes --exclude=auth.permission --exclude=admin --exclude=sessions > data.json```
-
-You will have to delete the first line of the resulting data.json file, because ```heroku``` sends its progress updates to stdout rather than stderr so they get mixed up with the output, which is unfortunate.
-
-To restore such a file to an empty (post-syncdb) database, simply run ```python manage.py loaddata data.json```, preceded by ```foreman run``` or ```heroku run``` as appropriate.
+The easiest way to do this is to use the [Postgres Import/Export](https://devcenter.heroku.com/articles/heroku-postgres-import-export) feature on Heroku. It's possible to run the Django ```manage.py dumpdata``` command via ```heroku run```, but it tends to time out and not capture all the data properly.
 
 ## Tips for mobile use
 
