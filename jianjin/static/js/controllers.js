@@ -144,15 +144,19 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
     $scope.existing = [];
     $scope.existing_error = "";
 
-    $scope.edit = function() {
-      $scope.editing = true;
-      // Poor man's deep copy
-      $scope.original_word = JSON.parse(JSON.stringify($scope.word));
+    $scope.load_common_tags = function() {
       if (!$scope.common_tags) {
         $http.get("/words/commontags/").success(function(data) {
           $scope.common_tags = data.map(function(t) { return t["tag"] });
         });
       }
+    };
+
+    $scope.edit = function() {
+      $scope.editing = true;
+      // Poor man's deep copy
+      $scope.original_word = JSON.parse(JSON.stringify($scope.word));
+      $scope.load_common_tags();
     };
 
     $scope.save = function() {
@@ -278,6 +282,10 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
         $scope.word = data;
         $scope.loading = false;
       }).error(handle_error($scope));
+    }
+
+    if ($scope.editing) {
+      $scope.load_common_tags();
     }
   };
 };
