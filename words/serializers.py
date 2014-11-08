@@ -101,7 +101,7 @@ class WordSerializer:
         creating any which don't already exist, and remove any tags which no longer have
         any associated words.
         """
-        tags = self._get_tags(set([t['tag'] for t in tag_maps if t['tag'].strip() != '']))
+        tags = self._get_tags(set([t['tag'].lower() for t in tag_maps if t['tag'].strip() != '']))
         removed_tags = [t for t in word.tags.all() if not t in tags]
         word.tags.clear()
         word.tags.add(*tags)

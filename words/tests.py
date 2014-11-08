@@ -297,13 +297,22 @@ class WordsApiTest(LoggedInJsonTest):
         self.assertEqual(len(new_defs),
                          len(json_response['definitions'][0]['example_sentences']))
 
-    def test_add_tag(self):
+    def add_tag_helper(self, new_tag):
+        """Test addition of new tag"""
         new_word = copy.deepcopy(self.orig_word)
-        new_word['tags'].append({'tag': 'splendiferous'})
+        new_word['tags'].append({'tag': new_tag})
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
-        self.assertTrue('splendiferous' in [t.tag for t in self.latest_word().tags.all()])
-        self.assertTrue('splendiferous' in [t['tag'] for t in json_response['tags']])
+        self.assertTrue(new_tag.lower() in [t.tag for t in self.latest_word().tags.all()])
+        self.assertTrue(new_tag.lower() in [t['tag'] for t in json_response['tags']])
+
+    def test_add_tag(self):
+        """Test adding a regular tag"""
+        self.add_tag_helper('splendiferous')
+
+    def test_tag_case_conversion(self):
+        """Tags should be automatically lower-cased"""
+        self.add_tag_helper('Splendiferous')
 
     def test_add_duplicate_tag(self):
         """
