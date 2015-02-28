@@ -260,6 +260,9 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
     };
 
     $scope.has_tag = function(tag) {
+      if (typeof $scope.word.tags == 'undefined') {
+        return false;
+      }
       var existing_tags = $scope.word.tags.map(function(t) { return t.tag });
       return existing_tags.indexOf(tag) >= 0;
     };
