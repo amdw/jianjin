@@ -124,7 +124,7 @@ class WordsViewSet(viewsets.ViewSet):
     def create(self, request):
         serializer = WordSerializer()
         try:
-            word = serializer.deserialize_and_update(request.DATA, request.user.id)
+            word = serializer.deserialize_and_update(request.data, request.user.id)
         except ValidationError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.serialize(word))
@@ -132,7 +132,7 @@ class WordsViewSet(viewsets.ViewSet):
     def update(self, request, pk=None):
         serializer = WordSerializer()
         try:
-            word = serializer.deserialize_and_update(request.DATA, request.user.id, pk)
+            word = serializer.deserialize_and_update(request.data, request.user.id, pk)
         except ValidationError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.serialize(word))
@@ -190,10 +190,10 @@ def flashcard_word(request, tag_name=None):
 def confidence(request, word_id):
     """View function to allow direct adjustments of confidence"""
     word = get_object_or_404(Word, pk=int(word_id), user=request.user.id)
-    if not 'new' in request.DATA:
+    if not 'new' in request.data:
         return Response({"error": "Must specify 'new' confidence value"},
                         status=status.HTTP_400_BAD_REQUEST)
-    new_confidence = request.DATA['new']
+    new_confidence = request.data['new']
     if isinstance(new_confidence, basestring) and not new_confidence.isdigit():
         return Response({"error": "New confidence value must be a number, not '{0}'".format(new_confidence)},
                         status=status.HTTP_400_BAD_REQUEST)
