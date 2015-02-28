@@ -284,18 +284,39 @@ class WordsApiTest(LoggedInJsonTest):
         self.assertEquals([], json_response['definitions'][-1]['example_sentences'])
         self.assertTrue('something' in [d.definition for d in self.latest_word().definitions.all()])
 
-    def test_add_sentence(self):
+    def test_sentence_crud(self):
         new_word = copy.deepcopy(self.orig_word)
-        new_defs = new_word['definitions'][0]['example_sentences']
-        new_defs.append({'sentence': '你好亲爱的!',
+        new_sentences = new_word['definitions'][0]['example_sentences']
+        new_sentences.append({'sentence': u'你好亲爱的!',
                          'pinyin': 'Ni3hao3 qin1ai4de!',
                          'translation': 'Hello dear!'})
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
-        self.assertEqual(len(new_defs),
-                         len(self.latest_word().definitions.all()[0].example_sentences.all()))
-        self.assertEqual(len(new_defs),
-                         len(json_response['definitions'][0]['example_sentences']))
+
+        def check_sentences():
+            self.assertEqual(len(new_sentences),
+                             len(self.latest_word().definitions.all()[0].example_sentences.all()))
+            expected_map = dict(zip([s['sentence'] for s in new_sentences], new_sentences))
+            actual_list = json_response['definitions'][0]['example_sentences']
+            actual_map = dict(zip([s['sentence'] for s in actual_list], actual_list))
+            self.assertEqual(set(expected_map.keys()), set(actual_map.keys()))
+            for sentence_text in expected_map.keys():
+                for field in ['sentence', 'pinyin', 'translation']:
+                    self.assertEqual(expected_map[sentence_text][field], actual_map[sentence_text][field])
+
+        check_sentences()
+
+        # Do an update
+        new_sentences[-1]['translation'] = 'Hello darling!'
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        check_sentences()
+
+        # Delete it
+        new_sentences.pop()
+        response = self.put_json(self.word_url, new_word)
+        json_response = self.assert_successful_json(response)
+        check_sentences()
 
     def add_tag_helper(self, new_tag):
         """Test addition of new tag"""

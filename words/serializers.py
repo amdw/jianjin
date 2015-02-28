@@ -24,11 +24,36 @@ class ExampleSentenceSerializer(serializers.ModelSerializer):
         exclude = ('definition',)
         
 class DefinitionSerializer(serializers.ModelSerializer):
-    example_sentences = ExampleSentenceSerializer(many=True, allow_add_remove=True, required=False)
+    example_sentences = ExampleSentenceSerializer(many=True, required=False)
     
     class Meta:
         model = Definition
         exclude = ('word',)
+
+    def update(self, instance, validated_data):
+        """
+        Override as this involves nested writes.
+        This wasn't necessary in DRF 2.4 as there was an allow_add_remove option you could put on ExampleSentenceSerializer.
+        There's a hint in the docs that this might get added back again in the future, which would be nice...
+        http://www.django-rest-framework.org/api-guide/serializers/#customizing-multiple-update
+        """
+        for attr, value in validated_data.items():
+            if attr == 'example_sentences':
+                existing = instance.example_sentences.all()
+                existing_map = dict(zip([s.sentence for s in existing], existing))
+                updated_map = dict(zip([s['sentence'] for s in value], value))
+                sentence_serializer = ExampleSentenceSerializer()
+                for sentence_text, sentence_map in updated_map.items():
+                    sentence = existing_map[sentence_text] if sentence_text in existing_map else instance.example_sentences.create()
+                    sentence_serializer.update(sentence, sentence_map)
+                    sentence.save()
+                for sentence_text, sentence in existing_map.items():
+                    if sentence_text not in updated_map:
+                        sentence.delete()
+            else:
+                setattr(instance, attr, value)
+        instance.save()
+        return instance
 
 class WordSerializer:
     """
