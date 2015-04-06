@@ -1,0 +1,3 @@
+FROM fedora:21
+RUN yum update -y
+RUN yum install python-pip python-devel postgresql-devel gcc -y
