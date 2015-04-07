@@ -46,14 +46,19 @@ the Jianjin Django server.
 
 # Running a single dev container
 
-Run ```./start_devel.sh``` to start [the Django development
-server](https://docs.djangoproject.com/en/1.8/ref/django-admin/#runserver-port-or-address-port).
+Run ```./devel.sh run``` to start [the Django development
+server](https://docs.djangoproject.com/en/1.8/ref/django-admin/#runserver-port-or-address-port). If
+you don't already have a ```db.sqlite3``` file present, you can run
+```./devel.sh syncdb``` to run the syncdb process to bootstrap it.
 
 Note that this is a privileged container with access to the code in
 the containing repository on the host. This means that when you change
 the code on the host, the changes will be seen by the container
 immediately, so you don't have to restart the container in order for
 the changes to take effect in most cases.
+
+You can also run ```./devel.sh test``` to run the Python tests inside
+the container.
 
 # Running with a separate PostgreSQL container
 
