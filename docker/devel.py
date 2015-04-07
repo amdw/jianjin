@@ -43,7 +43,6 @@ def main():
         raise ValueError("Expected at most one tag, found {0}".format(tags))
     tag = tags[0] if tags else 'latest'
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    print "base: {0}".format(base_dir)
 
     did_something = False
     
