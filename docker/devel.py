@@ -19,6 +19,8 @@ def run_server(container_name, tag, base_dir):
                            "-v", "{0}:/code".format(base_dir),
                            "--privileged=true", "jianjin/django:{0}".format(tag),
                            "python", "manage.py", "runserver", "0.0.0.0:8000"])
+    url = subprocess.check_output(["sudo", "docker", "port", container_name, "8000"])
+    logging.info("You may connect on {0}".format(url))
 
 def run_command(tag, base_dir, command):
     parts = ["sudo", "docker", "run", "--rm", "-ti",
