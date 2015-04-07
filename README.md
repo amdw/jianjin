@@ -43,7 +43,7 @@ For development or personal local use, you can run Jianjin on your own computer;
 * Activate the virtualenv: ```source venv/bin/activate```
 * Install the Django toolbelt and the other required Python libraries into your virtualenv: ```pip install -r requirements.txt```
 * Create a ```.env``` file with local settings: ```cp env.sample .env```. Edit the ```DATABASE_URL``` in the new ```.env``` file to point to a suitable path for your SQLite database.
-* Set up the database and an admin user: ```foreman run python manage.py syncdb```
+* Set up the database and an admin user: ```foreman run python manage.py makemigrations words```, ```foreman run python manage.py migrate```, and ```foreman run python manage.py createsuperuser```
 * Start the local development server: ```foreman start```
 
 You should get a log message telling you what port the server has bound to; you can then visit localhost:port in your browser and the page should load.
@@ -87,7 +87,7 @@ The following instructions are specific to Heroku; to deploy to other PaaS servi
 * Run ```heroku create``` to create a new Heroku application
 * Run ```jianjin/heroku-configure.py``` to set certain required configuration properties, such as generating a Django secret key
 * Run ```git push heroku master``` to push your current code to Heroku
-* Run ```heroku run python manage.py syncdb``` to set up the database
+* Run ```heroku run python manage.py makemigrations words```, ```heroku run python manage.py migrate``` and ```heroku run python manage.py createsuperuser``` to set up the database
 
 Assuming all this worked, you should be able to run ```heroku open``` to open up the application.
 

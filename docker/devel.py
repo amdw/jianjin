@@ -34,12 +34,14 @@ def run_command(tag, base_dir, command):
 def run_tests(tag, base_dir):
     run_command(tag, base_dir, ["python", "manage.py", "test", "words"])
 
-def run_syncdb(tag, base_dir):
-    run_command(tag, base_dir, ["python", "manage.py", "syncdb"])
+def run_initial_migration(tag, base_dir):
+    run_command(tag, base_dir, ["python", "manage.py", "makemigrations", "words"])
+    run_command(tag, base_dir, ["python", "manage.py", "migrate"])
+    run_command(tag, base_dir, ["python", "manage.py", "createsuperuser"])
     
 def main():
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
-    legal_commands = ["run", "syncdb", "test"]
+    legal_commands = ["run", "initmigration", "test"]
     tags = [arg for arg in sys.argv[1:] if arg not in legal_commands]
     if len(tags) > 1:
         raise ValueError("Expected at most one tag, found {0}".format(tags))
@@ -52,8 +54,8 @@ def main():
         run_server("jianjin_django_dev", tag, base_dir)
         did_something = True
 
-    if "syncdb" in sys.argv:
-        run_syncdb(tag, base_dir)
+    if "initmigration" in sys.argv:
+        run_initial_migration(tag, base_dir)
         did_something = True
         
     if "test" in sys.argv:

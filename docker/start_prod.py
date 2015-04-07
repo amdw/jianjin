@@ -37,6 +37,12 @@ def django_command(command_to_run, pg_container_name, allowed_hosts,
     Run command in a Django container
     """
     command = ["sudo", "docker", "run"]
+
+    if daemon:
+        command.extend(["-p", "8000", "-d"])
+    else:
+        command.extend(["--rm", "-t", "-i"])
+
     if name:
         command.extend(["--name", name])
 
@@ -50,11 +56,6 @@ def django_command(command_to_run, pg_container_name, allowed_hosts,
     command.extend(["-e", "DJANGO_SECRET_KEY={0}".format(secret_key)])
     command.extend(["-e", "ALLOWED_HOSTS={0}".format(allowed_hosts)])
 
-    if daemon:
-        command.extend(["-p", "8000", "-d"])
-    else:
-        command.extend(["--rm", "-t", "-i"])
-
     command.extend(["--link", "{0}:postgres".format(pg_container_name)])
 
     command.append("jianjin/django")
@@ -63,21 +64,24 @@ def django_command(command_to_run, pg_container_name, allowed_hosts,
     logging.info("Starting {0}".format(" ".join(command)))
     subprocess.check_call(command)
 
-def pg_syncdb(pg_container_name):
+def pg_initial_migration(pg_container_name):
     """
-    Call syncdb to perform initial setup of the database
+    Perform initial setup of the database
     """
-    logging.info("Starting container to perform syncdb")
-    django_command(["docker/django_syncdb.py"], pg_container_name, "")
+    logging.info("Starting container to perform migrations")
+    django_command(["docker/django_initial_migration.py"], pg_container_name, "")
 
 def create_django_container(pg_container_name, allowed_hosts, debug):
     logging.info("Starting Django container")
     if not allowed_hosts:
         raise ValueError("--allowedhosts is required")
+    container_name = "jianjin_django"
     django_command(["docker/django_start.py"], pg_container_name, allowed_hosts,
-                   name="jianjin_django", daemon=True, django_debug=debug)
+                   name=container_name, daemon=True, django_debug=debug)
+    url = subprocess.check_output(["sudo", "docker", "port", container_name, "8000"])
+    logging.info("You may connect at {0}".format(url))
 
-def main(create_pg=True, syncdb=True, create_django=True, debug=False, allowed_hosts=""):
+def main(create_pg=True, init_migration=True, create_django=True, debug=False, allowed_hosts=""):
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     pg_container_name = 'jianjin_postgres'
 
@@ -87,8 +91,8 @@ def main(create_pg=True, syncdb=True, create_django=True, debug=False, allowed_h
         create_pg_container(pg_container_name)
         did_something = True
 
-    if syncdb:
-        pg_syncdb(pg_container_name)
+    if init_migration:
+        pg_initial_migration(pg_container_name)
         did_something = True
 
     if create_django:
@@ -96,13 +100,13 @@ def main(create_pg=True, syncdb=True, create_django=True, debug=False, allowed_h
         did_something = True
 
     if not did_something:
-        print >>sys.stderr, "Must specify at least one of createpostgres, syncdb, createdjango"
+        print >>sys.stderr, "Must specify at least one of createpostgres, initmigration, createdjango"
 
 if __name__ == '__main__':
     allowed_hosts = [m.group(1) for m in (re.match("--allowedhosts=(.*)", arg) for arg in sys.argv) if m]
     allowed_hosts = allowed_hosts[0] if len(allowed_hosts) > 0 else None
     main(create_pg='createpostgres' in sys.argv,
-         syncdb='syncdb' in sys.argv,
+         init_migration='initmigration' in sys.argv,
          create_django='createdjango' in sys.argv,
          debug='--debug' in sys.argv,
          allowed_hosts=allowed_hosts)

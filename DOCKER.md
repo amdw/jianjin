@@ -49,7 +49,8 @@ the Jianjin Django server.
 Run ```./devel.sh run``` to start [the Django development
 server](https://docs.djangoproject.com/en/1.8/ref/django-admin/#runserver-port-or-address-port). If
 you don't already have a ```db.sqlite3``` file present, you can run
-```./devel.sh syncdb``` to run the syncdb process to bootstrap it.
+```./devel.sh initmigration``` to run the initial migration process to
+bootstrap it.
 
 Note that this is a privileged container with access to the code in
 the containing repository on the host. This means that when you change
@@ -62,8 +63,8 @@ the container.
 
 # Running with a separate PostgreSQL container
 
-* Run ```./start_prod.py createpostgres syncdb``` to create a
-  PostgreSQL container and perform the initial syncdb run
+* Run ```./start_prod.py createpostgres initmigration``` to create a
+  PostgreSQL container and perform the initial migrations
 * Run ```./start_prod.py createdjango``` to create the Django
   container.
   * You need to specify ```--allowedhosts=localhost``` to be able to
