@@ -84,5 +84,10 @@ container is not linked to the hosting OS, so any changes you make in
 the hosting OS will have no effect on the Django container until you
 recreate the image again using ```./create_images.py builddjango```.
 
+In particular, this means you need to ensure that any Django
+migrations required to set up the database exist in the Django image
+(similar to the requirement that they be checked into Git for the
+benefit of Heroku).
+
 Note also that if you delete the PostgreSQL container, any data you
 had stored in it will disappear.

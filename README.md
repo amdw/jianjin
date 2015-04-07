@@ -87,9 +87,11 @@ The following instructions are specific to Heroku; to deploy to other PaaS servi
 * Run ```heroku create``` to create a new Heroku application
 * Run ```jianjin/heroku-configure.py``` to set certain required configuration properties, such as generating a Django secret key
 * Run ```git push heroku master``` to push your current code to Heroku
-* Run ```heroku run python manage.py makemigrations words```, ```heroku run python manage.py migrate``` and ```heroku run python manage.py createsuperuser``` to set up the database
+* Run ```heroku run python manage.py migrate``` and ```heroku run python manage.py createsuperuser``` to set up the database
 
 Assuming all this worked, you should be able to run ```heroku open``` to open up the application.
+
+Note that Heroku requires you to check your migrations (created using ```python manage.py makemigrations words```) into the Git repository, as running this command on Heroku does not work (it tries to create new code files on the Heroku side).
 
 ### Backing up your data
 

@@ -9,7 +9,6 @@ import subprocess
 
 def main():
     discover.set_django_env()
-    subprocess.check_call(["python", "manage.py", "makemigrations", "words"])
     subprocess.check_call(["python", "manage.py", "migrate"])
     subprocess.check_call(["python", "manage.py", "createsuperuser"])
 
