@@ -5,6 +5,7 @@ Start the set of Docker containers necessary for a local development environment
 This assumes you have created the Docker images using create_images.sh and that Docker is set up.
 """
 
+import logging
 import os.path
 import subprocess
 import sys
@@ -25,6 +26,7 @@ def run_command(tag, base_dir, command):
              "-v", "{0}:/code".format(base_dir),
              "--privileged=true", "jianjin/django:{0}".format(tag)]
     parts.extend(command)
+    logging.info("Running {0}".format(" ".join(parts)))
     subprocess.check_call(parts)
 
 def run_tests(tag, base_dir):
@@ -34,6 +36,7 @@ def run_syncdb(tag, base_dir):
     run_command(tag, base_dir, ["python", "manage.py", "syncdb"])
     
 def main():
+    logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     legal_commands = ["run", "syncdb", "test"]
     tags = [arg for arg in sys.argv[1:] if arg not in legal_commands]
     if len(tags) > 1:
