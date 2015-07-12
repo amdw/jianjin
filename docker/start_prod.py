@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Start Docker containers for a PostgreSQL instance of Django.
@@ -20,7 +20,7 @@ def create_pg_container(pg_container_name):
     """
     pg_user = 'jianjin'
     r = random.SystemRandom()
-    pg_password = ''.join((r.choice([chr(x) for x in range(48,58) + range(65, 91) + range(97, 123)])
+    pg_password = ''.join((r.choice([chr(x) for x in list(range(48,58)) + list(range(65, 91)) + list(range(97, 123))])
                            for i in range(20)))
     logging.info("Starting PostgreSQL container...")
     subprocess.check_call(["sudo", "docker", "run", "--name", pg_container_name,
@@ -100,7 +100,7 @@ def main(create_pg=True, init_migration=True, create_django=True, debug=False, a
         did_something = True
 
     if not did_something:
-        print >>sys.stderr, "Must specify at least one of createpostgres, initmigration, createdjango"
+        print("Must specify at least one of createpostgres, initmigration, createdjango", file=sys.stderr)
 
 if __name__ == '__main__':
     allowed_hosts = [m.group(1) for m in (re.match("--allowedhosts=(.*)", arg) for arg in sys.argv) if m]

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Start the set of Docker containers necessary for a local development environment using Sqlite.
@@ -18,7 +18,7 @@ def run_server(container_name, tag, base_dir):
                            "--env-file=devel.env",
                            "-v", "{0}:/code".format(base_dir),
                            "--privileged=true", "jianjin/django:{0}".format(tag),
-                           "python", "manage.py", "runserver", "0.0.0.0:8000"])
+                           "python3", "manage.py", "runserver", "0.0.0.0:8000"])
     url = subprocess.check_output(["sudo", "docker", "port", container_name, "8000"])
     logging.info("You may connect on {0}".format(url))
 
@@ -32,12 +32,12 @@ def run_command(tag, base_dir, command):
     subprocess.check_call(parts)
 
 def run_tests(tag, base_dir):
-    run_command(tag, base_dir, ["python", "manage.py", "test", "words"])
+    run_command(tag, base_dir, ["python3", "manage.py", "test", "words"])
 
 def run_initial_migration(tag, base_dir):
-    run_command(tag, base_dir, ["python", "manage.py", "makemigrations", "words"])
-    run_command(tag, base_dir, ["python", "manage.py", "migrate"])
-    run_command(tag, base_dir, ["python", "manage.py", "createsuperuser"])
+    run_command(tag, base_dir, ["python3", "manage.py", "makemigrations", "words"])
+    run_command(tag, base_dir, ["python3", "manage.py", "migrate"])
+    run_command(tag, base_dir, ["python3", "manage.py", "createsuperuser"])
     
 def main():
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
@@ -63,7 +63,7 @@ def main():
         did_something = True
 
     if not did_something:
-        print >>sys.stderr, "Must specify at least one of {0}".format(", ".join(legal_commands))
+        print("Must specify at least one of {0}".format(", ".join(legal_commands)), file=sys.stderr)
 
 if __name__ == '__main__':
    main()

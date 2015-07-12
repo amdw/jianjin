@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Create Docker images required to run Jianjin.
@@ -41,7 +41,7 @@ def main():
         did_something = True
 
     if not did_something:
-        print >>sys.stderr, "Must specify at least one of {0}".format(", ".join(legal_commands))
+        print("Must specify at least one of {0}".format(", ".join(legal_commands)), file=sys.stderr)
 
 if __name__ == '__main__':
     main()
