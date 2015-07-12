@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.templatetags.rest_framework import replace_query_param
 
 from words.models import Word, Tag
-from serializers import WordSerializer, TagSerializer
+from .serializers import WordSerializer, TagSerializer
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     """Tags are only updated via words, so this is a read-only view set"""
@@ -182,7 +182,7 @@ def flashcard_word(request, tag_name=None):
     if not words:
         raise Http404
     weights = weights_for_words(words)
-    word = random_choice_by_weight(zip(words, weights))
+    word = random_choice_by_weight(list(zip(words, weights)))
     serializer = WordSerializer()
     return Response(serializer.serialize(word))
 
@@ -194,7 +194,7 @@ def confidence(request, word_id):
         return Response({"error": "Must specify 'new' confidence value"},
                         status=status.HTTP_400_BAD_REQUEST)
     new_confidence = request.data['new']
-    if isinstance(new_confidence, basestring) and not new_confidence.isdigit():
+    if isinstance(new_confidence, str) and not new_confidence.isdigit():
         return Response({"error": "New confidence value must be a number, not '{0}'".format(new_confidence)},
                         status=status.HTTP_400_BAD_REQUEST)
     word.confidence = int(new_confidence)

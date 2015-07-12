@@ -35,11 +35,11 @@ Jianjin is designed to be easily deployed on any [PaaS](http://en.wikipedia.org/
 
 For development or personal local use, you can run Jianjin on your own computer; this is probably the easiest way to try it out. (The following instructions assume a Unix-like environment, such as Linux or Mac OS X. There's no reason it shouldn't be possible to run this on Windows as well by similar means, but I haven't tried it.)
 
-* Install Python and virtualenv as described in [this guide](http://install.python-guide.org/)
+* Install [Python 3](http://python.org/) and [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/). You will also need the libraries and headers for Python 3 development (for example on Fedora, the package is called ```python3-devel```).
 * Install the Heroku toolbelt as described in [this guide](https://devcenter.heroku.com/articles/getting-started-with-python#local-workstation-setup)
 * Install [Postgres](http://www.postgresql.org/) and ensure that the ```bin``` directory (containing ```pg_config```) is on your ```PATH```
 * Clone this Git repository and ```cd``` into it
-* Create a virtualenv: ```virtualenv venv```
+* Create a Python 3 virtualenv: ```virtualenv -p python3 venv```
 * Activate the virtualenv: ```source venv/bin/activate```
 * Install the Django toolbelt and the other required Python libraries into your virtualenv: ```pip install -r requirements.txt```
 * Create a ```.env``` file with local settings: ```cp env.sample .env```. Edit the ```DATABASE_URL``` in the new ```.env``` file to point to a suitable path for your SQLite database.

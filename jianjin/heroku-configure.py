@@ -12,7 +12,7 @@ secret_key_legal_chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
 r = random.SystemRandom()
 secret_key = ''.join((r.choice(secret_key_legal_chars) for i in range(50)))
 
-print "Setting Heroku config variables..."
+print("Setting Heroku config variables...")
 
 # Set the secret key, and force the Python build pack, since there are some Node configs
 # in the root directory as well and this confuses Heroku

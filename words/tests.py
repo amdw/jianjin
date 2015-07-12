@@ -7,7 +7,7 @@ import unittest
 from django.test import TestCase, Client
 from django.test.utils import setup_test_environment, override_settings
 
-import models, serializers, views
+from . import models, serializers, views
 
 USER = 'user'
 PASSWORD = 'password'
@@ -32,7 +32,7 @@ class LoggedInJsonTest(TestCase):
                          msg="Got HTTP {0}, content: {1}".format(response.status_code,
                                                                  response.content))
         self.assertEqual('application/json', response['Content-Type'])
-        return json.loads(response.content)
+        return json.loads(response.content.decode('utf-8'))
 
     def post_json(self, url, data):
         """Post data to URL as JSON string"""
@@ -115,10 +115,10 @@ class MiscJsonApiTest(LoggedInJsonTest):
 
     def test_search_exact(self):
         """Test searching for exact word"""
-        response = self.client.get(u'/words/searchexact/你好', follow=True)
+        response = self.client.get('/words/searchexact/你好', follow=True)
         json_response = self.assert_successful_json(response)
         self.assertEqual(1, len(json_response))
-        self.assertEqual(u'你好', json_response[0]['word'])
+        self.assertEqual('你好', json_response[0]['word'])
 
         # Non-existent word
         response = self.client.get('/words/searchexact/wibble', follow=True)
@@ -131,22 +131,22 @@ class WordsApiTest(LoggedInJsonTest):
     """Test the words JSON API itself (the most complex part of the API)"""
     def __init__(self, *args, **kwargs):
         super(LoggedInJsonTest, self).__init__(*args, **kwargs)
-        self.orig_word = {u'confidence': 10,
-                          u'date_added': u'2014-06-14T11:25:53.081000+00:00',
-                          u'definitions': [{u'definition': u'Hello!',
-                                            u'example_sentences': [],
-                                            u'id': 1,
-                                            u'part_of_speech': u' '}],
-                          u'id': 1,
-                          u'last_modified': u'2014-06-14T14:29:15.857000+00:00',
-                          u'notes': u'',
-                          u'pinyin': u'ni3hao3',
-                          u'related_words': [{u'id': 3,
-                                              u'pinyin': u'wu1long2qiu2',
-                                              u'word': u'\u4e4c\u9f99\u7403'}],
-                          u'tags': [{u'tag': u'awesome'}],
-                          u'user': u'user',
-                          u'word': u'\u4f60\u597d'}
+        self.orig_word = {'confidence': 10,
+                          'date_added': '2014-06-14T11:25:53.081000+00:00',
+                          'definitions': [{'definition': 'Hello!',
+                                           'example_sentences': [],
+                                           'id': 1,
+                                           'part_of_speech': ' '}],
+                          'id': 1,
+                          'last_modified': '2014-06-14T14:29:15.857000+00:00',
+                          'notes': '',
+                          'pinyin': 'ni3hao3',
+                          'related_words': [{'id': 3,
+                                             'pinyin': 'wu1long2qiu2',
+                                             'word': '\u4e4c\u9f99\u7403'}],
+                          'tags': [{'tag': 'awesome'}],
+                          'user': 'user',
+                          'word': '\u4f60\u597d'}
         self.word_url = '/words/words/{0}/'.format(self.orig_word['id'])
     
     def latest_word(self):
@@ -154,10 +154,10 @@ class WordsApiTest(LoggedInJsonTest):
         return models.Word.objects.get(pk=self.orig_word['id'])
 
     def test_create_new_word(self):
-        new_word_map = {"word": u"小猪",
+        new_word_map = {"word": "小猪",
                         "definitions": [{"definition": "piglet",
                                          "part_of_speech": "N",
-                                         "example_sentences": [{"sentence": u"这是一只小猪。",
+                                         "example_sentences": [{"sentence": "这是一只小猪。",
                                                                 "pinyin": "Zhe4 shi4 yi1zhi1 xiao3zhu1.",
                                                                 "translation": "This is a piglet."}]}],
                         "pinyin": "xiao3zhu1"}
@@ -173,7 +173,7 @@ class WordsApiTest(LoggedInJsonTest):
                              'notes': '',
                              'related_words': [],
                              'user': USER}
-        for (key, expected_val) in expected_defaults.items():
+        for (key, expected_val) in list(expected_defaults.items()):
             self.assertEquals(expected_val, json_response.get(key, None),
                               msg="Expected key '{0}' to be defaulted to '{1}', found '{2}'".format(key, expected_val, json_response.get(key, None)))
 
@@ -213,8 +213,8 @@ class WordsApiTest(LoggedInJsonTest):
     def test_get_words_sorting(self):
         sorts = ["word", "pinyin", "confidence"]
         reverse_sorts = ["date_added", "last_modified"]
-        for (sort, is_reverse) in dict(dict.fromkeys(sorts, False).items() +
-                                       dict.fromkeys(reverse_sorts, True).items()).items():
+        for (sort, is_reverse) in list(dict(list(dict.fromkeys(sorts, False).items()) +
+                                       list(dict.fromkeys(reverse_sorts, True).items())).items()):
             response = self.client.get('/words/words/?order={0}'.format(sort))
             json_response = self.assert_successful_json(response)
             expected_order = sorted(models.Word.objects.filter(user=1), key=lambda w: getattr(w, sort))
@@ -241,7 +241,7 @@ class WordsApiTest(LoggedInJsonTest):
 
     def test_update_word(self):
         new_word = copy.deepcopy(self.orig_word)
-        new_word['word'] = u'你是谁'
+        new_word['word'] = '你是谁'
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
         #self.assertEqual({}, json_response)
@@ -250,9 +250,9 @@ class WordsApiTest(LoggedInJsonTest):
     def test_add_and_remove_definition(self):
         new_word = copy.deepcopy(self.orig_word)
         new_def = {'definition': 'Hi there!',
-                   'example_sentences': [{'sentence': u'你好小猫',
-                                          'pinyin': u'ni3hao3 xiao3mao1',
-                                          'translation': u'Hello kitty!'}],
+                   'example_sentences': [{'sentence': '你好小猫',
+                                          'pinyin': 'ni3hao3 xiao3mao1',
+                                          'translation': 'Hello kitty!'}],
                    'part_of_speech': ' '}
         new_word['definitions'].append(new_def)
         response = self.put_json(self.word_url, new_word)
@@ -287,7 +287,7 @@ class WordsApiTest(LoggedInJsonTest):
     def test_sentence_crud(self):
         new_word = copy.deepcopy(self.orig_word)
         new_sentences = new_word['definitions'][0]['example_sentences']
-        new_sentences.append({'sentence': u'你好亲爱的!',
+        new_sentences.append({'sentence': '你好亲爱的!',
                          'pinyin': 'Ni3hao3 qin1ai4de!',
                          'translation': 'Hello dear!'})
         response = self.put_json(self.word_url, new_word)
@@ -296,11 +296,11 @@ class WordsApiTest(LoggedInJsonTest):
         def check_sentences():
             self.assertEqual(len(new_sentences),
                              len(self.latest_word().definitions.all()[0].example_sentences.all()))
-            expected_map = dict(zip([s['sentence'] for s in new_sentences], new_sentences))
+            expected_map = dict(list(zip([s['sentence'] for s in new_sentences], new_sentences)))
             actual_list = json_response['definitions'][0]['example_sentences']
-            actual_map = dict(zip([s['sentence'] for s in actual_list], actual_list))
+            actual_map = dict(list(zip([s['sentence'] for s in actual_list], actual_list)))
             self.assertEqual(set(expected_map.keys()), set(actual_map.keys()))
-            for sentence_text in expected_map.keys():
+            for sentence_text in list(expected_map.keys()):
                 for field in ['sentence', 'pinyin', 'translation']:
                     self.assertEqual(expected_map[sentence_text][field], actual_map[sentence_text][field])
 
@@ -368,11 +368,11 @@ class WordsApiTest(LoggedInJsonTest):
 
     def test_add_remove_existing_related_word(self):
         new_word = copy.deepcopy(self.orig_word)
-        related_word = {'word': u'蛋白质'}
+        related_word = {'word': '蛋白质'}
         new_word['related_words'].append(related_word)
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
-        expected_related_words = [u'蛋白质', u'乌龙球']
+        expected_related_words = ['蛋白质', '乌龙球']
         self.assertEquals(sorted(expected_related_words),
                           sorted([w['word'] for w in json_response['related_words']]))
         self.assertEquals(sorted(expected_related_words),
@@ -394,7 +394,7 @@ class WordsApiTest(LoggedInJsonTest):
         Test adding a new word as a related word to another word.
         """
         new_word = copy.deepcopy(self.orig_word)
-        related_word = {'word': u'自行车'}
+        related_word = {'word': '自行车'}
         new_word['related_words'].append(related_word)
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
@@ -504,7 +504,7 @@ class AuthorizationTest(LoggedInJsonTest):
 
     def test_search_anothers_word(self):
         """Try to search for someone else's word"""
-        response = self.client.get(u'/words/searchexact/加油', follow=True)
+        response = self.client.get('/words/searchexact/加油', follow=True)
         json_response = self.assert_successful_json(response)
         self.assertEquals(0, len(json_response))
 
