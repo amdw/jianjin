@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 from django.db import models, migrations
 from django.conf import settings
@@ -14,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ComparisonExample',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
                 ('example', models.TextField()),
                 ('explanation', models.TextField()),
             ],
@@ -22,22 +23,22 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ComparisonGroup',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
                 ('name', models.CharField(max_length=20, blank=True)),
             ],
         ),
         migrations.CreateModel(
             name='Definition',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
                 ('definition', models.CharField(max_length=100)),
-                ('part_of_speech', models.CharField(max_length=10, choices=[(b' ', b'none'), (b'N', b'noun'), (b'V', b'verb'), (b'ADJ', b'adjective'), (b'ADV', b'adverb'), (b'PREP', b'preposition'), (b'MW', b'measure')])),
+                ('part_of_speech', models.CharField(max_length=10, choices=[(' ', 'none'), ('N', 'noun'), ('V', 'verb'), ('ADJ', 'adjective'), ('ADV', 'adverb'), ('PREP', 'preposition'), ('MW', 'measure')])),
             ],
         ),
         migrations.CreateModel(
             name='ExampleSentence',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
                 ('sentence', models.TextField()),
                 ('pinyin', models.TextField()),
                 ('translation', models.TextField()),
@@ -47,14 +48,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('tag', models.CharField(unique=True, max_length=20)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
+                ('tag', models.CharField(max_length=20, unique=True)),
             ],
         ),
         migrations.CreateModel(
             name='Word',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
                 ('word', models.CharField(max_length=10)),
                 ('pinyin', models.CharField(max_length=50)),
                 ('notes', models.TextField(blank=True)),
