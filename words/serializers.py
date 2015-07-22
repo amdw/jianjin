@@ -37,17 +37,17 @@ class DefinitionSerializer(serializers.ModelSerializer):
         There's a hint in the docs that this might get added back again in the future, which would be nice...
         http://www.django-rest-framework.org/api-guide/serializers/#customizing-multiple-update
         """
-        for attr, value in list(validated_data.items()):
+        for (attr, value) in validated_data.items():
             if attr == 'example_sentences':
                 existing = instance.example_sentences.all()
-                existing_map = dict(list(zip([s.sentence for s in existing], existing)))
-                updated_map = dict(list(zip([s['sentence'] for s in value], value)))
+                existing_map = dict(zip([s.sentence for s in existing], existing))
+                updated_map = dict(zip([s['sentence'] for s in value], value))
                 sentence_serializer = ExampleSentenceSerializer()
-                for sentence_text, sentence_map in list(updated_map.items()):
+                for sentence_text, sentence_map in updated_map.items():
                     sentence = existing_map[sentence_text] if sentence_text in existing_map else instance.example_sentences.create()
                     sentence_serializer.update(sentence, sentence_map)
                     sentence.save()
-                for sentence_text, sentence in list(existing_map.items()):
+                for sentence_text, sentence in existing_map.items():
                     if sentence_text not in updated_map:
                         sentence.delete()
             else:

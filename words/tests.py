@@ -173,7 +173,7 @@ class WordsApiTest(LoggedInJsonTest):
                              'notes': '',
                              'related_words': [],
                              'user': USER}
-        for (key, expected_val) in list(expected_defaults.items()):
+        for (key, expected_val) in expected_defaults.items():
             self.assertEquals(expected_val, json_response.get(key, None),
                               msg="Expected key '{0}' to be defaulted to '{1}', found '{2}'".format(key, expected_val, json_response.get(key, None)))
 
@@ -213,8 +213,8 @@ class WordsApiTest(LoggedInJsonTest):
     def test_get_words_sorting(self):
         sorts = ["word", "pinyin", "confidence"]
         reverse_sorts = ["date_added", "last_modified"]
-        for (sort, is_reverse) in list(dict(list(dict.fromkeys(sorts, False).items()) +
-                                       list(dict.fromkeys(reverse_sorts, True).items())).items()):
+        for (sort, is_reverse) in dict(list(dict.fromkeys(sorts, False).items()) +
+                                       list(dict.fromkeys(reverse_sorts, True).items())).items():
             response = self.client.get('/words/words/?order={0}'.format(sort))
             json_response = self.assert_successful_json(response)
             expected_order = sorted(models.Word.objects.filter(user=1), key=lambda w: getattr(w, sort))
@@ -296,11 +296,11 @@ class WordsApiTest(LoggedInJsonTest):
         def check_sentences():
             self.assertEqual(len(new_sentences),
                              len(self.latest_word().definitions.all()[0].example_sentences.all()))
-            expected_map = dict(list(zip([s['sentence'] for s in new_sentences], new_sentences)))
+            expected_map = dict(zip([s['sentence'] for s in new_sentences], new_sentences))
             actual_list = json_response['definitions'][0]['example_sentences']
-            actual_map = dict(list(zip([s['sentence'] for s in actual_list], actual_list)))
+            actual_map = dict(zip([s['sentence'] for s in actual_list], actual_list))
             self.assertEqual(set(expected_map.keys()), set(actual_map.keys()))
-            for sentence_text in list(expected_map.keys()):
+            for sentence_text in expected_map.keys():
                 for field in ['sentence', 'pinyin', 'translation']:
                     self.assertEqual(expected_map[sentence_text][field], actual_map[sentence_text][field])
 
