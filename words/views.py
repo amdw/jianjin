@@ -53,7 +53,7 @@ def load_words(request, tag_name, ordering=None):
 
 def _get_page_size(request):
     """Get number of words per page from an HTTP request, and apply some validations"""
-    page_size = int(request.QUERY_PARAMS.get('page_size', 10))
+    page_size = int(request.query_params.get('page_size', 10))
     if page_size > 100:
         raise ValueError("{0} is above max page size".format(page_size))
     if page_size <= 0:
@@ -62,7 +62,7 @@ def _get_page_size(request):
 
 def _get_ordering(request):
     """Get word ordering from an HTTP request, and apply some validations"""
-    ordering_text = request.QUERY_PARAMS.get('order', None)
+    ordering_text = request.query_params.get('order', None)
     if not ordering_text:
         return ["-date_added"]
     ordering_text = ordering_text.lower()
@@ -76,7 +76,7 @@ def _get_ordering(request):
 def paginate_words(words, request):
     """Generate paginated output from a word query set"""
     page_size = _get_page_size(request)
-    page_num = int(request.QUERY_PARAMS.get('page', 1))
+    page_num = int(request.query_params.get('page', 1))
     paginator = Paginator(words, page_size)
     page = paginator.page(page_num)
 

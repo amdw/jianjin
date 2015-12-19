@@ -520,7 +520,7 @@ class AuthenticationTest(TestCase):
         """Test that unauthenticated HTML requests are redirected to the login page"""
         response = self.client.get('/', follow=True)
         self.assertEqual(200, response.status_code)
-        self.assertEqual([("http://testserver/accounts/login/?next=/", 302)], response.redirect_chain)
+        self.assertEqual([("/accounts/login/?next=/", 302)], response.redirect_chain)
 
     def test_json_auth(self):
         """Test that the JSON API cannot be accessed unless logged in"""
