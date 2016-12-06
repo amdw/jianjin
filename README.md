@@ -77,6 +77,18 @@ If you want to run the JavaScript tests, you will need to do the following:
 * Run ```npm install``` in the root directory of the project; this will download some additional Java libraries for local testing
 * Run ```npm test```
 
+### Running Pylint
+
+If you want to run [Pylint](https://www.pylint.org/) on the code for static analysis, the easiest way is to install it in your virtualenv (```pip3 install pylint```) rather than running any version you have installed globally.
+
+### Upgrading dependencies
+
+To upgrade all dependencies to the latest available versions, the most convenient way I have been able to find is to run ```pip3 install -U``` on all the packages in ```requirements.txt```, using a command like the following:
+
+```cat requirements.txt | perl -lpe 's/=.*//' | xargs pip3 install -U```
+
+You can then run ```pip3 freeze > requirements.txt``` to update the ```requirements.txt``` file.
+
 ## Deploying to Heroku or other PaaS
 
 Running Jianjin on the public Internet is much more useful than running it on a private computer, as it gives you access to the application and all your data from anywhere on any web-enabled device.
