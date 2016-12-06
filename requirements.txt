@@ -1,10 +1,10 @@
-Django==1.9.4
-dj-database-url==0.4.0
+dj-database-url==0.4.1
 dj-static==0.0.6
+Django==1.10.4
 django-sslify==0.2.7
 django-toolbelt==0.0.1
-djangorestframework==3.3.2
-gunicorn==19.4.5
-psycopg2==2.6.1
+djangorestframework==3.5.3
+gunicorn==19.6.0
+psycopg2==2.6.2
 pystache==0.5.4
-static3==0.6.1
+static3==0.7.0
