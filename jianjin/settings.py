@@ -2,16 +2,16 @@
 Django settings for jianjin project.
 """
 
-import dj_database_url
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '.herokuapp.com').split(':')
-
 DEBUG = True if os.environ.get('DJANGO_DEBUG', None) == '1' else False
+ALLOWED_HOSTS = [h for h in os.environ.get('ALLOWED_HOSTS',
+                                           '' if DEBUG else '.herokuapp.com').split(':') if h]
 SSLIFY_DISABLE = DEBUG
 
 # Application definition
