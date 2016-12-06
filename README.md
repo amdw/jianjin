@@ -42,7 +42,7 @@ You need the following software installed:
 * [Python 3](http://python.org/)
 * The libraries and headers for Python 3 development, if they did not come with your Python installation (for example on Fedora, you need to install an additional package called ```python3-devel```).
 * [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/) - for example on Fedora, you can install the package ```python-virtualenv``` 
-* [Postgres](http://www.postgresql.org/), including libraries and headers (for example on Fedora you need both ```postgresql``` and ```postgresql-devel```). Ensure that the ```bin``` directory (containing ```pg_config```) is on your ```PATH```.
+* [Postgres](http://www.postgresql.org/), including libraries and headers (for example on Fedora you need ```postgresql```, ```postgresql-devel``` and ```redhat-rpm-config```). Ensure that the ```bin``` directory (containing ```pg_config```) is on your ```PATH```.
 * A C compiler such as ```gcc``` (on Fedora, install the ```gcc``` package)
 * [The Heroku toolbelt](https://devcenter.heroku.com/articles/getting-started-with-python#local-workstation-setup), including ```foreman``` (if you installed the standalone toolbelt, you will need to ```gem install foreman```)
 
