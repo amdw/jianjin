@@ -12,7 +12,12 @@ SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 DEBUG = True if os.environ.get('DJANGO_DEBUG', None) == '1' else False
 ALLOWED_HOSTS = [h for h in os.environ.get('ALLOWED_HOSTS',
                                            '' if DEBUG else '.herokuapp.com').split(':') if h]
-SSLIFY_DISABLE = DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_SSL_REDIRECT = not DEBUG
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
 
 # Application definition
 
@@ -28,13 +33,13 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware'
 )
 
 TEMPLATES = [

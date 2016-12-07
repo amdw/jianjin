@@ -12,7 +12,6 @@ from . import models, serializers, views
 USER = 'user'
 PASSWORD = 'password'
 
-@override_settings(SSLIFY_DISABLE=True)
 class LoggedInJsonTest(TestCase):
     """
     Base class for use in tests which need to be logged in and which require JSON assertions.
@@ -44,7 +43,6 @@ class LoggedInJsonTest(TestCase):
         return self.client.put(url, content_type="application/json",
                                data=json.dumps(data), follow=True)
 
-@override_settings(SSLIFY_DISABLE=True)
 class MiscJsonApiTest(LoggedInJsonTest):
     def test_get_tags(self):
         response = self.client.get('/words/tags/')
@@ -126,7 +124,6 @@ class MiscJsonApiTest(LoggedInJsonTest):
         self.assertEqual(0, len(json_response))
 
 
-@override_settings(SSLIFY_DISABLE=True)
 class WordsApiTest(LoggedInJsonTest):
     """Test the words JSON API itself (the most complex part of the API)"""
     def __init__(self, *args, **kwargs):
@@ -426,7 +423,6 @@ class WordsApiTest(LoggedInJsonTest):
             self.assertEquals(400, response.status_code)
 
 
-@override_settings(SSLIFY_DISABLE=True)
 class AuthorizationTest(LoggedInJsonTest):
     """
     Check that users cannot read or manipulate entities which don't belong to them
@@ -509,7 +505,6 @@ class AuthorizationTest(LoggedInJsonTest):
         self.assertEquals(0, len(json_response))
 
 
-@override_settings(SSLIFY_DISABLE=True)
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
 
