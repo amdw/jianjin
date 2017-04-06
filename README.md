@@ -62,7 +62,7 @@ Note that if you want to run Django commands, e.g. using the ```manage.py``` int
 
 ### Running Python tests
 
-To run the Python tests, run ```foreman run python manage.py test words``` (make sure you have the virtualenv activated as described above).
+To run the Python tests, run ```foreman run python -Wall manage.py test words``` (make sure you have the virtualenv activated as described above).
 
 A useful command for dumping your data into [test fixtures](https://docs.djangoproject.com/en/1.10/topics/testing/tools/#fixture-loading) is:
 
@@ -85,7 +85,7 @@ If you want to run [Pylint](https://www.pylint.org/) on the code for static anal
 
 To upgrade all dependencies to the latest available versions, the most convenient way I have been able to find is to run ```pip3 install -U``` on all the packages in ```requirements.txt```, using a command like the following:
 
-```cat requirements.txt | perl -lpe 's/=.*//' | xargs pip3 install -U```
+```perl -lpe 's/=.*//' requirements.txt | xargs pip3 install -U```
 
 You can then run ```pip3 freeze > requirements.txt``` to update the ```requirements.txt``` file.
 

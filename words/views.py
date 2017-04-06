@@ -1,14 +1,12 @@
 import random
 
-from django.core import serializers
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, InvalidPage
 from django.db.models.aggregates import Count
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from rest_framework import viewsets, status
-from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.templatetags.rest_framework import replace_query_param

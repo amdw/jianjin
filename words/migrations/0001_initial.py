@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 ('sentence', models.TextField()),
                 ('pinyin', models.TextField()),
                 ('translation', models.TextField()),
-                ('definition', models.ForeignKey(related_name='example_sentences', to='words.Definition')),
+                ('definition', models.ForeignKey(related_name='example_sentences', to='words.Definition', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -64,22 +64,22 @@ class Migration(migrations.Migration):
                 ('confidence', models.IntegerField(default=0)),
                 ('related_words', models.ManyToManyField(related_name='related_words_rel_+', to='words.Word', blank=True)),
                 ('tags', models.ManyToManyField(to='words.Tag', blank=True)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
         migrations.AddField(
             model_name='definition',
             name='word',
-            field=models.ForeignKey(related_name='definitions', to='words.Word'),
+            field=models.ForeignKey(related_name='definitions', to='words.Word', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='comparisonexample',
             name='comparison_group',
-            field=models.ForeignKey(to='words.ComparisonGroup'),
+            field=models.ForeignKey(to='words.ComparisonGroup', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='comparisonexample',
             name='word',
-            field=models.ForeignKey(to='words.Word'),
+            field=models.ForeignKey(to='words.Word', on_delete=models.CASCADE),
         ),
     ]

@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import login
+from django.contrib.auth import views as auth_views
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.base import TemplateView
@@ -18,7 +18,7 @@ class RootView(TemplateView):
 
 urlpatterns = [
     url(r'^$', login_required(RootView.as_view())),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/login/$', login, {'template_name': 'login.html'}, name="login"),
+    url(r'^admin/', admin.site.urls),
+    url(r'^accounts/login/$', auth_views.LoginView.as_view(template_name='login.html'), name="login"),
     url(r'^words/', include('words.urls')),
 ]

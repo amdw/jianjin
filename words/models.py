@@ -1,7 +1,7 @@
 import re
 
 from django.db import models
-from django.core import urlresolvers
+from django import urls
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
@@ -21,7 +21,7 @@ class Word(models.Model):
     word = models.CharField(max_length=10)
     pinyin = models.CharField(max_length=50)
     notes = models.TextField(blank=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
@@ -45,7 +45,7 @@ PART_CHOICES = (
 )
     
 class Definition(models.Model):
-    word = models.ForeignKey(Word, related_name='definitions')
+    word = models.ForeignKey(Word, related_name='definitions', on_delete=models.CASCADE)
     definition = models.CharField(max_length=100)
     part_of_speech = models.CharField(max_length=10, choices=PART_CHOICES)
 
@@ -54,14 +54,14 @@ class Definition(models.Model):
 
     def changeform_link(self):
         if self.id:
-            changeform_url = urlresolvers.reverse('admin:words_definition_change', args=(self.id,))
+            changeform_url = urls.reverse('admin:words_definition_change', args=(self.id,))
             return '<a href="{0}" target="_blank">Details</a>'.format(changeform_url)
         return ""
     changeform_link.allow_tags = True
     changeform_link.short_description = ""
 
 class ExampleSentence(models.Model):
-    definition = models.ForeignKey(Definition, related_name='example_sentences')
+    definition = models.ForeignKey(Definition, related_name='example_sentences', on_delete=models.CASCADE)
     sentence = models.TextField()
     pinyin = models.TextField()
     translation = models.TextField()
@@ -76,7 +76,7 @@ class ComparisonGroup(models.Model):
         return self.name
 
 class ComparisonExample(models.Model):
-    comparison_group = models.ForeignKey(ComparisonGroup)
-    word = models.ForeignKey(Word)
+    comparison_group = models.ForeignKey(ComparisonGroup, on_delete=models.CASCADE)
+    word = models.ForeignKey(Word, on_delete=models.CASCADE)
     example = models.TextField()
     explanation = models.TextField()

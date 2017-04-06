@@ -4,8 +4,7 @@ import copy
 import json
 import unittest
 
-from django.test import TestCase, Client
-from django.test.utils import setup_test_environment, override_settings
+from django.test import TestCase
 
 from . import models, serializers, views
 
@@ -19,7 +18,6 @@ class LoggedInJsonTest(TestCase):
     fixtures = ['testdata.json']
 
     def setUp(self):
-        setup_test_environment()
         self.assertTrue(self.client.login(username=USER, password=PASSWORD))
 
     def assert_successful_json(self, response):
@@ -171,11 +169,11 @@ class WordsApiTest(LoggedInJsonTest):
                              'related_words': [],
                              'user': USER}
         for (key, expected_val) in expected_defaults.items():
-            self.assertEquals(expected_val, json_response.get(key, None),
+            self.assertEqual(expected_val, json_response.get(key, None),
                               msg="Expected key '{0}' to be defaulted to '{1}', found '{2}'".format(key, expected_val, json_response.get(key, None)))
 
         new_word = models.Word.objects.get(pk=json_response['id'])
-        self.assertEquals(new_word_map["word"], new_word.word)
+        self.assertEqual(new_word_map["word"], new_word.word)
 
     def test_get_words(self):
         response = self.client.get('/words/words/')
@@ -217,11 +215,11 @@ class WordsApiTest(LoggedInJsonTest):
             expected_order = sorted(models.Word.objects.filter(user=1), key=lambda w: getattr(w, sort))
             if is_reverse:
                 expected_order.reverse()
-            self.assertEquals([w.pinyin for w in expected_order], [w['pinyin'] for w in json_response['results']])
+            self.assertEqual([w.pinyin for w in expected_order], [w['pinyin'] for w in json_response['results']])
 
         # Test disallowed sort
         response = self.client.get('/words/words/?order=rufriblath')
-        self.assertEquals(400, response.status_code)
+        self.assertEqual(400, response.status_code)
 
     def test_get_word(self):
         response = self.client.get(self.word_url, follow=True)
@@ -278,7 +276,7 @@ class WordsApiTest(LoggedInJsonTest):
         new_word['definitions'].append(new_def)
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
-        self.assertEquals([], json_response['definitions'][-1]['example_sentences'])
+        self.assertEqual([], json_response['definitions'][-1]['example_sentences'])
         self.assertTrue('something' in [d.definition for d in self.latest_word().definitions.all()])
 
     def test_sentence_crud(self):
@@ -342,8 +340,8 @@ class WordsApiTest(LoggedInJsonTest):
         new_word['tags'].append(existing_tag)
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
-        self.assertEquals(1, len(models.Tag.objects.filter(tag=existing_tag['tag'])))
-        self.assertEquals(len(self.orig_word['tags']), len(json_response['tags']))
+        self.assertEqual(1, len(models.Tag.objects.filter(tag=existing_tag['tag'])))
+        self.assertEqual(len(self.orig_word['tags']), len(json_response['tags']))
 
     def test_remove_tag(self):
         """
@@ -357,11 +355,11 @@ class WordsApiTest(LoggedInJsonTest):
         new_word['tags'].remove(new_tag)
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
-        self.assertEquals(self.orig_word['tags'], json_response['tags'])
-        self.assertEquals([t['tag'] for t in self.orig_word['tags']],
+        self.assertEqual(self.orig_word['tags'], json_response['tags'])
+        self.assertEqual([t['tag'] for t in self.orig_word['tags']],
                           [t.tag for t in self.latest_word().tags.all()])
         # Tag should get deleted, as there are no words on it left
-        self.assertEquals(0, len(models.Tag.objects.filter(tag=new_tag['tag'])))
+        self.assertEqual(0, len(models.Tag.objects.filter(tag=new_tag['tag'])))
 
     def test_add_remove_existing_related_word(self):
         new_word = copy.deepcopy(self.orig_word)
@@ -370,9 +368,9 @@ class WordsApiTest(LoggedInJsonTest):
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
         expected_related_words = ['蛋白质', '乌龙球']
-        self.assertEquals(sorted(expected_related_words),
+        self.assertEqual(sorted(expected_related_words),
                           sorted([w['word'] for w in json_response['related_words']]))
-        self.assertEquals(sorted(expected_related_words),
+        self.assertEqual(sorted(expected_related_words),
                           sorted([w.word for w in self.latest_word().related_words.all()]))
         # Reverse relation should also be present
         self.assertTrue(self.orig_word['id'] in [w.id for w in models.Word.objects.get(word=related_word['word']).related_words.all()])
@@ -395,12 +393,12 @@ class WordsApiTest(LoggedInJsonTest):
         new_word['related_words'].append(related_word)
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
-        self.assertEquals(1, len(models.Word.objects.filter(word=related_word['word'])))
+        self.assertEqual(1, len(models.Word.objects.filter(word=related_word['word'])))
         self.assertTrue(related_word['word'] in [w['word'] for w in json_response['related_words']])
         self.assertTrue(related_word['word'] in [w.word for w in self.latest_word().related_words.all()])
         created_word = models.Word.objects.get(word=related_word['word'])
-        self.assertEquals([self.orig_word['word']], [w.word for w in created_word.related_words.all()])
-        self.assertEquals(USER, created_word.user.username)
+        self.assertEqual([self.orig_word['word']], [w.word for w in created_word.related_words.all()])
+        self.assertEqual(USER, created_word.user.username)
 
     def test_tag_validation(self):
         """
@@ -411,16 +409,16 @@ class WordsApiTest(LoggedInJsonTest):
         new_word['tags'].extend([{'tag': t} for t in blank_tags])
         response = self.put_json(self.word_url, new_word)
         json_response = self.assert_successful_json(response)
-        self.assertEquals(self.orig_word['tags'], json_response['tags'])
+        self.assertEqual(self.orig_word['tags'], json_response['tags'])
         for t in blank_tags:
-            self.assertEquals(0, len([t.tag for t in models.Tag.objects.filter(tag=t)]))
+            self.assertEqual(0, len([t.tag for t in models.Tag.objects.filter(tag=t)]))
 
         illegal_tags = ['foo_bar', 'w!bble']
         for tag in illegal_tags:
             new_word = copy.deepcopy(self.orig_word)
             new_word['tags'].append({'tag': tag})
             response = self.put_json(self.word_url, new_word)
-            self.assertEquals(400, response.status_code)
+            self.assertEqual(400, response.status_code)
 
 
 class AuthorizationTest(LoggedInJsonTest):
@@ -430,8 +428,8 @@ class AuthorizationTest(LoggedInJsonTest):
     def test_read_anothers_word(self):
         response = self.client.get('/words/words/5/')
         # Shouldn't even tell them it exists
-        self.assertEquals(404, response.status_code)
-        self.assertEquals(self.client.get('/words/words/79/').content, response.content)
+        self.assertEqual(404, response.status_code)
+        self.assertEqual(self.client.get('/words/words/79/').content, response.content)
 
     def test_write_anothers_word(self):
         word = models.Word.objects.get(pk=5)
@@ -439,15 +437,15 @@ class AuthorizationTest(LoggedInJsonTest):
         word_map = serializer.serialize(word)
         word_map['confidence'] += 1
         response = self.put_json('/words/words/5/', word_map)
-        self.assertEquals(404, response.status_code,
+        self.assertEqual(404, response.status_code,
                           msg="Expected 404, got {0}".format(response.content))
-        self.assertEquals(self.put_json('/words/words/79/', word_map).content, response.content)
+        self.assertEqual(self.put_json('/words/words/79/', word_map).content, response.content)
 
         # Shouldn't be able to do it through the confidence API either
         response = self.post_json('/words/confidence/5/', {"new": word_map['confidence']})
-        self.assertEquals(404, response.status_code,
+        self.assertEqual(404, response.status_code,
                           msg="Expected 404, got {0}".format(response.content))
-        self.assertEquals(self.post_json('/words/confidence/79/', {"new": 0}).content,
+        self.assertEqual(self.post_json('/words/confidence/79/', {"new": 0}).content,
                           response.content)
 
     def test_update_anothers_definition(self):
@@ -463,9 +461,9 @@ class AuthorizationTest(LoggedInJsonTest):
                           'part_of_speech': 'V'}
         word_map['definitions'].append(new_definition)
         response = self.put_json(word_url, word_map)
-        self.assertEquals(404, response.status_code)
-        self.assertEquals(self.client.get('/words/words/79/').content, response.content)
-        self.assertEquals("Come on!",
+        self.assertEqual(404, response.status_code)
+        self.assertEqual(self.client.get('/words/words/79/').content, response.content)
+        self.assertEqual("Come on!",
                           models.Definition.objects.get(pk=new_definition['id']).definition)
 
     def test_update_anothers_example(self):
@@ -481,9 +479,9 @@ class AuthorizationTest(LoggedInJsonTest):
                                 'translation': "Wouldn't you like to know!"}
         word_map['definitions'][0]['example_sentences'].append(new_example_sentence)
         response = self.put_json(word_url, word_map)
-        self.assertEquals(404, response.status_code)
-        self.assertEquals(self.client.get('/words/words/79/').content, response.content)
-        self.assertEquals("Come on! Come on!",
+        self.assertEqual(404, response.status_code)
+        self.assertEqual(self.client.get('/words/words/79/').content, response.content)
+        self.assertEqual("Come on! Come on!",
                           models.ExampleSentence.objects.get(pk=new_example_sentence['id']).translation)
 
     def test_relate_anothers_word(self):
@@ -495,21 +493,18 @@ class AuthorizationTest(LoggedInJsonTest):
         new_related_word = {'id': 5}
         word_map['related_words'].append(new_related_word)
         response = self.put_json(word_url, word_map)
-        self.assertEquals(404, response.status_code)
-        self.assertEquals(0, len(models.Word.objects.get(pk=new_related_word['id']).related_words.all()))
+        self.assertEqual(404, response.status_code)
+        self.assertEqual(0, len(models.Word.objects.get(pk=new_related_word['id']).related_words.all()))
 
     def test_search_anothers_word(self):
         """Try to search for someone else's word"""
         response = self.client.get('/words/searchexact/加油', follow=True)
         json_response = self.assert_successful_json(response)
-        self.assertEquals(0, len(json_response))
+        self.assertEqual(0, len(json_response))
 
 
 class AuthenticationTest(TestCase):
     fixtures = ['testdata.json']
-
-    def setUp(self):
-        setup_test_environment()
 
     def test_html_redirect(self):
         """Test that unauthenticated HTML requests are redirected to the login page"""
@@ -547,7 +542,7 @@ class MiscUnitTests(unittest.TestCase):
             choice = views.random_choice_by_weight(choices, Random(i))
             results[choice] = results.get(choice, 0) + 1
         expected_results = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
-        self.assertEquals(expected_results, results)
+        self.assertEqual(expected_results, results)
 
     def test_flashcard_weights(self):
         """
@@ -559,4 +554,4 @@ class MiscUnitTests(unittest.TestCase):
 
         weights = views.weights_for_words([Word(-2), Word(-10), Word(3), Word(0), Word(100)])
         expected_weights = [103, 111, 98, 101, 1]
-        self.assertEquals(expected_weights, weights)
+        self.assertEqual(expected_weights, weights)
