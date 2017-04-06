@@ -47,7 +47,7 @@ the Jianjin Django server.
 # Running a single dev container
 
 Run ```./devel.py run``` to start [the Django development
-server](https://docs.djangoproject.com/en/1.10/ref/django-admin/#runserver-port-or-address-port). If
+server](https://docs.djangoproject.com/en/1.11/ref/django-admin/#runserver-port-or-address-port). If
 you don't already have a ```db.sqlite3``` file present, you can run
 ```./devel.py initmigration``` to run the initial migration process to
 bootstrap it.
@@ -70,11 +70,11 @@ the container.
 * You need to specify ```--allowedhosts=localhost``` to be able to
   connect on the localhost (in production you would specify your
   actual set of allowed hosts - [see
-  docs](https://docs.djangoproject.com/en/1.10/ref/settings/#allowed-hosts)).
+  docs](https://docs.djangoproject.com/en/1.11/ref/settings/#allowed-hosts)).
 * This is also a bit impractical in a testing environment without
   ```--debug``` as well, which enables [Django's DEBUG
-  setting](https://docs.djangoproject.com/en/1.10/ref/settings/#debug),
-  because without it, the [SECURE_SSL_REDIRECT](https://docs.djangoproject.com/en/1.10/ref/settings/#std:setting-SECURE_SSL_REDIRECT)
+  setting](https://docs.djangoproject.com/en/1.11/ref/settings/#debug),
+  because without it, the [SECURE_SSL_REDIRECT](https://docs.djangoproject.com/en/1.11/ref/settings/#std:setting-SECURE_SSL_REDIRECT)
   will kick in and try to redirect you to the HTTPS URLs, which won't
   work. However, in production you would of course not do this: you
   would instead have a proper HTTPS setup.

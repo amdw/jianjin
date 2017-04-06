@@ -64,7 +64,7 @@ Note that if you want to run Django commands, e.g. using the ```manage.py``` int
 
 To run the Python tests, run ```foreman run python -Wall manage.py test words``` (make sure you have the virtualenv activated as described above).
 
-A useful command for dumping your data into [test fixtures](https://docs.djangoproject.com/en/1.10/topics/testing/tools/#fixture-loading) is:
+A useful command for dumping your data into [test fixtures](https://docs.djangoproject.com/en/1.11/topics/testing/tools/#fixture-loading) is:
 
 ```foreman run python manage.py dumpdata --natural --indent=4 --exclude=contenttypes --exclude=auth.permission --exclude=admin --exclude=sessions```
 
@@ -101,7 +101,7 @@ Any secret information, such as database passwords or the Django ```SECRET_KEY``
 
 In addition, if you want your deployment to be at all secure, you must [use SSL](https://devcenter.heroku.com/articles/ssl-endpoint) to ensure that all communications between browser and server are encrypted. Any use of regular unencrypted HTTP will make your deployment insecure. If you don't consider your Jianjin data to be private, you may not mind this, but you must be fully aware of the consequences: your Django username, password and private session data can be easily intercepted, especially on public mobile or Wifi networks, giving anyone the ability to impersonate you to the web application and thereby do anything you have the power to do within Jianjin.
 
-A full checklist of things to consider when deploying Django applications on the Internet may be found [on the Django website](https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/). I have tried to take care of as many items on this checklist as possible in the way this application is configured and in the below instructions, but you are solely responsible for the security of your own deployments.
+A full checklist of things to consider when deploying Django applications on the Internet may be found [on the Django website](https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/). I have tried to take care of as many items on this checklist as possible in the way this application is configured and in the below instructions, but you are solely responsible for the security of your own deployments.
 
 (Thanks very much to Github user michaelmior for [some useful patterns](https://github.com/michaelmior/heroku-django-skeleton) for Django on Heroku.)
 
