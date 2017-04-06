@@ -6,7 +6,7 @@ for a deployment of Jianjin on Heroku. See README.md for further information.
 """
 
 import random
-import subprocess 
+import subprocess
 
 secret_key_legal_chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
 r = random.SystemRandom()

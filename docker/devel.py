@@ -38,7 +38,7 @@ def run_initial_migration(tag, base_dir):
     run_command(tag, base_dir, ["python3", "manage.py", "makemigrations", "words"])
     run_command(tag, base_dir, ["python3", "manage.py", "migrate"])
     run_command(tag, base_dir, ["python3", "manage.py", "createsuperuser"])
-    
+
 def main():
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     legal_commands = ["run", "initmigration", "test"]
@@ -49,7 +49,7 @@ def main():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     did_something = False
-    
+
     if "run" in sys.argv:
         run_server("jianjin_django_dev", tag, base_dir)
         did_something = True
@@ -57,7 +57,7 @@ def main():
     if "initmigration" in sys.argv:
         run_initial_migration(tag, base_dir)
         did_something = True
-        
+
     if "test" in sys.argv:
         run_tests(tag, base_dir)
         did_something = True

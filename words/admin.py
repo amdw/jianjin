@@ -7,7 +7,7 @@ class ExampleSentenceInline(admin.StackedInline):
 
 class DefinitionAdmin(admin.ModelAdmin):
     inlines = [ExampleSentenceInline]
-    
+
 class DefinitionLinkInline(admin.TabularInline):
     model = Definition
     fields = ('definition', 'part_of_speech', 'changeform_link')
@@ -27,5 +27,5 @@ class ComparisonInline(admin.StackedInline):
 
 class ComparisonGroupAdmin(admin.ModelAdmin):
     inlines = [ComparisonInline]
-    
+
 admin.site.register(ComparisonGroup, ComparisonGroupAdmin)

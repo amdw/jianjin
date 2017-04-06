@@ -22,10 +22,10 @@ class ExampleSentenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExampleSentence
         exclude = ('definition',)
-        
+
 class DefinitionSerializer(serializers.ModelSerializer):
     example_sentences = ExampleSentenceSerializer(many=True, required=False)
-    
+
     class Meta:
         model = Definition
         exclude = ('word',)

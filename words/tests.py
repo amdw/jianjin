@@ -143,7 +143,7 @@ class WordsApiTest(LoggedInJsonTest):
                           'user': 'user',
                           'word': '\u4f60\u597d'}
         self.word_url = '/words/words/{0}/'.format(self.orig_word['id'])
-    
+
     def latest_word(self):
         """Load the latest version of the word from the database"""
         return models.Word.objects.get(pk=self.orig_word['id'])

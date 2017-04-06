@@ -43,7 +43,7 @@ PART_CHOICES = (
     ('PREP', 'preposition'),
     ('MW', 'measure'),
 )
-    
+
 class Definition(models.Model):
     word = models.ForeignKey(Word, related_name='definitions', on_delete=models.CASCADE)
     definition = models.CharField(max_length=100)
