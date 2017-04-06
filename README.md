@@ -81,6 +81,8 @@ If you want to run the JavaScript tests, you will need to do the following:
 
 If you want to run [Pylint](https://www.pylint.org/) on the code for static analysis, the easiest way is to install it in your virtualenv (```pip3 install pylint```) rather than running any version you have installed globally.
 
+There is a pylintrc file included in this repository. A number of the default warnings have been weakened or turned off; this is normally because violating the default settings is required by the Django framework.
+
 ### Upgrading dependencies
 
 To upgrade all dependencies to the latest available versions, the most convenient way I have been able to find is to run ```pip3 install -U``` on all the packages in ```requirements.txt```, using a command like the following:

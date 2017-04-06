@@ -4,8 +4,8 @@
 Script for running initial database setup within a container
 """
 
-import discover
 import subprocess
+import discover
 
 def main():
     discover.set_django_env()

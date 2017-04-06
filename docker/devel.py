@@ -20,7 +20,7 @@ def run_server(container_name, tag, base_dir):
                            "--privileged=true", "jianjin/django:{0}".format(tag),
                            "python3", "manage.py", "runserver", "0.0.0.0:8000"])
     url = subprocess.check_output(["sudo", "docker", "port", container_name, "8000"])
-    logging.info("You may connect on {0}".format(url))
+    logging.info("You may connect on %s", url)
 
 def run_command(tag, base_dir, command):
     parts = ["sudo", "docker", "run", "--rm", "-ti",
@@ -28,7 +28,7 @@ def run_command(tag, base_dir, command):
              "-v", "{0}:/code".format(base_dir),
              "--privileged=true", "jianjin/django:{0}".format(tag)]
     parts.extend(command)
-    logging.info("Running {0}".format(" ".join(parts)))
+    logging.info("Running %s", " ".join(parts))
     subprocess.check_call(parts)
 
 def run_tests(tag, base_dir):
@@ -66,5 +66,4 @@ def main():
         print("Must specify at least one of {0}".format(", ".join(legal_commands)), file=sys.stderr)
 
 if __name__ == '__main__':
-   main()
-
+    main()

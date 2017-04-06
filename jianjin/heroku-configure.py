@@ -18,4 +18,3 @@ print("Setting Heroku config variables...")
 # in the root directory as well and this confuses Heroku
 subprocess.check_call(["heroku", "config:set", "DJANGO_SECRET_KEY='{0}'".format(secret_key),
                        "BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-python"])
-

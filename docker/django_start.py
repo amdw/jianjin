@@ -4,9 +4,9 @@
 Script for starting Django server within a container
 """
 
-import discover
 import os
 import subprocess
+import discover
 
 def main():
     discover.set_django_env()

@@ -20,7 +20,7 @@ def create_pg_container(pg_container_name):
     """
     pg_user = 'jianjin'
     r = random.SystemRandom()
-    pg_password = ''.join((r.choice([chr(x) for x in list(range(48,58)) + list(range(65, 91)) + list(range(97, 123))])
+    pg_password = ''.join((r.choice([chr(x) for x in list(range(48, 58)) + list(range(65, 91)) + list(range(97, 123))])
                            for i in range(20)))
     logging.info("Starting PostgreSQL container...")
     subprocess.check_call(["sudo", "docker", "run", "--name", pg_container_name,
@@ -61,7 +61,7 @@ def django_command(command_to_run, pg_container_name, allowed_hosts,
     command.append("jianjin/django")
     command.extend(command_to_run)
 
-    logging.info("Starting {0}".format(" ".join(command)))
+    logging.info("Starting %s", " ".join(command))
     subprocess.check_call(command)
 
 def pg_initial_migration(pg_container_name):
@@ -79,7 +79,7 @@ def create_django_container(pg_container_name, allowed_hosts, debug):
     django_command(["docker/django_start.py"], pg_container_name, allowed_hosts,
                    name=container_name, daemon=True, django_debug=debug)
     url = subprocess.check_output(["sudo", "docker", "port", container_name, "8000"])
-    logging.info("You may connect at {0}".format(url))
+    logging.info("You may connect at %s", url)
 
 def main(create_pg=True, init_migration=True, create_django=True, debug=False, allowed_hosts=""):
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
@@ -102,7 +102,7 @@ def main(create_pg=True, init_migration=True, create_django=True, debug=False, a
     if not did_something:
         print("Must specify at least one of createpostgres, initmigration, createdjango", file=sys.stderr)
 
-if __name__ == '__main__':
+def run():
     allowed_hosts = [m.group(1) for m in (re.match("--allowedhosts=(.*)", arg) for arg in sys.argv) if m]
     allowed_hosts = allowed_hosts[0] if len(allowed_hosts) > 0 else None
     main(create_pg='createpostgres' in sys.argv,
@@ -110,3 +110,6 @@ if __name__ == '__main__':
          create_django='createdjango' in sys.argv,
          debug='--debug' in sys.argv,
          allowed_hosts=allowed_hosts)
+
+if __name__ == '__main__':
+    run()
