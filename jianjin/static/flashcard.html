@@ -35,7 +35,7 @@
 	  <p ng-if="!def.example_sentences.length"><i>No examples provided</i></p>
 	</div>
       </div>
-      <p><a href="#/browse/{{word.id}}">Full entry for this word</a></p>
+      <p><a href="#!/browse/{{word.id}}">Full entry for this word</a></p>
     </div>
     <div class="row col-sm-12">
       <button class="btn btn-warning" ng-click="set_show_pinyin_hint()" ng-if="!show_pinyin_hint">Show Pinyin</button>
@@ -44,7 +44,7 @@
       <button class="btn btn-primary" ng-click="next_flashcard()">Next Flashcard</button>
     </div>
     <div class="row col-sm-12" style="padding-top:15px" ng-if="all_tags">
-      <p>Filter by tag: <span ng-repeat="t in all_tags"><a href="#/flashcard/{{t}}" ng-if="t != tag">{{t}}</a><b ng-if="t == tag">{{t}}</b> | </span><a href="#/flashcard" ng-if="tag">All</a><b ng-if="!tag">All</b></p>
+      <p>Filter by tag: <span ng-repeat="t in all_tags"><a href="#!/flashcard/{{t}}" ng-if="t != tag">{{t}}</a><b ng-if="t == tag">{{t}}</b> | </span><a href="#!/flashcard" ng-if="tag">All</a><b ng-if="!tag">All</b></p>
     </div>
   </span>
 </div>

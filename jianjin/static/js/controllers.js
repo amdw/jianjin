@@ -22,7 +22,9 @@ jianjinControllers.controller('HeaderCtrl', function ($scope, $location) {
 });
 
 jianjinControllers.constant('handle_error', function($scope) {
-  return function(data, status) {
+  return function(response) {
+    var data = response.data;
+    var status = response.status;
     $scope.error = data;
     $scope.error_status = status;
     $scope.loading = false;
@@ -50,9 +52,10 @@ jianjinControllers.constant('extract_examples', function(word) {
 
 jianjinControllers.factory('load_tags', function(handle_error) {
   return function($scope, $http) {
-    $http.get('/words/tags/').success(function(data) {
+    $http.get('/words/tags/').then(function(response) {
+      var data = response.data;
       $scope.all_tags = data.map(function(t) { return t.tag });
-    }).error(handle_error($scope));
+    }).catch(handle_error($scope));
   };
 });
 
@@ -60,10 +63,13 @@ jianjinControllers.factory('change_confidence', function($http) {
   return function($scope, new_confidence) {
     // Disable buttons while this request is in progress
     $scope.enable_confidence = false;
-    $http.post('/words/confidence/' + $scope.word.id + '/', {"new": new_confidence}).success(function(data) {
+    $http.post('/words/confidence/' + $scope.word.id + '/', {"new": new_confidence}).then(function(response) {
+      var data = response.data;
       $scope.enable_confidence = true;
       $scope.word.confidence = data['new'];
-    }).error(function(data, status) {
+    }).catch(function(response) {
+      var data = response.data;
+      var status = response.status;
       window.alert("Failed to update confidence (" + status + "):\n" + JSON.stringify(data));
       $scope.enable_confidence = true;
     });
@@ -93,14 +99,15 @@ jianjinControllers.controller('BrowseListCtrl', function ($scope, $http, $routeP
 
   $scope.load_words = function(url) {
     $scope.loading = true;
-    $http.get(url).success(function(data) {
+    $http.get(url).then(function(response) {
+      var data = response.data;
       $scope.count = data['count'];
       $scope.page = data['page'];
       $scope.next_page_url = data['next'];
       $scope.previous_page_url = data['previous'];
       $scope.words = data['results'];
       $scope.loading = false;
-    }).error(handle_error($scope));
+    }).catch(handle_error($scope));
   };
 
   $scope.previous_page = function() {
@@ -146,9 +153,10 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
 
     $scope.load_common_tags = function() {
       if (!$scope.common_tags) {
-        $http.get("/words/commontags/").success(function(data) {
+        $http.get("/words/commontags/").then(function(response) {
+          var data = response.data;
           $scope.common_tags = data.map(function(t) { return t["tag"] });
-        });
+        }).catch(handle_error($scope));
       }
     };
 
@@ -170,7 +178,8 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
           delete $scope.word.related_words[i].new;
         }
       }
-      var on_success = function(data) {
+      var on_success = function(response) {
+        var data = response.data;
         $scope.word = data;
         $scope.editing = false;
         $scope.loading = false;
@@ -178,16 +187,18 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
           $location.path('/browse/' + data.id);
         }
       };
-      var on_error = function(data, status) {
+      var on_error = function(response) {
+        var data = response.data;
+        var status = response.status;
         window.alert("Error " + status + " saving word:\n" + JSON.stringify(data));
         $scope.loading = false;
       };
       $scope.loading = true;
       if ($scope.is_new) {
-        $http.post("/words/words/", $scope.word).success(on_success).error(on_error);
+        $http.post("/words/words/", $scope.word).then(on_success).catch(on_error);
       }
       else {
-        $http.put(get_word_url($scope.word_id), $scope.word).success(on_success).error(on_error);
+        $http.put(get_word_url($scope.word_id), $scope.word).then(on_success).catch(on_error);
       }
     };
 
@@ -197,11 +208,14 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
           return;
         }
         $scope.checking_existing = true;
-        $http.get("/words/searchexact/" + $scope.word.word).success(function(data) {
+        $http.get("/words/searchexact/" + $scope.word.word).then(function(response) {
+          var data = response.data;
           $scope.checking_existing = false;
           $scope.existing = data;
           $scope.existing_error = "";
-        }).error(function(data, status) {
+        }).catch(function(response) {
+          var data = response.data;
+          var status = response.status;
           $scope.checking_existing = false;
           $scope.existing_error = "Error " + status + ": " + JSON.stringify(data);
         });
@@ -281,10 +295,11 @@ jianjinControllers.wordControllerGenerator = function(is_new) {
     }
     else {
       $scope.loading = true;
-      $http.get(get_word_url($routeParams.word_id)).success(function(data) {
+      $http.get(get_word_url($routeParams.word_id)).then(function(response) {
+        var data = response.data;
         $scope.word = data;
         $scope.loading = false;
-      }).error(handle_error($scope));
+      }).catch(handle_error($scope));
     }
 
     if ($scope.editing) {
@@ -310,11 +325,12 @@ jianjinControllers.controller('FlashcardCtrl', function($scope, $http, $routePar
 
   $scope.load_flashcard = function() {
     $scope.loading = true;
-    $http.get('/words/flashcard' + ($scope.tag ? '/' + $scope.tag : '') + '/').success(function(data) {
+    $http.get('/words/flashcard' + ($scope.tag ? '/' + $scope.tag : '') + '/').then(function(response) {
+      var data = response.data;
       $scope.word = data;
       $scope.examples = extract_examples(data);
       $scope.loading = false;
-    }).error(handle_error($scope));
+    }).catch(handle_error($scope));
   };
 
   $scope.set_show_pinyin_hint = function() {
@@ -351,10 +367,11 @@ jianjinControllers.controller('SearchResultsCtrl', function($scope, $http, $rout
 
   $scope.search = function(search_text) {
     $scope.loading = true;
-    $http.get('/words/search/' + $scope.search_text).success(function(data) {
+    $http.get('/words/search/' + $scope.search_text).then(function(response) {
+      var data = response.data;
       $scope.loading = false;
       $scope.search_results = data;
-    }).error(handle_error($scope));
+    }).catch(handle_error($scope));
   };
 
   $scope.search($scope.search_text);

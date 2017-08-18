@@ -24,7 +24,7 @@
         <span ng-if="is_new">
           <span ng-if="checking_existing">Checking for existing words... <i class="fa fa-spinner fa-spin"></i></span>
           <span ng-if="!checking_existing">
-            <span ng-if="existing.length">Existing words: <span ng-repeat="ew in existing"><a href="#/browse/{{ew.id}}"><span ng-if="ew.pinyin">{{ew.pinyin | pinyin}}</span><span ng-if="!ew.pinyin">{{ew.word}} ({{ew.id}})</span></a> </span></span>
+            <span ng-if="existing.length">Existing words: <span ng-repeat="ew in existing"><a href="#!/browse/{{ew.id}}"><span ng-if="ew.pinyin">{{ew.pinyin | pinyin}}</span><span ng-if="!ew.pinyin">{{ew.word}} ({{ew.id}})</span></a> </span></span>
             <span ng-if="existing_error">Error looking for existing words: {{existing_error}}</span>
             <span ng-if="word.word && !existing.length && !existing_error">This is a new word.</span>
           </span>
@@ -76,7 +76,7 @@
       </div>
       <div ng-if="editing || word.related_words.length > 0">
         <h4>Related words</h4>
-        <ul ng-if="!editing"><li ng-repeat="w in word.related_words"><a href="#/browse/{{w.id}}">{{w.word}}</a><span ng-if="show_pinyin"> ({{w.pinyin | pinyin}})</span></li></ul>
+        <ul ng-if="!editing"><li ng-repeat="w in word.related_words"><a href="#!/browse/{{w.id}}">{{w.word}}</a><span ng-if="show_pinyin"> ({{w.pinyin | pinyin}})</span></li></ul>
         <div ng-if="editing">
           <form class="form-horizontal" role="form">
             <div class="form-group tag-form-row" ng-repeat="w in word.related_words">
@@ -90,7 +90,7 @@
       <div ng-if="editing || word.tags.length > 0">
         <h4>Tags:</h4>
         <ul ng-if="!editing">
-          <li ng-repeat="tag in word.tags"><a href="#/browsetag/{{tag.tag}}">{{tag.tag}}</a> (<a href="#/flashcard/{{tag.tag}}">flashcard</a>)</li>
+          <li ng-repeat="tag in word.tags"><a href="#!/browsetag/{{tag.tag}}">{{tag.tag}}</a> (<a href="#!/flashcard/{{tag.tag}}">flashcard</a>)</li>
         </ul>
         <div ng-if="editing">
           <form class="form-horizontal" role="form">

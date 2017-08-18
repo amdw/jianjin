@@ -9,7 +9,7 @@
   </div>
   <div class="row col-sm-12">
     <ul ng-if="search_results.length">
-      <li ng-repeat="word in search_results"><a href="#/browse/{{word.id}}">{{word.word}}</a> ({{word.pinyin | pinyin}})</li>
+      <li ng-repeat="word in search_results"><a href="#!/browse/{{word.id}}">{{word.word}}</a> ({{word.pinyin | pinyin}})</li>
     </ul>
     <p ng-if="!search_results.length">No search results for {{search_text}}.</p>
   </div>
