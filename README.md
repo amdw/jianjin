@@ -41,7 +41,7 @@ You need the following software installed:
 
 * [Python 3](http://python.org/)
 * The libraries and headers for Python 3 development, if they did not come with your Python installation (for example on Fedora, you need to install an additional package called ```python3-devel```).
-* [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/) - for example on Fedora, you can install the package ```python-virtualenv``` 
+* [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/) - for example on Fedora, you can install the package ```python3-virtualenv```
 * [Postgres](http://www.postgresql.org/), including libraries and headers (for example on Fedora you need ```postgresql```, ```postgresql-devel``` and ```redhat-rpm-config```). Ensure that the ```bin``` directory (containing ```pg_config```) is on your ```PATH```.
 * A C compiler such as ```gcc``` (on Fedora, install the ```gcc``` package)
 * [The Heroku toolbelt](https://devcenter.heroku.com/articles/getting-started-with-python#local-workstation-setup), including ```foreman``` (if you installed the standalone toolbelt, you will need to ```gem install foreman```)
@@ -49,7 +49,7 @@ You need the following software installed:
 ### Installation steps
 
 * Clone this Git repository and ```cd``` into it
-* Create a Python 3 virtualenv: ```virtualenv -p python3 venv```
+* Create a Python 3 virtualenv: ```virtualenv-3 venv```
 * Activate the virtualenv: ```source venv/bin/activate```
 * Install the Django toolbelt and the other required Python libraries into your virtualenv: ```pip install -r requirements.txt```
 * Create a ```.env``` file with local settings: ```cp env.sample .env```. Edit the ```DATABASE_URL``` in the new ```.env``` file to point to a suitable path for your SQLite database.
