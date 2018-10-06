@@ -44,7 +44,7 @@ You need the following software installed:
 * [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/) - for example on Fedora, you can install the package ```python3-virtualenv```
 * [Postgres](http://www.postgresql.org/), including libraries and headers (for example on Fedora you need ```postgresql```, ```postgresql-devel``` and ```redhat-rpm-config```). Ensure that the ```bin``` directory (containing ```pg_config```) is on your ```PATH```.
 * A C compiler such as ```gcc``` (on Fedora, install the ```gcc``` package)
-* [The Heroku toolbelt](https://devcenter.heroku.com/articles/getting-started-with-python#local-workstation-setup), including ```foreman``` (if you installed the standalone toolbelt, you will need to ```gem install foreman```)
+* [The Heroku CLI](https://devcenter.heroku.com/articles/getting-started-with-python)
 
 ### Installation steps
 
@@ -53,20 +53,20 @@ You need the following software installed:
 * Activate the virtualenv: ```source venv/bin/activate```
 * Install the Django toolbelt and the other required Python libraries into your virtualenv: ```pip install -r requirements.txt```
 * Create a ```.env``` file with local settings: ```cp env.sample .env```. Edit the ```DATABASE_URL``` in the new ```.env``` file to point to a suitable path for your SQLite database.
-* Set up the database and an admin user: ```foreman run python manage.py migrate``` and ```foreman run python manage.py createsuperuser```
-* Start the local development server: ```foreman start```
+* Set up the database and an admin user: ```heroku local:run python manage.py migrate``` and ```heroku local:run python manage.py createsuperuser```
+* Start the local development server: ```heroku local```
 
 You should get a log message telling you what port the server has bound to; you can then visit localhost:port in your browser and the page should load.
 
-Note that if you want to run Django commands, e.g. using the ```manage.py``` interface, you will need to prefix them with ```foreman run``` in order to pull in the necessary configuration from the ```.env``` file. For example, if you want to run the Django development server rather than Gunicorn, you need to run ```foreman run python manage.py runserver```, or to run a Django shell, ```foreman run python manage.py shell```, etc.
+Note that if you want to run Django commands, e.g. using the ```manage.py``` interface, you will need to prefix them with ```heroku local:run``` in order to pull in the necessary configuration from the ```.env``` file. For example, if you want to run the Django development server rather than Gunicorn, you need to run ```heroku local:run python manage.py runserver```, or to run a Django shell, ```heroku local:run python manage.py shell```, etc.
 
 ### Running Python tests
 
-To run the Python tests, run ```foreman run python -Wall manage.py test words``` (make sure you have the virtualenv activated as described above).
+To run the Python tests, run ```heroku local:run python -Wall manage.py test words``` (make sure you have the virtualenv activated as described above).
 
 A useful command for dumping your data into [test fixtures](https://docs.djangoproject.com/en/1.11/topics/testing/tools/#fixture-loading) is:
 
-```foreman run python manage.py dumpdata --natural --indent=4 --exclude=contenttypes --exclude=auth.permission --exclude=admin --exclude=sessions```
+```heroku local:run python manage.py dumpdata --natural --indent=4 --exclude=contenttypes --exclude=auth.permission --exclude=admin --exclude=sessions```
 
 ### Running JavaScript tests
 
