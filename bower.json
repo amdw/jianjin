@@ -14,11 +14,11 @@
     "bower_components"
   ],
   "dependencies": {
-    "angular": "~1.6.4",
-    "angular-route": "~1.6.4",
-    "angular-mocks": "~1.6.4"
+    "angular": "~1.7.4",
+    "angular-route": "~1.7.4",
+    "angular-mocks": "~1.7.4"
   },
   "resolutions": {
-    "angular": "~1.6.4"
+    "angular": "~1.7.4"
   }
 }
