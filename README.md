@@ -107,9 +107,16 @@ A full checklist of things to consider when deploying Django applications on the
 
 The following instructions are specific to Heroku; to deploy to other PaaS services, consult the documentation for those services. The instructions are based on [the Heroku Django tutorial](https://devcenter.heroku.com/articles/getting-started-with-django), so you should check there and elsewhere in the Heroku documentation if this doesn't work.
 
+First set up a suitable app, if you don't already have one:
+
 * Create a [Heroku account](http://heroku.com/), if you don't already have one, and run ```heroku login```
 * Run ```heroku create``` to create a new Heroku application
 * Run ```jianjin/heroku-configure.py``` to set certain required configuration properties, such as generating a Django secret key
+
+If you already have an existing app but are missing the necessary Git target, run ```heroku git:remote -a yourappname```
+
+Now you can push to Heroku:
+
 * Run ```git push heroku master``` to push your current code to Heroku
 * Run ```heroku run python manage.py migrate``` and ```heroku run python manage.py createsuperuser``` to set up the database
 
