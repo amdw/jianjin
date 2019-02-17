@@ -3,9 +3,9 @@ from words import views, models
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register(r'words', views.WordsViewSet, base_name=models.Word._meta.object_name.lower())
-router.register(r'tags', views.TagsViewSet, base_name=models.Tag._meta.object_name.lower())
-router.register(r'commontags', views.CommonTagsViewSet, base_name=models.Tag._meta.object_name.lower())
+router.register(r'words', views.WordsViewSet, basename=models.Word._meta.object_name.lower())
+router.register(r'tags', views.TagsViewSet, basename=models.Tag._meta.object_name.lower())
+router.register(r'commontags', views.CommonTagsViewSet, basename=models.Tag._meta.object_name.lower())
 
 urlpatterns = [
     url(r'^', include(router.urls)),
