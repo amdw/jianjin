@@ -12,7 +12,7 @@ jianjinControllers.controller('HeaderCtrl', function ($scope, $location) {
   };
 
   $scope.search_key = function(event) {
-    if (event.keyIdentifier != "Enter" || !$scope.search_text) {
+    if (event.key != "Enter" || !$scope.search_text) {
       return;
     }
     var search_text = $scope.search_text;
