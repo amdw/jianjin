@@ -158,7 +158,7 @@ I am prepared to consider requests to dual-license parts of this software. Some 
 
 ## Copyright
 
-All files in this repository are Copyright (C) 2014 Andrew Medworth, except where otherwise stated in individual files.
+All files in this repository are Copyright (C) 2014-2019 Andrew Medworth, except where otherwise stated in individual files.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
