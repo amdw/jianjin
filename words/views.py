@@ -163,14 +163,17 @@ def random_choice_by_weight(choices, r=random):
             return choice
     raise ArithmeticError("Weight selection algorithm failed")
 
+WEIGHT_DECAY = 2.0
+
 def weights_for_words(words):
     """
     Calculate flashcard probability weights for a given set of words based on confidence
     """
     confidences = [w.confidence for w in words]
-    # Shift all confidence scores so larger confidence means smaller weight and 1 is the minimum
-    shift = -max(confidences)
-    weights = [-c - shift + 1 for c in confidences]
+    log_shift = max(confidences)
+    # Each 1-point change in confidence score multiplies the weight by a constant.
+    # Shifting the logarithm should mean that the minimum weight remains 1
+    weights = [pow(WEIGHT_DECAY, log_shift - c) for c in confidences]
     return weights
 
 @api_view(['GET'])

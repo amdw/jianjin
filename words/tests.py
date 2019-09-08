@@ -552,6 +552,16 @@ class MiscUnitTests(unittest.TestCase):
             def __init__(self, confidence):
                 self.confidence = confidence
 
-        weights = views.weights_for_words([Word(-2), Word(-10), Word(3), Word(0), Word(100)])
-        expected_weights = [103, 111, 98, 101, 1]
-        self.assertEqual(expected_weights, weights)
+        confidences = [0, 0, 0, 0, 0]
+        weights = views.weights_for_words([Word(c) for c in confidences])
+        self.assertEqual([1, 1, 1, 1, 1], weights)
+        confidences[0] += 1
+        weights = views.weights_for_words([Word(c) for c in confidences])
+        self.assertEqual([1, 2, 2, 2, 2], weights)
+        confidences[0] += 1
+        weights = views.weights_for_words([Word(c) for c in confidences])
+        self.assertEqual([1, 4, 4, 4, 4], weights)
+        confidences[1] -= 1
+        confidences[2] += 1
+        weights = views.weights_for_words([Word(c) for c in confidences])
+        self.assertEqual([1, 8, 2, 4, 4], weights)
