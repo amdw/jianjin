@@ -88,3 +88,9 @@ pinyin.filter('googletranslatelink', function() {
     return "https://translate.google.com/#zh-CN/en/" + word;
   };
 });
+
+pinyin.filter('chinesepoddictlink', function() {
+  return function(word) {
+    return "https://chinesepod.com/dictionary/english-chinese/" + word;
+  }
+});

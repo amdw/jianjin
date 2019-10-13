@@ -11,7 +11,9 @@
           <h1 style="margin-top:0">
             {{word.word}}<span ng-if="show_pinyin"> ({{word.pinyin | pinyin}})</span>
           </h1>
-          (<a href="{{word.word | mdbglink}}" target="_blank" rel="noopener noreferrer">MDBG</a>, <a href="{{word.word | googletranslatelink}}" target="_blank" rel="noopener noreferrer">Google Translate</a>)
+          (<a href="{{word.word | mdbglink}}" target="_blank" rel="noopener noreferrer">MDBG</a>,
+           <a href="{{word.word | googletranslatelink}}" target="_blank" rel="noopener noreferrer">Google Translate</a>,
+           <a href="{{word.word | chinesepoddictlink}}" target="_blank" rel="noopener noreferrer">ChinesePod</a>)
         </div>
         <div class="col-sm-4 confidence">
           <span style="padding-right: 5px">Confidence: {{word.confidence}}</span>
@@ -30,7 +32,12 @@
           </span>
         </span>
         <input type="text" class="form-control" placeholder="Pinyin" ng-model="word.pinyin"/>
-        <span ng-if="word.word"><a href="{{word.word | mdbglink}}" target="_blank" rel="noopener noreferrer">MDBG lookup</a>, <a href="{{word.word | googletranslatelink}}" target="_blank" rel="noopener noreferrer">Google Translate</a> </span><span ng-if="word.pinyin">({{word.pinyin | pinyin}})</span>
+        <span ng-if="word.word">
+          <a href="{{word.word | mdbglink}}" target="_blank" rel="noopener noreferrer">MDBG lookup</a>,
+          <a href="{{word.word | googletranslatelink}}" target="_blank" rel="noopener noreferrer">Google Translate</a>,
+          <a href="{{word.word | chinesepoddictlink}}" target="_blank" rel="noopener noreferrer">ChinesePod</a>
+        </span>
+        <span ng-if="word.pinyin">({{word.pinyin | pinyin}})</span>
       </div>
     </div>
     <div class="panel panel-primary" ng-repeat="def in word.definitions">
