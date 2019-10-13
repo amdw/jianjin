@@ -11,7 +11,7 @@
           <h1 style="margin-top:0">
             {{word.word}}<span ng-if="show_pinyin"> ({{word.pinyin | pinyin}})</span>
           </h1>
-          (<a href="{{word.word | mdbglink}}" target="_blank">MDBG</a>, <a href="{{word.word | googletranslatelink}}" target="_blank">Google Translate</a>)
+          (<a href="{{word.word | mdbglink}}" target="_blank" rel="noopener noreferrer">MDBG</a>, <a href="{{word.word | googletranslatelink}}" target="_blank" rel="noopener noreferrer">Google Translate</a>)
         </div>
         <div class="col-sm-4 confidence">
           <span style="padding-right: 5px">Confidence: {{word.confidence}}</span>
@@ -30,7 +30,7 @@
           </span>
         </span>
         <input type="text" class="form-control" placeholder="Pinyin" ng-model="word.pinyin"/>
-        <span ng-if="word.word"><a href="{{word.word | mdbglink}}" target="_blank">MDBG lookup</a>, <a href="{{word.word | googletranslatelink}}" target="_blank">Google Translate</a> </span><span ng-if="word.pinyin">({{word.pinyin | pinyin}})</span>
+        <span ng-if="word.word"><a href="{{word.word | mdbglink}}" target="_blank" rel="noopener noreferrer">MDBG lookup</a>, <a href="{{word.word | googletranslatelink}}" target="_blank" rel="noopener noreferrer">Google Translate</a> </span><span ng-if="word.pinyin">({{word.pinyin | pinyin}})</span>
       </div>
     </div>
     <div class="panel panel-primary" ng-repeat="def in word.definitions">
@@ -55,9 +55,9 @@
       <div class="panel-body">
         <p ng-if="!def.example_sentences.length"><i>(No examples entered)</i></p>
         <span ng-repeat="s in def.example_sentences">
-          <p ng-if="!editing"><span ng-bind-html="highlight(s.sentence)"></span><span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span> - {{s.translation}} (<a href="{{s.sentence | mdbglink}}" target="_blank">MDBG</a>, <a href="{{s.sentence | googletranslatelink}}" target="_blank">Google Translate</a>)</p>
+          <p ng-if="!editing"><span ng-bind-html="highlight(s.sentence)"></span><span ng-if="show_pinyin"> ({{s.pinyin | pinyin}})</span> - {{s.translation}} (<a href="{{s.sentence | mdbglink}}" target="_blank" rel="noopener noreferrer">MDBG</a>, <a href="{{s.sentence | googletranslatelink}}" target="_blank" rel="noopener noreferrer">Google Translate</a>)</p>
           <div ng-if="editing" class="example-sentence-edit">
-            <input class="form-control" placeholder="句子" ng-model="s.sentence"/><span ng-if="s.sentence">(<a href="{{s.sentence | mdbglink}}" target="_blank">MDBG</a>, <a href="{{s.sentence | googletranslatelink}}" target="_blank">Google Translate</a>)</span>
+            <input class="form-control" placeholder="句子" ng-model="s.sentence"/><span ng-if="s.sentence">(<a href="{{s.sentence | mdbglink}}" target="_blank" rel="noopener noreferrer">MDBG</a>, <a href="{{s.sentence | googletranslatelink}}" target="_blank" rel="noopener noreferrer">Google Translate</a>)</span>
             <input class="form-control" placeholder="Pinyin" ng-model="s.pinyin"/>
             <span ng-if="s.pinyin">{{s.pinyin | pinyin}}</span>
             <input class="form-control" placeholder="Translation" ng-model="s.translation"/>

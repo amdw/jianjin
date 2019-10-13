@@ -55,7 +55,7 @@ class Definition(models.Model):
     def changeform_link(self):
         if self.id:
             changeform_url = urls.reverse('admin:words_definition_change', args=(self.id,))
-            return '<a href="{0}" target="_blank">Details</a>'.format(changeform_url)
+            return '<a href="{0}" target="_blank" rel="noopener noreferrer">Details</a>'.format(changeform_url)
         return ""
     changeform_link.allow_tags = True
     changeform_link.short_description = ""
